@@ -62,6 +62,8 @@ The example files have been renamed - please refer to the scripts in the example
 
 Please visit our [Support page](https://www.picotech.com/tech-support) to contact us directly or visit our [Test and Measurement Forum](https://www.picotech.com/support/forum71.html) to post questions.
 
+Issues can be reported via the [Issues tab](https://github.com/picotech/picosdk-ps5000a-matlab-instrument-driver/issues).
+
 Please leave a comment and rating for this submission on our [MATLAB Central File Exchange page](https://uk.mathworks.com/matlabcentral/fileexchange/42820-picoscope-5000-series-matlab-generic-instrument-driver).
 
 ## Copyright and licensing
