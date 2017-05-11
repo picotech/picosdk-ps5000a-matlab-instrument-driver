@@ -10,3 +10,11 @@ help/* linguist-documentation
 *.p -crlf -diff -merge
 *.jpg -crlf -diff -merge
 *.png -crlf -diff -merge
+
+# Microsoft Windows operating system
+
+*.dll -crlf -diff -merge
+
+# Linux operating system
+
+*.so -crlf -diff -merge
