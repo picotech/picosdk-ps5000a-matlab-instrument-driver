@@ -3,9 +3,9 @@
 
 # Windows platforms
 
-**/.obj
-**/.lib
-**/.exp
+**/*.obj
+**/*.lib
+**/*.exp
 
 # All platforms
 
