@@ -32,6 +32,7 @@ Please note that the driver will not work with the [PicoScope 5203 and 5204](htt
 ### Prerequisites
 
 * [MATLAB](https://uk.mathworks.com/products/matlab.html) for Microsoft Windows (32- or 64-bit) or Linux operating systems (64-bit).
+* [Instrument Control Toolbox](http://www.mathworks.co.uk/products/instrument/)
 * The [PicoScope Support Toolbox](http://uk.mathworks.com/matlabcentral/fileexchange/53681-picoscope-support-toolbox)
 
 **Notes:**
@@ -57,6 +58,12 @@ You can download the [Programmer's Guide](https://www.picotech.com/download/manu
 **Notes:**
 
 The example files have been renamed - please refer to the scripts in the examples directory for further information.
+
+## Further information
+
+To view Pico Technology's Hardware Support page, please visit:
+
+http://www.mathworks.co.uk/hardware-support/picoscope.html
 
 ## Obtaining support
 
