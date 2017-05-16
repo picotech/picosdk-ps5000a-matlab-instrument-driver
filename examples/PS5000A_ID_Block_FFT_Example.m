@@ -1,4 +1,4 @@
-%PS5000A_IC_GENERIC_DRIVER_BLOCK Code for communicating with an instrument. 
+%% PicoScope 5000 Series Instrument Driver Oscilloscope Block Data Capture with FFT Example
 %  
 %   This is a modified version of the machine generated representation of 
 %   an instrument control session using a device object. The instrument 
@@ -12,14 +12,14 @@
 %       5. Disconnect from the instrument 
 %  
 %   To run the instrument control session, type the name of the file,
-%   PS5000A_IC_Generic_Driver_Block, at the MATLAB command prompt.
+%   PS5000A_ID_Block_FFT_Example, at the MATLAB command prompt.
 % 
-%   The file, PS5000A_IC_GENERIC_DRIVER_BLOCK.M must be on your MATLAB PATH. For additional information
+%   The file, PS5000A_ID_BLOCK_FFT_EXAMPLE.M must be on your MATLAB PATH. For additional information
 %   on setting your MATLAB PATH, type 'help addpath' at the MATLAB command
 %   prompt.
 %
 %   Example:
-%       PS5000A_IC_Generic_Driver_Block;
+%       PS5000A_ID_Block_FFT_Example;
 %
 %   Description:
 %       Demonstrates how to call functions in order to capture a block of
@@ -28,7 +28,7 @@
 %
 %   See also ICDEVICE.
 %
-%   Copyright:  Pico Technology Limited 2013
+%   Copyright: (c) 2013 - 2017 Pico Technology Ltd. See LICENSE file for terms.
 %
 %   Author: HSM
 %

@@ -1,4 +1,4 @@
-%%PS5000A_ID_BLOCK_2_SCOPE_EXAMPLE Code for communicating with an instrument. 
+%% PicoScope 5000 Series Instrument Driver Oscilloscope Block Data Capture With Two Oscilloscopes Example
 %  
 %   This is a modified version of the machine generated representation of 
 %   an instrument control session using a device object. The instrument 
@@ -27,7 +27,7 @@
 %
 %   See also ICDEVICE.
 %
-%   Copyright (C) 2016 - 2017 Pico Technology Ltd. All rights reserved.
+%   Copyright (C) 2016 - 2017 Pico Technology Ltd. See LICENSE file for terms.
 
 %% CLEAR COMMAND WINDOW AND CLOSE ANY FIGURES
 

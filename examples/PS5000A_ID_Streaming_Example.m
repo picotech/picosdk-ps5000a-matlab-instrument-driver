@@ -1,30 +1,38 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PicoScope 5000 Series Instrument Driver Oscilloscope Streaming Data Capture Example
+% This is an example of an instrument control session using a device 
+% object. The instrument control session comprises all the steps you 
+% are likely to take when communicating with your instrument. 
+%       
+% These steps are:
+%    
+% # Create a device object   
+% # Connect to the instrument 
+% # Configure properties 
+% # Invoke functions 
+% # Disconnect from the instrument 
 %
-% Filename:    PS5000A_IC_Generic_Driver_Streaming
+% To run the instrument control session, type the name of the file,
+% PS5000A_ID_Streaming_Example, at the MATLAB command prompt.
+% 
+% The file, PS5000A_ID_STREAMING_EXAMPLE.M must be on your MATLAB PATH. For
+% additional information on setting your MATLAB PATH, type 'help addpath'
+% at the MATLAB command prompt.
 %
-% Copyright:   Pico Technology Limited 2013
+% *Example:*
+%     PS5000A_ID_Streaming_Example;
 %
-% Author:      HSM
-%
-% Description:
+% *Description:*
 %   This is a MATLAB script that demonstrates how to use the
 %   PicoScope 5000a series Instrument Control Toobox driver to collect data
 %   in streaming mode for 2 channels without aggregation and using a 
 %   simple trigger.
 %
-%	To run this application:
-%		Ensure that the following files/folders are located either in the 
-%       same directory or define the path in the PS5000aConfig.m file:
-%       
-%       - picotech_ps5000a_generic.mdd
-%       - ps5000a.dll & ps5000aWrap.dll 
-%       - PS5000aMFile & ps5000aWrapMFile
-%       - PicoStatus.m
-%       - Functions
+% *Note:* Not all device functions used in this example are compatible with
+% the Test and Measurement Tool.
 %
-%   Device used to generated example: PicoScope 5242A
+% *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% *Copyright:* © 2013 - 2017 Pico Technology Ltd. See LICENSE file for terms.
 
 %% LOAD CONFIGURATION INFORMATION
 
