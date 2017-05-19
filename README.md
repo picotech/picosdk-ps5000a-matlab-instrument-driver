@@ -32,7 +32,6 @@ Please note that the driver will not work with the [PicoScope 5203 and 5204](htt
 ### Prerequisites
 
 * [MATLAB](https://uk.mathworks.com/products/matlab.html) for Microsoft Windows (32- or 64-bit) or Linux operating systems (64-bit).
-* [Instrument Control Toolbox](http://www.mathworks.co.uk/products/instrument/)
 * The [PicoScope Support Toolbox](http://uk.mathworks.com/matlabcentral/fileexchange/53681-picoscope-support-toolbox)
 
 **Notes:**
@@ -49,7 +48,7 @@ Drivers are available for the following platforms. Refer to the subsections belo
 
 #### Linux
 
-* Follow the instructions from our [Linux Software & Drivers for Oscilloscopes and Data Loggers](https://www.picotech.com/downloads/linux) to install the required `libps5000a` and `libpswrappers` driver packages.
+* Follow the instructions from our [Linux Software & Drivers for Oscilloscopes and Data Loggers page](https://www.picotech.com/downloads/linux) to install the required `libps5000a` and `libpswrappers` driver packages.
 
 ### Programmer's Guides
 
@@ -59,17 +58,9 @@ You can download the [Programmer's Guide](https://www.picotech.com/download/manu
 
 The example files have been renamed - please refer to the scripts in the examples directory for further information.
 
-## Further information
-
-To view Pico Technology's Hardware Support page, please visit:
-
-http://www.mathworks.co.uk/hardware-support/picoscope.html
-
 ## Obtaining support
 
 Please visit our [Support page](https://www.picotech.com/tech-support) to contact us directly or visit our [Test and Measurement Forum](https://www.picotech.com/support/forum71.html) to post questions.
-
-Issues can be reported via the [Issues tab](https://github.com/picotech/picosdk-ps5000a-matlab-instrument-driver/issues).
 
 Please leave a comment and rating for this submission on our [MATLAB Central File Exchange page](https://uk.mathworks.com/matlabcentral/fileexchange/42820-picoscope-5000-series-matlab-generic-instrument-driver).
 
