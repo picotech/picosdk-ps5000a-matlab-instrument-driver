@@ -43,7 +43,7 @@ Please note that the driver will not work with the [PicoScope 5203 and 5204](htt
 We recommend using the [Add-Ons Explorer](https://uk.mathworks.com/help/matlab/matlab_env/get-add-ons.html) in MATLAB in order to install these files and obtain updates.
 
 If your version of MATLAB does not have the Add-Ons Explorer, download the zip file from the [MATLAB Central File Exchange page](https://uk.mathworks.com/matlabcentral/fileexchange/42820-picoscope-5000-series-matlab-generic-instrument-driver)
-page and add the root and sub-folders to the MATLAB path.
+ and add the root and sub-folders to the MATLAB path.
 
 ### Installing drivers
 
