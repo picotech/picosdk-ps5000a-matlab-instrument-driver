@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000 Series</InstrumentModel>
-   <InstrumentVersion>1.1.31</InstrumentVersion>
+   <InstrumentVersion>1.1.32</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -5052,9 +5052,12 @@ For further information on the  ps5000aRunBlock and ps5000aIsReady functions ple
                <Code>
                   <MCode>function advTrigStatus = setAdvancedTrigger(obj, channelProperties, triggerConditions, directions, delay, autoTriggerMs)
 
-    fprintf('setAdvancedTrigger: Number of channelProperties elements: %d\n', length(channelProperties));
+    if (obj.DriverData.displayOutput == PicoConstants.TRUE)
+        
+        fprintf('setAdvancedTrigger: Number of channelProperties elements: %d\n', length(channelProperties));
 
-    %disp('Trigger Channel Properties...')
+    end
+    
     % Set the trigger channel properties
     % No aux output so set to 0
     advTrigStatus.set_trig_ch_prop_status = calllib('ps5000a', ...
@@ -5069,7 +5072,6 @@ For further information on the  ps5000aRunBlock and ps5000aIsReady functions ple
         
     end
     
-    %disp('Trigger Channel Conditions...')
     % Set trigger conditions
     advTrigStatus.set_trig_ch_conditions_status = calllib('ps5000a', ...
         'ps5000aSetTriggerChannelConditions', get(obj, 'unitHandle'), ...
@@ -5077,15 +5079,13 @@ For further information on the  ps5000aRunBlock and ps5000aIsReady functions ple
 
     advTrigStatus.set_trig_ch_conditions_status;
 
-    %disp('Directions...')
     % Set directions
     advTrigStatus.set_trig_ch_dirs_status = invoke(obj, 'ps5000aSetTriggerChannelDirections', ...
         directions.channelA, directions.channelB, directions.channelC, ...
-        directions.channelD, directions.external);
+        directions.channelD, directions.external, directions.aux);
 
     advTrigStatus.set_trig_ch_dirs_status;
 
-    %disp('Trigger delay...')
     % Post trigger delay
     advTrigStatus.set_trig_delay_status = calllib('ps5000a', ...
         'ps5000aSetTriggerDelay', get(obj, 'unitHandle'), delay);
