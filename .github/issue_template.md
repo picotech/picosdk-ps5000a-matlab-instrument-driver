@@ -1,8 +1,8 @@
 ### Setup
 
 * Example filename:
-* PicoScope 4000 Series model:
-* picotech_ps4000_generic.mdd version:
+* PicoScope 5000 Series model:
+* picotech_ps5000a_generic.mdd version:
 * PicoSDK version (32-/64-bit):
 * Version of MATLAB (32-/64-bit):
 * Operating system:
