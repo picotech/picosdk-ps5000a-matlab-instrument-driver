@@ -17,10 +17,10 @@
 % OBJ is the device object.
 % End of function definition - DO NOT EDIT
 
-% Copyright © 2013 - 2017 Pico Technology Ltd. All rights reserved. 
+% Copyright © 2013-2018 Pico Technology Ltd. All rights reserved. 
 % You may copy and distribute this file as long as it remains unmodified. 
     
-    fprintf('\nCopyright © 2013 - 2017 Pico Technology Ltd. All rights reserved.\n');
+    fprintf('\nCopyright © 2013-2018 Pico Technology Ltd. All rights reserved.\n');
     fprintf('\n');
     fprintf('PicoScope 5000 Series MATLAB Instrument Driver\n');
     fprintf('\n');
@@ -118,6 +118,10 @@
     
     % Constants
     obj.DriverData.constants.PS5000A_MAX_UNITS = 64;
+    
+    
+    
+    obj.DriverData.constants.MODEL_PS5444B_034 = '5444B/034';
     
     % Enumerate units - only displayed if driver is being used via command
     % line
@@ -4764,7 +4768,7 @@ For further information on the ps5000aStop function please refer to the PicoScop
                 obj.UserData.bandwidth = PicoConstants.BANDWIDTH_200MHZ;
                 obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
                 
-            case PS5000aConstants.MODEL_PS5444B
+            case {PS5000aConstants.MODEL_PS5444B, obj.DriverData.constants.MODEL_PS5444B_034}
 
                 obj.UserData.channelCount = PicoConstants.QUAD_SCOPE;
                 obj.UserData.digitalPorts = 0;
