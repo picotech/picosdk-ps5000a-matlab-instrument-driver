@@ -1,6 +1,6 @@
 # PicoScope 5000 Series - MATLAB Generic Instrument Driver
 
-This MATLAB® Generic Instrument Driver allows you to acquire data from the PicoScope® 5000 Series Flexible Resolution Oscilloscopes 
+This MATLAB<sup>®</sup> Generic Instrument Driver allows you to acquire data from the PicoScope<sup>®</sup> 5000 Series Flexible Resolution Oscilloscopes 
 and control in-built signal generator functionality. The data could be processed in MATLAB using functions from Toolboxes such 
 as [Signal Processing Toolbox](https://www.mathworks.com/products/signal.html). 
 
