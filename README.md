@@ -32,6 +32,7 @@ Please note that the driver will not work with the [PicoScope 5203 and 5204](htt
 ### Prerequisites
 
 * [MATLAB](https://uk.mathworks.com/products/matlab.html) for Microsoft Windows (32- or 64-bit) or Linux operating systems (64-bit).
+* [Instrument Control Toolbox](http://www.mathworks.co.uk/products/instrument/)
 * The [PicoScope Support Toolbox](http://uk.mathworks.com/matlabcentral/fileexchange/53681-picoscope-support-toolbox)
 
 **Notes:**
@@ -81,8 +82,8 @@ See [LICENSE.md](LICENSE.md) for license terms.
 
 *PicoScope* is a registered trademark of Pico Technology Ltd. 
 
-*MATLAB* is a registered trademark of The Mathworks, Inc. *Signal Processing Toolbox*
-is a trademark of The Mathworks, Inc.
+*MATLAB* is a registered trademark of The Mathworks, Inc. *Instrument Control Toolbox* and *Signal Processing Toolbox*
+are trademarks of The Mathworks, Inc.
 
 *Windows* is a registered trademark of Microsoft Corporation. 
 
