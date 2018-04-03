@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000 Series</InstrumentModel>
-   <InstrumentVersion>1.1.32</InstrumentVersion>
+   <InstrumentVersion>1.1.33</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -3509,45 +3509,88 @@ For further information on the  ps5000aRunBlock function please refer to the Pic
     % Calculate sampleInterval and sampleIntervalTimeUnits according to
     % streamingInterval property set. Property is defined in seconds.
 
-    streaming_interval = get(obj, 'streamingInterval'); 
+    streamingInterval = get(obj, 'streamingInterval'); 
     
-    femtoseconds_enum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_FS');
-    picoseconds_enum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_PS');
-    nanoseconds_enum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_NS');
-    microseconds_enum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_US');
-    milliseconds_enum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_MS');
-    seconds_enum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_S');
+    femtosecondsEnum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_FS');
+    picosecondsEnum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_PS');
+    nanosecondsEnum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_NS');
+    microsecondsEnum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_US');
+    millisecondsEnum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_MS');
+    secondsEnum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_S');
     
-    sampleIntervalTimeUnits = seconds_enum;
+    sampleIntervalTimeUnits = secondsEnum;
     
-    if (streaming_interval &lt; 1e-12) % Femtoseconds (unlikely with USB 2.0)
+    if (streamingInterval &lt; 1e-12) % Femtoseconds (unlikely with USB 2.0)
         
-        sampleInterval = streaming_interval * 1e15;
-        sampleIntervalTimeUnits = femtoseconds_enum;
+        sampleInterval = streamingInterval * 1e15;
+        sampleIntervalTimeUnits = femtosecondsEnum;
         
-    elseif (streaming_interval &gt;= 1e-12 &amp;&amp; streaming_interval &lt; 1e-9) % Picoseconds
+    elseif (streamingInterval &gt;= 1e-12 &amp;&amp; streamingInterval &lt; 1e-9) % Picoseconds
         
-        sampleInterval = streaming_interval * 1e12;
-        sampleIntervalTimeUnits = picoseconds_enum;
+        if (mod(streamingInterval, 1e-12) &gt; 0)
+           
+            sampleInterval = streamingInterval * 1e15;
+            sampleIntervalTimeUnits = femtosecondsEnum;
+            
+        else
+            
+            sampleInterval = streamingInterval * 1e12;
+            sampleIntervalTimeUnits = picosecondsEnum;
+            
+        end
         
-    elseif (streaming_interval &gt;= 1e-9 &amp;&amp; streaming_interval &lt; 1e-6) % Nanoseconds
+    elseif (streamingInterval &gt;= 1e-9 &amp;&amp; streamingInterval &lt; 1e-6) % Nanoseconds
         
-        sampleInterval = streaming_interval * 1e9;
-        sampleIntervalTimeUnits = nanoseconds_enum;
+        if (mod(streamingInterval, 1e-9) &gt; 0)
+           
+            sampleInterval = streamingInterval * 1e12;
+            sampleIntervalTimeUnits = picosecondsEnum;
+            
+        else
         
-    elseif (streaming_interval &gt;= 1e-6 &amp;&amp; streaming_interval &lt; 1e-3) % Microseconds
+            sampleInterval = streamingInterval * 1e9;
+            sampleIntervalTimeUnits = nanosecondsEnum;
+            
+        end
         
-        sampleInterval = streaming_interval * 1e6;
-        sampleIntervalTimeUnits = microseconds_enum;
+    elseif (streamingInterval &gt;= 1e-6 &amp;&amp; streamingInterval &lt; 1e-3) % Microseconds
         
-    elseif (streaming_interval &gt;= 1e-3 &amp;&amp; streaming_interval &lt; 1) % Milliseconds
+        if (mod(streamingInterval, 1e-6) &gt; 0)
+            
+            sampleInterval = streamingInterval * 1e9;
+            sampleIntervalTimeUnits = nanosecondsEnum;
+            
+        else
+           
+            sampleInterval = streamingInterval * 1e6;
+            sampleIntervalTimeUnits = microsecondsEnum;
+            
+        end
         
-        sampleInterval = streaming_interval * 1e3;
-        sampleIntervalTimeUnits = milliseconds_enum;
+    elseif (streamingInterval &gt;= 1e-3 &amp;&amp; streamingInterval &lt; 1) % Milliseconds
+        
+        if (mod(streamingInterval, 1e-3) &gt; 0)
+            
+            sampleInterval = streamingInterval * 1e6;
+            sampleIntervalTimeUnits = microsecondsEnum;
+            
+        else
+           
+            sampleInterval = streamingInterval * 1e3;
+            sampleIntervalTimeUnits = millisecondsEnum;
+            
+        end
             
     else 
         
         % Already defined seconds
+        
+        if (mod(streamingInterval, 1) &gt; 0)
+           
+           sampleInterval = streamingInterval * 1e3;
+           sampleIntervalTimeUnits = millisecondsEnum;
+           
+       end
         
     end
             
@@ -3560,27 +3603,27 @@ For further information on the  ps5000aRunBlock function please refer to the Pic
         
         switch(sampleIntervalTimeUnits)
        
-            case femtoseconds_enum
+            case femtosecondsEnum
 
                 sampleIntervalTimeUnitsStr = 'fs';
                 
-            case picoseconds_enum
+            case picosecondsEnum
 
                 sampleIntervalTimeUnitsStr = 'ps';
 
-            case nanoseconds_enum
+            case nanosecondsEnum
 
                 sampleIntervalTimeUnitsStr = 'ns';
 
-            case microseconds_enum
+            case microsecondsEnum
 
                 sampleIntervalTimeUnitsStr = 'us';
 
-            case milliseconds_enum
+            case millisecondsEnum
 
                 sampleIntervalTimeUnitsStr = 'ms';
 
-            case seconds_enum
+            case secondsEnum
 
                 sampleIntervalTimeUnitsStr = 's';
             
