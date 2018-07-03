@@ -196,7 +196,7 @@
     PS5000A_SINE_MAX_FREQUENCY		= 20000000;
     PS5000A_SQUARE_MAX_FREQUENCY	= 20000000;
     PS5000A_TRIANGLE_MAX_FREQUENCY	= 20000000;
-    PS5000A_SINC_MAX_FREQUENCY		= 20000000
+    PS5000A_SINC_MAX_FREQUENCY		= 20000000;
     PS5000A_RAMP_MAX_FREQUENCY		= 20000000;
     PS5000A_HALF_SINE_MAX_FREQUENCY	= 20000000;
     PS5000A_GAUSSIAN_MAX_FREQUENCY  = 20000000;
@@ -287,46 +287,47 @@
 % OBJ is the device object.
 % End of function definition - DO NOT EDIT
 
-% Copyright © 2013 - 2017 Pico Technology Ltd. All rights reserved.
+% Copyright © 2013-2018 Pico Technology Ltd. All rights reserved.
 % You may copy and distribute this file as long as it remains unmodified.
+% SB
 
     disp('Opening PicoScope 5000 Series device...');
 
     % Structure to hold status values while connecting to the device.
     % Only output when the driver is called using command line or script.
-    connect_status = [];
+    connectStatus = [];
 
     % Temporary variable to store handle value
-    unit_handle = 0;
+    unitHandle = 0;
     
     % PICO_OK status value (0)
-    pico_ok = PicoStatus.PICO_OK;
+    picoOK = PicoStatus.PICO_OK;
 
     % Obtain the serial input
-    serial_num = get(obj, 'RsrcName');
+    serialNum = get(obj, 'RsrcName');
 
     % Determine if serial number is specified or null
-    if length(serial_num) &gt; 0
+    if length(serialNum) &gt; 0
 
-        unit_serial = serial_num;
+        unitSerial = serialNum;
 
     else
 
-        unit_serial = [];
+        unitSerial = [];
 
     end
     
     % Default resolution set to 8-bits
-    resolution_8bit = evalin('base', 'ps5000aEnuminfo.enPS5000ADeviceResolution.PS5000A_DR_8BIT');
+    resolution8bit = obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_8BIT;
     obj.UserData.resolution = 8;
 
     % Open the unit
-    [connect_status.open_unit, obj.UserData.unitHandle, obj.UserData.unitSerial] = ...
-        calllib('ps5000a', 'ps5000aOpenUnit', unit_handle, unit_serial, resolution_8bit);
+    [connectStatus.openUnit, obj.UserData.unitHandle, obj.UserData.unitSerial] = ...
+        calllib('ps5000a', 'ps5000aOpenUnit', unitHandle, unitSerial, resolution8bit);
 
-    % Check Power Settings
+    % Check power settings
 
-    power_status = 0;
+    powerStatus = 0;
     
     % Initial channel settings to assist with change in power source
     % Setup initial channel settings (4 x 4)
@@ -336,98 +337,285 @@
     obj.UserData.channelSettings = zeros(PicoConstants.QUAD_SCOPE);
     set(obj, 'channelSettings', obj.UserData.channelSettings);
 
-    % Power supply not connected
-    if (connect_status.open_unit == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED) 
+    % Power supply not connected or 2-channel 5000D device on non-USB 3.0
+    % port
+    if (connectStatus.openUnit == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED || 
+            connectStatus.openUnit == PicoStatus.PICO_USB3_0_DEVICE_NON_USB3_0_PORT) 
 
-        power_status = invoke(obj, 'ps5000aChangePowerSource', ...
-            connect_status.open_unit);
+        powerStatus = invoke(obj, 'ps5000aChangePowerSource', connectStatus.openUnit);
     
     end
 
     % Set handle and serial 
     % Unit connected if 0 or power supply not connected
-    if (connect_status.open_unit == pico_ok || power_status == pico_ok)
+    if (connectStatus.openUnit == picoOK || powerStatus == picoOK)
 
         % Display object information
         obj
         
-        unit_handle = obj.UserData.unitHandle;
+        unitHandle = obj.UserData.unitHandle;
         set(obj, 'unitHandle', obj.UserData.unitHandle);
-        %fprintf('Handle: %d\n', unit_handle);
 
-        info_line = '           ';
-        req_size = 15;
+        infoLine = blanks(40);
+        reqSize = length(infoLine);
 
-        [connect_status.unit_serial, unit_serial, req_size]  = calllib('ps5000a', ...
-                'ps5000aGetUnitInfo', unit_handle, info_line, ... 
-                length(info_line), req_size, PicoStatus.PICO_BATCH_AND_SERIAL);
+        [connectStatus.unitSerial, unitSerial, reqSize]  = calllib('ps5000a', ...
+                'ps5000aGetUnitInfo', unitHandle, infoLine, ... 
+                length(infoLine), reqSize, PicoStatus.PICO_BATCH_AND_SERIAL);
 
-        %disp('Setting device serial number...');
-        set(obj, 'unitSerial', unit_serial);
-        %fprintf('Batch/Serial number: %s\n', unit_serial);
-
-        % Set variant and channel count information
-        %disp('Setting variant and channel count...')
-
-        info_line_v = blanks(15);
-        req_size_v = 15;
+        set(obj, 'unitSerial', unitSerial);
         
-        [connect_status.unit_variant, variant, req_size_v]  = calllib('ps5000a', ...
-                'ps5000aGetUnitInfo', unit_handle, info_line_v, ... 
-                length(info_line_v), req_size_v, PicoStatus.PICO_VARIANT_INFO);
+        % Set variant and channel count information
+        infoLineV = blanks(15);
+        reqSizeV = 15;
+        
+        [connectStatus.unit_variant, variant, ~]  = calllib('ps5000a', ...
+                'ps5000aGetUnitInfo', unitHandle, infoLineV, ... 
+                length(infoLineV), reqSizeV, PicoStatus.PICO_VARIANT_INFO);
 
         set(obj, 'InstrumentModel', variant);
-        %fprintf('InstrumentModel: %s\n', get(obj, 'InstrumentModel'));
+        
+        % Set Device Properties
+        % ---------------------
+        
+        % Obtain channel count
+        obj.DriverData.channelCount = str2num(obj.InstrumentModel(2));
+        obj.UserData.channelCount = obj.DriverData.channelCount; % TBD 
+        
+        % Set the number of analogue channels and digital ports on the device in the wrapper
+        status = calllib('ps5000aWrap', 'setChannelCount', unitHandle, obj.DriverData.channelCount);
+        
+        % Max/min voltage ranges
+        range10mV   = obj.DriverData.enums.enPS2000ARange.PS5000A_10MV;
+        range20V    = obj.DriverData.enums.enPS2000ARange.PS5000A_20V;
+        
+        obj.UserData.firstRange = range10mV;
+        obj.UserData.lastRange = range20V;
+        
+        % Set the max. ADC value
+        maxValPtr = libpointer('int16Ptr', 0);
 
-        % Set device parameters
+        [maxValueStatus, ~]  = calllib('ps5000a', 'ps5000aMaximumValue', unitHandle, maxValPtr);
+
+        obj.UserData.maxADCValue = maxValPtr.Value;
+        set(obj, 'maxADCValue', obj.UserData.maxADCValue);
+
+        clear maxValPtr;
+        clear maxValueStatus;
+
+        % Set the min. ADC value 
+        minValPtr = libpointer('int16Ptr', 0);
+
+        [minValueStatus, ] = calllib('ps5000a', 'ps5000aMinimumValue', unitHandle, minValPtr);
+
+        obj.UserData.minADCValue = minValPtr;
+        set(obj, 'minADCValue', obj.UserData.minADCValue);
+
+        clear minValPtr;
+        clear minValueStatus;
+        
+        % Max. sampling rate
+        obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
+        
+        % Set bandwidth and buffer memory information
+        switch(obj.InstrumentModel)
+
+            case {obj.DriverData.constants.MODEL_PS5242A, obj.DriverData.constants.MODEL_PS5442A}
+
+                obj.UserData.hasHardwareEts = PicoConstants.FALSE;
+                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_16MS;
+                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_60MHZ;
+                
+            case {obj.DriverData.constants.MODEL_PS5242B, obj.DriverData.constants.MODEL_PS5442B, ...
+                    obj.DriverData.constants.MODEL_PS5242D, obj.DriverData.constants.MODEL_PS5242D_MSO, ...
+                     obj.DriverData.constants.MODEL_PS5442D, obj.DriverData.constants.MODEL_PS5442D_MSO}
+
+                obj.UserData.hasHardwareEts = PicoConstants.FALSE;
+                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_32MS;
+                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_60MHZ;
+                
+            case {obj.DriverData.constants.MODEL_PS5243A, obj.DriverData.constants.MODEL_PS5443A}
+
+                obj.UserData.hasHardwareEts = PicoConstants.TRUE;
+                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_64MS;
+                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_100MHZ;
+
+            case {obj.DriverData.constants.MODEL_PS5243B, obj.DriverData.constants.MODEL_PS5443B, ...
+                    obj.DriverData.constants.MODEL_PS5243D, obj.DriverData.constants.MODEL_PS5243D_MSO, ... 
+                    obj.DriverData.constants.MODEL_PS5443D, obj.DriverData.constants.MODEL_PS5443D_MSO}
+
+                obj.UserData.hasHardwareEts = PicoConstants.TRUE;
+                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_128MS;
+                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_100MHZ;
+                
+            case {obj.DriverData.constants.MODEL_PS5244A, obj.DriverData.constants.MODEL_PS5444A}
+
+                obj.UserData.hasHardwareEts = PicoConstants.TRUE;
+                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_256MS;
+                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_200MHZ;
+
+            case obj.DriverData.constants.MODEL_PS5244B, obj.DriverData.constants.MODEL_PS5444B, ...
+                    obj.DriverData.constants.MODEL_PS5244D, obj.DriverData.constants.MODEL_PS5244D_MSO, ... 
+                    obj.DriverData.constants.MODEL_PS5444D, obj.DriverData.constants.MODEL_PS5444D_MSO, ...
+                    obj.DriverData.constants.MODEL_PS5444B_034}
+
+                obj.UserData.hasHardwareEts = PicoConstants.TRUE;
+                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_512MS;
+                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_200MHZ;
+                
+            otherwise
+
+                obj.InstrumentModel = PS5000aConstants.MODEL_NONE;
+                obj.UserData.channelCount = 0;
+                obj.UserData.digitalPorts = 0;
+                obj.UserData.firstRange = range_50mV;
+                obj.UserData.lastRange = range_20V;
+                obj.UserData.sigGenType = PicoConstants.SIG_GEN_NONE;
+                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_ZERO;
+                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_ZERO;
+                obj.UserData.hasHardwareEts = PicoConstants.FALSE;
+                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_ZERO;
+                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_ZERO;
+                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_ZERO;
+                
+                error('PS5000AConnect:UnitNotSupported', 'Unit not supported');
+
+        end
+        
+        % Determine if device is an MSO
+        obj.DriverData.digitalPortCount = 0;
+        obj.DriverData.maxLogicLevel = 0;
+        obj.DriverData.minLogicLevel = 0;
+        
+        
+        isMSO = strfind(obj.InstrumentModel, 'MSO');
+
+        if (~isempty(isMSO))
+
+            obj.DriverData.digitalPortCount = 2;
+            obj.DriverData.maxLogicLevel = obj.DriverData.constants.PS2000A_MAX_LOGIC_LEVEL;
+            obj.DriverData.minLogicLevel = obj.DriverData.constants.PS2000A_MIN_LOGIC_LEVEL;
+
+        end
+        
+        % Set the max AWG Buffer Size if the device has an AWG
+        obj.DriverData.awgBufferSize = 0;
+        
+        [~, ~,~, ~, obj.DriverData.awgBufferSize] = calllib('ps5000a', ...
+            'ps5000aSigGenArbitraryMinMaxValues', obj.DriverData.unitHandle, ...
+                0, 0, 0, obj.DriverData.awgBufferSize);
+        
+            
+        if (obj.DriverData.awgBufferSize &gt; 0)
+
+            obj.DriverData.sigGenType = PicoConstants.SIG_GEN_AWG;
+
+        else
+
+            obj.DriverData.sigGenType = PicoConstants.SIG_GEN_FUNCT_GEN;
+
+        end    
+            
+        % DAC frequency
+        obj.DriverData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_200MHZ;
+        
+        obj.UserData.sigGenType = obj.DriverData.sigGenType;
+        obj.UserData.awgBufferSize = obj.DriverData.awgBufferSize;
+        obj.UserData.dacFrequency = obj.DriverData.dacFrequency;
+                        % 
+        % TBD - to be updated
+        set(obj, 'channelCount', obj.UserData.channelCount);
+        set(obj, 'digitalPorts', obj.DriverData.digitalPortCount);
+        set(obj, 'firstRange', obj.UserData.firstRange);
+        set(obj, 'lastRange', obj.UserData.lastRange);
+        set(obj, 'sigGenType', obj.UserData.sigGenType);
+        set(obj, 'awgBufferSize', obj.UserData.awgBufferSize);
+        set(obj, 'hasHardwareEts', obj.UserData.hasHardwareEts);
+        set(obj, 'bufferMemory', obj.UserData.bufferMemory);
+        set(obj, 'maxSamplingRate', obj.UserData.maxSamplingRate);
+        
+        
+        % Other device parameters
+        
+        obj.DriverData.autoTriggerMs = 0;
+        obj.DriverData.autoTriggerUs = 0;
+        obj.DriverData.delay = 0;
+
+        % Set the default number of pre-trigger and post-trigger samples
+        obj.DriverData.numPreTriggerSamples = 0;
+        obj.DriverData.numPostTriggerSamples = 10000;
+
+        % Set the timebase - 504 ns at 8-bit resolution
+        obj.DriverData.timebase = 65;
+
+        obj.DriverData.streamingInterval = 1e-6; % 1 us -&gt; 1MS/s
+        obj.DriverData.autoStop = 1;
+
+        obj.DriverData.startFrequency = 1000;
+        obj.DriverData.stopFrequency = 1000;
+        obj.DriverData.offsetVoltage = 0;
+        obj.DriverData.peakToPeakVoltage = 2000;
+        
+        % Set whether to display output
+        obj.DriverData.displayOutput = PicoConstants.TRUE;
+        
+        % Set device defaults for channels, ETS, trigger, block and
+        % streaming mode data collection as well as signal generator.
         invoke(obj, 'resetDevice');
         
-        % Display unit information to user if not using TMTool
+        % Find USB version
+        infoLineUsb = blanks(15);
+        reqSizeU = length(infoLineUsb);
+        
+        [connectStatus.usbVersion, usbVersion, ~]  = calllib('ps5000a', ...
+                'ps5000aGetUnitInfo', unitHandle, infoLineUsb, ... 
+                length(infoLineUsb), reqSizeU, PicoStatus.PICO_USB_VERSION);
+        
+        % Display unit information to user if not using TM Tool
         fprintf('\n');
-        fprintf('Connected to PicoScope 5000 Series device:-\n\n');
-        fprintf('      Instrument Model: %s\n', get(obj, 'InstrumentModel'));
-        fprintf('   Batch/Serial Number: %s\n', unit_serial);
-        fprintf('     Analogue Channels: %d\n', get(obj, 'channelCount'));
-        fprintf('            Resolution: %d bits\n', get(obj, 'resolution'));
+        fprintf('Connected to PicoScope 5000 Series (A API) device:-\n\n');
+        fprintf('      Instrument Model: %s\n', obj.InstrumentModel);
+        fprintf('   Batch/Serial Number: %s\n', unitSerial);
+        fprintf('           USB Version: %s\n', usbVersion);
+        fprintf('       Analog Channels: %d\n', get(obj, 'channelCount'));
         
-        %digital_ports = get(obj, 'digitalPorts');
-        
-        %if(digital_ports &gt; 0)
+        if(obj.DriverData.digitalPortCount &gt; 0)
            
-        %    fprintf('     Digital Channels: %d\n', digital_ports * 8);
+            fprintf('     Digital Channels: %d\n', obj.DriverData.digitalPortCount * 8);
             
-        %end
+        end
+        
+        fprintf('            Resolution: %d bits\n', get(obj, 'resolution'));
             
         % Bandwidth information
-        bandwidth_hz = get(obj, 'bandwidth');
+        bandwidthHz = get(obj, 'bandwidth');
         
-        if (bandwidth_hz &gt; 0 &amp;&amp; bandwidth_hz &lt; 1e9)
+        if (bandwidthHz &gt; 0 &amp;&amp; bandwidthHz &lt; 1e9)
             
-           fprintf('             Bandwidth: %d MHz\n', (bandwidth_hz/1e6));
+           fprintf('             Bandwidth: %d MHz\n', (bandwidthHz/1e6));
            
-        elseif(bandwith_hz &gt;= 1e9)
+        elseif(bandwithHz &gt;= 1e9)
             
-           fprintf('             Bandwidth: %d GHz\n', (bandwidth_hz/1e9));
+           fprintf('             Bandwidth: %d GHz\n', (bandwidthHz/1e9));
            
         else
             
             % Do nothing
             
         end
-        
         
         fprintf('         Buffer memory: %d MS\n', get(obj, 'bufferMemory')/pow2(20));
         
         % Sampling rate information
-        max_sampling_rate = get(obj, 'maxSamplingRate');
+        maxSamplingRate = get(obj, 'maxSamplingRate');
         
-        if (max_sampling_rate &gt; 0 &amp;&amp; max_sampling_rate &lt; 1e9)
+        if (maxSamplingRate &gt; 0 &amp;&amp; maxSamplingRate &lt; 1e9)
             
-            fprintf(' Maximum sampling rate: %d MS/s\n', max_sampling_rate/1e6);
+            fprintf(' Maximum sampling rate: %d MS/s\n', maxSamplingRate/1e6);
             
-        elseif (max_sampling_rate &gt;= 1e9)
+        elseif (maxSamplingRate &gt;= 1e9)
            
-            fprintf(' Maximum sampling rate: %d GS/s\n', max_sampling_rate/1e9);
+            fprintf(' Maximum sampling rate: %d GS/s\n', maxSamplingRate/1e9);
             
         else
             
@@ -435,21 +623,21 @@
             
         end
         
-        clear bandwidth_hz;
-        clear max_sampling_rate;
+        clear bandwidthHz;
+        clear maxSamplingRate;
 
         % Output the signal generator type
-        sig_gen_type = 'None';
+        sigGenType = 'None';
     
         switch (get(obj, 'sigGenType'))
 
             case PicoConstants.SIG_GEN_FUNCT_GEN
 
-                sig_gen_type = 'Function Generator';
+                sigGenType = 'Function Generator';
 
             case PicoConstants.SIG_GEN_AWG
 
-                sig_gen_type = 'Arbitrary Waveform Generator';
+                sigGenType = 'Arbitrary Waveform Generator';
 
             otherwise
 
@@ -460,14 +648,13 @@
         fprintf(' Signal Generator Type: %s\n', sig_gen_type);
 
         % Output if power supply connected.
-        if (get(obj, 'channelCount') == PicoConstants.QUAD_SCOPE)
+        if (obj.DriverData.channelCount) == PicoConstants.QUAD_SCOPE)
 
-            current_power_status = calllib('ps5000a', 'ps5000aCurrentPowerSource', ...
-                                        obj.UserData.unitHandle);
+            currentPowerStatus = calllib('ps5000a', 'ps5000aCurrentPowerSource', obj.UserData.unitHandle);
 
-            if(current_power_status == evalin('base', 'PicoStatus.PICO_POWER_SUPPLY_CONNECTED'))
+            if (currentPowerStatus == PicoStatus.PICO_POWER_SUPPLY_CONNECTED)
 
-                fprintf('Power Supply connected: True\n');
+                fprintf('5V Power Supply connected: True\n');
 
             else
 
@@ -479,13 +666,13 @@
         
         fprintf('\n');
 
-    elseif (connect_status.open_unit == PicoStatus.PICO_NOT_FOUND)
+    elseif (connectStatus.openUnit == PicoStatus.PICO_NOT_FOUND)
 
         error('No unit found, please check connections.');
 
     else
 
-        error('Status code: %d\n', connect_status.open_unit);
+        error('Status code: %d\n', connectStatus.openUnit);
 
     end</Code>
    </ConnectInitCode>
@@ -498,7 +685,7 @@
 
     if (isfield(obj.UserData, 'unitHandle'))
     
-        unitHandle = get(obj, 'unitHandle');
+        unitHandle = obj.UserData.unitHandle;
 
         if (isempty(unitHandle)) 
             % If no unithandle, return without doing anything
@@ -1673,6 +1860,22 @@ obj - the object representing the device.
 Output parameters:
 
 1 - Call successfully completed.</Description>
+            </Method>
+            <Method>
+               <Name>deviceReset</Name>
+               <Location>parent</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function deviceReset(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+    
+    % Show warning message
+    warning('PS5000AInstrumentDriver:DeviceResetNotSupported', ...
+        'devicereset is not supported by this Instrument Driver - please use the resetDevice function instead.');</MCode>
+               </Code>
+               <Description>The devicereset function is not supported by this Instrument Driver. Please use the resetDevice function instead.</Description>
             </Method>
             <Method>
                <Name>getBlockData</Name>
@@ -4775,313 +4978,85 @@ For further information on the ps5000aStop function please refer to the PicoScop
                   <MCode>function resetDevice(obj)
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
-
-    fprintf('Setting Device Parameters...\n\n');
-    
-    range_10mV = evalin('base', 'ps5000aEnuminfo.enPS5000ARange.PS5000A_10MV');
-    range_20mV = evalin('base', 'ps5000aEnuminfo.enPS5000ARange.PS5000A_20MV');
-    range_50mV = evalin('base', 'ps5000aEnuminfo.enPS5000ARange.PS5000A_50MV');
-    range_20V = evalin('base', 'ps5000aEnuminfo.enPS5000ARange.PS5000A_20V');
-
-    % Set device parameters
-    switch(obj.InstrumentModel)
-
-            case PS5000aConstants.MODEL_PS5242A
-
-                obj.UserData.channelCount = PicoConstants.DUAL_SCOPE;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_10mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_FUNCT_GEN;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_ZERO;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_ZERO;
-                obj.UserData.hasHardwareEts = PicoConstants.FALSE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_16MS;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_60MHZ;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
-
-            case PS5000aConstants.MODEL_PS5242B
-
-                obj.UserData.channelCount = PicoConstants.DUAL_SCOPE;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_10mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_AWG;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_16KS;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_200MHZ;
-                obj.UserData.hasHardwareEts = PicoConstants.FALSE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_32MS;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_60MHZ;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
-                
-            case PS5000aConstants.MODEL_PS5243A
-
-                obj.UserData.channelCount = PicoConstants.DUAL_SCOPE;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_10mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_FUNCT_GEN;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_ZERO;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_ZERO;
-                obj.UserData.hasHardwareEts = PicoConstants.TRUE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_64MS;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_100MHZ;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
-
-            case PS5000aConstants.MODEL_PS5243B
-
-                obj.UserData.channelCount = PicoConstants.DUAL_SCOPE;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_10mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_AWG;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_32KS;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_200MHZ;
-                obj.UserData.hasHardwareEts = PicoConstants.TRUE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_128MS;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_100MHZ;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
-                
-            case PS5000aConstants.MODEL_PS5244A
-
-                obj.UserData.channelCount = PicoConstants.DUAL_SCOPE;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_10mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_FUNCT_GEN;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_ZERO;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_ZERO;
-                obj.UserData.hasHardwareEts = PicoConstants.TRUE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_256MS;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_200MHZ;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
-
-            case PS5000aConstants.MODEL_PS5244B
-
-                obj.UserData.channelCount = PicoConstants.DUAL_SCOPE;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_10mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_AWG;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_48KS;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_200MHZ;
-                obj.UserData.hasHardwareEts = PicoConstants.TRUE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_512MS;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_200MHZ;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
-                  
-            case PS5000aConstants.MODEL_PS5442A
-
-                obj.UserData.channelCount = PicoConstants.QUAD_SCOPE;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_10mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_FUNCT_GEN;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_ZERO;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_ZERO;
-                obj.UserData.hasHardwareEts = PicoConstants.FALSE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_16MS;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_60MHZ;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
-                
-            case PS5000aConstants.MODEL_PS5442B
-
-                obj.UserData.channelCount = PicoConstants.QUAD_SCOPE;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_10mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_AWG;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_16KS;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_200MHZ;
-                obj.UserData.hasHardwareEts = PicoConstants.FALSE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_32MS;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_60MHZ;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
-                
-            case PS5000aConstants.MODEL_PS5443A
-
-                obj.UserData.channelCount = PicoConstants.QUAD_SCOPE;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_10mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_FUNCT_GEN;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_ZERO;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_ZERO;
-                obj.UserData.hasHardwareEts = PicoConstants.TRUE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_64MS;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_100MHZ;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
-                
-            case PS5000aConstants.MODEL_PS5443B
-
-                obj.UserData.channelCount = PicoConstants.QUAD_SCOPE;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_10mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_AWG;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_32KS;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_200MHZ;
-                obj.UserData.hasHardwareEts = PicoConstants.TRUE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_128MS;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_100MHZ;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
-                
-            case PS5000aConstants.MODEL_PS5444A
-
-                obj.UserData.channelCount = PicoConstants.QUAD_SCOPE;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_10mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_FUNCT_GEN;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_ZERO;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_ZERO;
-                obj.UserData.hasHardwareEts = PicoConstants.TRUE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_256MS;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_200MHZ;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
-                
-            case {PS5000aConstants.MODEL_PS5444B, obj.DriverData.constants.MODEL_PS5444B_034}
-
-                obj.UserData.channelCount = PicoConstants.QUAD_SCOPE;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_10mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_AWG;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_48KS;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_200MHZ;
-                obj.UserData.hasHardwareEts = PicoConstants.TRUE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_512MS;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_200MHZ;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_1GSPS;
-                
-            otherwise
-
-                obj.InstrumentModel = PS5000aConstants.MODEL_NONE;
-                obj.UserData.channelCount = 0;
-                obj.UserData.digitalPorts = 0;
-                obj.UserData.firstRange = range_50mV;
-                obj.UserData.lastRange = range_20V;
-                obj.UserData.sigGenType = PicoConstants.SIG_GEN_NONE;
-                obj.UserData.awgBufferSize = PicoConstants.AWG_BUFFER_ZERO;
-                obj.UserData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_ZERO;
-                obj.UserData.hasHardwareEts = PicoConstants.FALSE;
-                obj.UserData.bufferMemory = PicoConstants.BUFFER_MEMORY_ZERO;
-                obj.UserData.bandwidth = PicoConstants.BANDWIDTH_ZERO;
-                obj.UserData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_ZERO;
-                
-                error('Unit not supported');
-
-    end
-
-    % Set the values in the driver
-
-    set(obj, 'channelCount', obj.UserData.channelCount);
-    set(obj, 'digitalPorts', obj.UserData.digitalPorts);
-    set(obj, 'firstRange', obj.UserData.firstRange);
-    set(obj, 'lastRange', obj.UserData.lastRange);
-    set(obj, 'sigGenType', obj.UserData.sigGenType);
-    set(obj, 'awgBufferSize', obj.UserData.awgBufferSize);
-    set(obj, 'hasHardwareEts', obj.UserData.hasHardwareEts);
-    set(obj, 'bufferMemory', obj.UserData.bufferMemory);
-    set(obj, 'maxSamplingRate', obj.UserData.maxSamplingRate);
-    
-    % Inform the wrapper dll of the number of channels on the device
-    calllib('ps5000aWrap', 'setChannelCount', get(obj, 'unitHandle'), ...
-        get(obj, 'channelCount'));
-    
-    % Set the max. ADC value
-    
-    max_val_ptr = 0;
-
-    [max_value_status, obj.UserData.maxADCValue]  = calllib('ps5000a', ...
-        'ps5000aMaximumValue', get(obj, 'unitHandle'), max_val_ptr);
-    
-    set(obj, 'maxADCValue', obj.UserData.maxADCValue);
-    
-    clear max_val_ptr;
-    clear max_value_status;
-    
-    % Set the min. ADC value 
-    
-    min_val_ptr = 0;
-
-    [min_value_status, obj.UserData.minADCValue]  = calllib('ps5000a', ...
-        'ps5000aMinimumValue', get(obj, 'unitHandle'), min_val_ptr);
-       
-    set(obj, 'minADCValue', obj.UserData.minADCValue);
-    
-    clear min_val_ptr;
-    clear min_value_status;
     
     % Reset Channels
-    [ch_a, ch_b, ch_c, ch_d, d0, d1] = invoke(obj, 'setChannelDefaults');
+    [chA, chB, chC, chD, d0, d1] = invoke(obj, 'setChannelDefaults');
 
-    % Turn off ETS
+    % Digital ports
     
+    % Turn off ETS
+
     disp('Turning off Equivalent Time Sampling...');
     
-    [ets_status, st_ps] = invoke(obj, 'ps5000aSetEts', evalin('base', ...
-                            'ps5000aEnuminfo.enPS5000AEtsMode.PS5000A_ETS_OFF'), 0, 0);
+    [etsStatus, stPs] = invoke(obj, 'ps5000aSetEts', obj.DriverData.enums.enPS5000AEtsMode.PS5000A_ETS_OFF, 0, 0);
 
     % Turn off trigger
 
     fprintf('Turning off trigger...\n\n');
-    trigger_status = invoke(obj, 'setTriggerOff');
+    triggerStatus = invoke(obj, 'setTriggerOff');
 
     fprintf('Default Block mode parameters:-\n\n');
     
     % Set the default number of pre-trigger and post-trigger samples
-    obj.UserData.numPreTriggerSamples = 0;
+    obj.DriverData.numPreTriggerSamples = 0;
+    obj.DriverData.numPostTriggerSamples = 10000;
+    
+    % TBD
+    obj.UserData.numPreTriggerSamples = obj.DriverData.numPreTriggerSamples;
     set(obj, 'numPreTriggerSamples', obj.UserData.numPreTriggerSamples);
     
-    obj.UserData.numPostTriggerSamples = 1024;
+    obj.UserData.numPostTriggerSamples = obj.DriverData.numPostTriggerSamples
     set(obj, 'numPostTriggerSamples', obj.UserData.numPostTriggerSamples);
     
-    total_samples = obj.UserData.numPreTriggerSamples + obj.UserData.numPostTriggerSamples;
+    totalSamples = obj.DriverData.numPreTriggerSamples + obj.DriverData.numPostTriggerSamples;
     
-    % Set the timebase - close to 1 us for 524XA/B, 
-    % and 500 ns for 544XA/B
-    obj.UserData.timebase = 65;
-    set(obj, 'timebase', obj.UserData.timebase);
-    
-    time_interval_ns = 0;
-    segment_index = 0;
+    % Timebase
+    obj.DriverData.timebase = 65;
+    timeIntervalNs = 0;
+    segmentIndex = 0;
     
     % Call get timebase to return interval in ns 
     
-    [timebase_status, interval_ns, max_block_samples] = ...
-        invoke(obj, 'ps5000aGetTimebase2', obj.UserData.timebase, segment_index);
+    [timebaseStatus, intervalNs, maxBlockSamples] = invoke(obj, 'ps5000aGetTimebase2', obj.DriverData.timebase, segmentIndex);
     
     fprintf('               Timebase index : %d\n', obj.UserData.timebase);
-    fprintf('                 Time Interval: %u ns\n', interval_ns);
-    fprintf(' Number of pre-trigger samples: %d\n', obj.UserData.numPreTriggerSamples);
-    fprintf('Number of post-trigger samples: %d\n', obj.UserData.numPostTriggerSamples);
-    fprintf('       Total number of samples: %d\n', total_samples);
+    fprintf('                 Time Interval: %u ns\n', intervalNs);
+    fprintf(' Number of pre-trigger samples: %d\n', obj.DriverData.numPreTriggerSamples);
+    fprintf('Number of post-trigger samples: %d\n', obj.DriverData.numPostTriggerSamples);
+    fprintf('       Total number of samples: %d\n', totalSamples);
     
     fprintf('\n');
     
     fprintf('Default Streaming mode parameters:-\n\n');
     
-    obj.UserData.streamingInterval = 1e-6; % 1us -&gt; 1MS/s
-    obj.UserData.autoStop = PicoConstants.TRUE;
+    obj.DriverData.streamingInterval = 1e-6; % 1us -&gt; 1MS/s
+    obj.DriverData.autoStop = PicoConstants.TRUE;
+    
+    obj.UserData.streamingInterval = obj.DriverData.streamingInterval;
+    obj.UserData.autoStop = obj.DriverData.autoStop;
     
     set(obj, 'streamingInterval', obj.UserData.streamingInterval);
     set(obj, 'autoStop', obj.UserData.autoStop);
     
-    fprintf(' Streaming interval: %1.2d s\n', obj.UserData.streamingInterval);
-    fprintf('Streaming auto stop: %d\n', obj.UserData.autoStop);
+    fprintf(' Streaming interval: %1.2d s\n', obj.DriverData.streamingInterval);
+    fprintf('Streaming auto stop: %d\n', obj.DriverData.autoStop);
     
     fprintf('\n');
     
-    if (obj.UserData.sigGenType == PicoConstants.SIG_GEN_FUNCT_GEN || ...
-            obj.UserData.sigGenType == PicoConstants.SIG_GEN_AWG)
+    if (obj.DriverData.sigGenType == PicoConstants.SIG_GEN_FUNCT_GEN || ...
+            obj.DriverData.sigGenType == PicoConstants.SIG_GEN_AWG)
        
         fprintf('Default Signal generator parameters:-\n\n');
         
-        obj.UserData.startFrequency = 1000;
+        obj.DriverData.startFrequency = 1000;
+        obj.DriverData.stopFrequency = 1000;
+        obj.DriverData.offsetVoltage = 0;
+        obj.DriverData.peakToPeakVoltage = 2000;
+        
+        obj.UserData.startFrequency = obj.DriverData.startFrequency;
         set(obj, 'startFrequency', obj.UserData.startFrequency);
         
-        obj.UserData.stopFrequency = 1000;
+        obj.UserData.stopFrequency = obj.DriverData.stopFrequency;
         set(obj, 'stopFrequency', obj.UserData.stopFrequency);
         
         fprintf('Start frequency: %d Hz\n', obj.UserData.startFrequency);
@@ -5090,7 +5065,7 @@ For further information on the ps5000aStop function please refer to the PicoScop
     end
     
     fprintf('\n');
-    disp('Initialisation complete.');</MCode>
+</MCode>
                </Code>
                <Description>resetDevice(obj) sets the default parameters for the device.
 
