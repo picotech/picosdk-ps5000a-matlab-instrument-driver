@@ -386,8 +386,8 @@
         status = calllib('ps5000aWrap', 'setChannelCount', unitHandle, obj.DriverData.channelCount);
         
         % Max/min voltage ranges
-        range10mV   = obj.DriverData.enums.enPS2000ARange.PS5000A_10MV;
-        range20V    = obj.DriverData.enums.enPS2000ARange.PS5000A_20V;
+        range10mV   = obj.DriverData.enums.enPS5000ARange.PS5000A_10MV;
+        range20V    = obj.DriverData.enums.enPS5000ARange.PS5000A_20V;
         
         obj.UserData.firstRange = range10mV;
         obj.UserData.lastRange = range20V;
@@ -648,7 +648,7 @@
         fprintf(' Signal Generator Type: %s\n', sig_gen_type);
 
         % Output if power supply connected.
-        if (obj.DriverData.channelCount) == PicoConstants.QUAD_SCOPE)
+        if (obj.DriverData.channelCount == PicoConstants.QUAD_SCOPE)
 
             currentPowerStatus = calllib('ps5000a', 'ps5000aCurrentPowerSource', obj.UserData.unitHandle);
 
