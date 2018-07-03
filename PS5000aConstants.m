@@ -78,6 +78,9 @@ classdef PS5000aConstants
         PS5000D_DDS_FREQUENCY 			= 100e6;
         AWG_PHASE_ACCUMULATOR           = 4294967296.0;
 
+        PS5000A_SHOT_SWEEP_TRIGGER_CONTINUOUS_RUN = hex2dec('FFFFFFFF');
+        
+        % Analogue offset information
         MAX_ANALOGUE_OFFSET_50MV_200MV = 0.250;
         MIN_ANALOGUE_OFFSET_50MV_200MV = -0.250;
         MAX_ANALOGUE_OFFSET_500MV_2V   = 2.500;
@@ -85,10 +88,8 @@ classdef PS5000aConstants
         MAX_ANALOGUE_OFFSET_5V_20V     = 20;
         MIN_ANALOGUE_OFFSET_5V_20V	   = -20;
 
-        PS5000A_SHOT_SWEEP_TRIGGER_CONTINUOUS_RUN = hex2dec('FFFFFFFF');
-
-        % Frequencies
         
+        % Signal generator frequencies
         PS5000A_SINE_MAX_FREQUENCY		= 20000000;
         PS5000A_SQUARE_MAX_FREQUENCY	= 20000000;
         PS5000A_TRIANGLE_MAX_FREQUENCY	= 20000000;
@@ -100,9 +101,7 @@ classdef PS5000aConstants
         PS5000A_PRBS_MIN_FREQUENCY		= 0.03;
         PS5000A_MIN_FREQUENCY			= 0.03;
 
-        % PicoScope 5000 series Models
-        
-        MODEL_NONE      = 'NONE';
+        % PicoScope 5000 Series models using the 'A' API
         
         % 2-channel variants
         MODEL_PS5242A   = '5242A';
@@ -135,6 +134,9 @@ classdef PS5000aConstants
         MODEL_PS5442D_MSO   = '5442DMSO';
         MODEL_PS5443D_MSO   = '5443DMSO';
         MODEL_PS5444D_MSO   = '5444DMSO';
+        
+        % Used if a valid model is not found
+        MODEL_NONE      = 'NONE';
         
         % Define Model specific buffer sizes
         
