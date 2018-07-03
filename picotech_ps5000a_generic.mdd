@@ -339,7 +339,7 @@
 
     % Power supply not connected or 2-channel 5000D device on non-USB 3.0
     % port
-    if (connectStatus.openUnit == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED || 
+    if (connectStatus.openUnit == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED || ...
             connectStatus.openUnit == PicoStatus.PICO_USB3_0_DEVICE_NON_USB3_0_PORT) 
 
         powerStatus = invoke(obj, 'ps5000aChangePowerSource', connectStatus.openUnit);
