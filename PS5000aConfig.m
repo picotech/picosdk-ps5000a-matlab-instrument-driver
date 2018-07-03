@@ -183,24 +183,7 @@ if (~any(strcmp(ps5000aConfigInfo.psTbxName, {ps5000aConfigInfo.v.Name})))
     
     ps5000aConfigInfo.psTbxFound = strfind(path, ps5000aConfigInfo.psTbxName);
     
-    if (isempty(ps5000aConfigInfo.psTbxFound) && ispc())
-        
-        % Check if the folder is present in the relevant SDK installation
-        % directory on Windows platforms (if the SDK installer has been
-        % used).
-        
-        % Obtain the folder name
-        ps5000aConfigInfo.psTbxFolderName = fullfile(ps5000aConfigInfo.winSDKInstallPath, 'MATLAB' , ps5000aConfigInfo.psTbxName);
-
-        % If it is present in the SDK directory, add the PicoScope Support
-        % Toolbox folder and sub-folders to the MATLAB path.
-        if (exist(ps5000aConfigInfo.psTbxFolderName, 'dir') == 7)
-
-            addpath(genpath(ps5000aConfigInfo.psTbxFolderName));
-
-        end
-            
-    else
+    if (isempty(ps5000aConfigInfo.psTbxFound))
         
         warning('PS5000aConfig:PSTbxDirNotFound', 'PicoScope Support Toolbox directory not found.');
         web('https://uk.mathworks.com/matlabcentral/fileexchange/53681-picoscope-support-toolbox');
