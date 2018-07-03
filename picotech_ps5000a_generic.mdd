@@ -5,7 +5,7 @@
    <DriverType>MATLAB generic</DriverType>
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
-   <InstrumentModel>PicoScope 5000 Series</InstrumentModel>
+   <InstrumentModel>PicoScope 5000 Series (A API)</InstrumentModel>
    <InstrumentVersion>2.1.1</InstrumentVersion>
    <Identify/>
    <Reset/>
@@ -71,6 +71,12 @@
         
     end
 
+    % ps5000aWrapMFile_archStr.m contains duplicate enumerations and
+    % structures from ps5000aMFile_archStr.m
+
+    warning('off','MATLAB:loadlibrary:EnumExists');
+    warning('off','MATLAB:loadlibrary:StructTypeExists');
+    
     % Only load library once 
     if (libisloaded('ps5000aWrap'))
 
@@ -291,7 +297,7 @@
 % You may copy and distribute this file as long as it remains unmodified.
 % SB
 
-    disp('Opening PicoScope 5000 Series device...');
+    disp('Opening PicoScope 5000 Series (A API) device...');
 
     % Structure to hold status values while connecting to the device.
     % Only output when the driver is called using command line or script.
@@ -406,9 +412,9 @@
         % Set the min. ADC value 
         minValPtr = libpointer('int16Ptr', 0);
 
-        [minValueStatus, ] = calllib('ps5000a', 'ps5000aMinimumValue', unitHandle, minValPtr);
+        [minValueStatus, ~] = calllib('ps5000a', 'ps5000aMinimumValue', unitHandle, minValPtr);
 
-        obj.UserData.minADCValue = minValPtr;
+        obj.UserData.minADCValue = minValPtr.Value;
         set(obj, 'minADCValue', obj.UserData.minADCValue);
 
         clear minValPtr;
@@ -482,6 +488,7 @@
 
         end
         
+        disp('DEBUG:MSO')
         % Determine if device is an MSO
         obj.DriverData.digitalPortCount = 0;
         obj.DriverData.maxLogicLevel = 0;
@@ -497,12 +504,12 @@
             obj.DriverData.minLogicLevel = obj.DriverData.constants.PS2000A_MIN_LOGIC_LEVEL;
 
         end
-        
+        disp('Sig Gen')
         % Set the max AWG Buffer Size if the device has an AWG
         obj.DriverData.awgBufferSize = 0;
         
         [~, ~,~, ~, obj.DriverData.awgBufferSize] = calllib('ps5000a', ...
-            'ps5000aSigGenArbitraryMinMaxValues', obj.DriverData.unitHandle, ...
+            'ps5000aSigGenArbitraryMinMaxValues', unitHandle, ...
                 0, 0, 0, obj.DriverData.awgBufferSize);
         
             
@@ -645,12 +652,12 @@
 
         end
     
-        fprintf(' Signal Generator Type: %s\n', sig_gen_type);
+        fprintf(' Signal Generator Type: %s\n', sigGenType);
 
         % Output if power supply connected.
         if (obj.DriverData.channelCount == PicoConstants.QUAD_SCOPE)
 
-            currentPowerStatus = calllib('ps5000a', 'ps5000aCurrentPowerSource', obj.UserData.unitHandle);
+            currentPowerStatus = calllib('ps5000a', 'ps5000aCurrentPowerSource', unitHandle);
 
             if (currentPowerStatus == PicoStatus.PICO_POWER_SUPPLY_CONNECTED)
 
@@ -5005,13 +5012,14 @@ For further information on the ps5000aStop function please refer to the PicoScop
     obj.UserData.numPreTriggerSamples = obj.DriverData.numPreTriggerSamples;
     set(obj, 'numPreTriggerSamples', obj.UserData.numPreTriggerSamples);
     
-    obj.UserData.numPostTriggerSamples = obj.DriverData.numPostTriggerSamples
+    obj.UserData.numPostTriggerSamples = obj.DriverData.numPostTriggerSamples;
     set(obj, 'numPostTriggerSamples', obj.UserData.numPostTriggerSamples);
     
     totalSamples = obj.DriverData.numPreTriggerSamples + obj.DriverData.numPostTriggerSamples;
     
     % Timebase
     obj.DriverData.timebase = 65;
+    obj.UserData.timebase = obj.DriverData.timebase;
     timeIntervalNs = 0;
     segmentIndex = 0;
     
@@ -5019,7 +5027,7 @@ For further information on the ps5000aStop function please refer to the PicoScop
     
     [timebaseStatus, intervalNs, maxBlockSamples] = invoke(obj, 'ps5000aGetTimebase2', obj.DriverData.timebase, segmentIndex);
     
-    fprintf('               Timebase index : %d\n', obj.UserData.timebase);
+    fprintf('               Timebase index : %d\n', obj.DriverData.timebase);
     fprintf('                 Time Interval: %u ns\n', intervalNs);
     fprintf(' Number of pre-trigger samples: %d\n', obj.DriverData.numPreTriggerSamples);
     fprintf('Number of post-trigger samples: %d\n', obj.DriverData.numPostTriggerSamples);
