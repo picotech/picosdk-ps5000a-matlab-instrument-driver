@@ -328,8 +328,10 @@
     obj.UserData.resolution = 8;
 
     % Open the unit
-    [connectStatus.openUnit, obj.UserData.unitHandle, obj.UserData.unitSerial] = ...
+    [connectStatus.openUnit, obj.DriverData.unitHandle, obj.UserData.unitSerial] = ...
         calllib('ps5000a', 'ps5000aOpenUnit', unitHandle, unitSerial, resolution8bit);
+    
+    obj.UserData.unitHandle = obj.DriverData.unitHandle;
 
     % Check power settings
 
@@ -5070,10 +5072,7 @@ For further information on the ps5000aStop function please refer to the PicoScop
         fprintf('Start frequency: %d Hz\n', obj.UserData.startFrequency);
         fprintf(' Stop frequency: %d Hz\n', obj.UserData.stopFrequency);
         
-    end
-    
-    fprintf('\n');
-</MCode>
+    end</MCode>
                </Code>
                <Description>resetDevice(obj) sets the default parameters for the device.
 
