@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000 Series (A API)</InstrumentModel>
-   <InstrumentVersion>2.1.1</InstrumentVersion>
+   <InstrumentVersion>2.2.1</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -6337,6 +6337,160 @@ Output parameters:
 status - status code returned by the device.
 
 For further information on the ps5000aSetTriggerChannelProperties function and the TRIGGER_CHANNEL_PROPERTIES structure please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+         </MethodInfo>
+      </Group>
+      <Group>
+         <Name>Digital</Name>
+         <Description>The Digital group contains a set of properties and functions related to the digital ports of the device (applicable to MSO models only).</Description>
+         <Command/>
+         <Size>1</Size>
+         <Mappings>
+            <ChannelMap Command="Digital1" Index="1"/>
+         </Mappings>
+         <PropertyInfo>
+            <Property>
+               <Name>digitalPortSettings</Name>
+               <Location>Digital</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand/>
+                     <QueryCommand/>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue/>
+               <ReadOnly>Never</ReadOnly>
+               <Description/>
+            </Property>
+            <Property>
+               <Name>maxLogicLevel</Name>
+               <Location>Digital</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand/>
+                     <QueryCommand/>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue/>
+               <ReadOnly>Never</ReadOnly>
+               <Description/>
+            </Property>
+            <Property>
+               <Name>minLogicLevel</Name>
+               <Location>Digital</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand/>
+                     <QueryCommand/>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue/>
+               <ReadOnly>Never</ReadOnly>
+               <Description/>
+            </Property>
+         </PropertyInfo>
+         <MethodInfo>
+            <Method>
+               <Name>getDigitalPortSettings</Name>
+               <Location>Digital</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function getDigitalPortSettings(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+</MCode>
+               </Code>
+               <Description/>
+            </Method>
+            <Method>
+               <Name>ps5000aSetDigitalPort</Name>
+               <Location>Digital</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSetDigitalPort(obj, port, enabled, logicLevel)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+
+    logicLevelCount = int16((logicLevel / deviceObj.DriverData.constants.PS5000A_MAX_LOGIC_VOLTAGE) ...
+        * deviceObj.DriverData.maxLogicLevel);
+    
+    status = calllib('ps5000a', 'ps5000aSetDigitalPort', ...
+        deviceObj.DriverData.unitHandle, port, enabled, logicLevelCount);
+    
+    % Obtain digital port settings information 
+    dpSettings = deviceObj.DriverData.digitalPortSettings;
+    
+    % Only process if status is ok.
+	if (status == PicoStatus.PICO_OK)
+        
+        switch (port)
+            
+            case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT0
+                
+                dpSettings(1,1) = enabled;
+                dpSettings(1,2) = logicLevelCount;
+                
+            case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT1
+                
+                dpSettings(2,1) = enabled;
+                dpSettings(2,2) = logicLevelCount;
+                
+             otherwise
+                
+                % Do nothing
+                    
+        end
+        
+        deviceObj.DriverData.digitalPortSettings = dpSettings;
+        
+        % Information to be passed to the wrapper dll
+        enabledDigitalPorts = zeros(PicoConstants.DUAL_SCOPE, 1, 'int16');
+        
+        enabledDigitalPorts = [dpSettings(1,1); dpSettings(2,1)];
+        
+        % Pass information to wrapper dll
+        setEnabledDigitalPortsStatus = calllib('ps5000aWrap', 'setEnabledDigitalPorts', ...
+            deviceObj.DriverData.unitHandle, enabledDigitalPorts);
+                
+    else
+       
+        error('ps5000aSetDigitalPort: status code %d\n', status);
+        
+    end</MCode>
+               </Code>
+               <Description/>
+            </Method>
+            <Method>
+               <Name>setDigitalPortDefaults</Name>
+               <Location>Digital</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands/>
+               </Code>
+               <Description/>
             </Method>
          </MethodInfo>
       </Group>
