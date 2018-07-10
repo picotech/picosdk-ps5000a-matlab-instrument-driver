@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.4</InstrumentVersion>
+   <InstrumentVersion>2.2.5</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -6426,12 +6426,56 @@ For further information on the ps5000aSetTriggerChannelProperties function and t
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
-                  <MCode>function getDigitalPortSettings(obj)
+                  <MCode>function [status, enabled, logicLevel] = getDigitalPortSettings(obj, port)
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
-</MCode>
+
+    deviceObj = get(obj, 'Parent');
+    
+    logicLevelCounts = 0;
+    
+    % Verify that the digital port is valid, and if so, obtain the
+    % information from the digitalPortSettings structure belonging to the
+    % device.
+    switch (port)
+        
+        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT0
+            
+            enabled          = deviceObj.DriverData.digitalPortSettings(1, 1);
+            logicLevelCounts = deviceObj.DriverData.digitalPortSettings(1, 2);
+            
+        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT1
+            
+            enabled          = deviceObj.DriverData.digitalPortSettings(2, 1);
+            logicLevelCounts = deviceObj.DriverData.digitalPortSettings(2, 2);
+            
+        otherwise
+       
+            error('PS5000AGetDigitalPortSettings:InvalidDigitalPort', ...
+                'getDigitalPortSettings - Invalid Digital port');
+    end
+
+    logicLevel = (logicLevelCounts / deviceObj.DriverData.constants.PS5000A_MAX_LOGIC_LEVEL ) ...
+        * deviceObj.DriverData.constants.PS5000A_MAX_LOGIC_VOLTAGE ;
+    
+    status = PicoStatus.PICO_OK;</MCode>
                </Code>
-               <Description/>
+               <Description>getDigitalPortSettings(obj, port) returns the settings for the digital port specified.
+
+This function is for MSO devices only.
+
+This function may be used with the Test and Measurement Tool.
+
+Input Arguments:
+
+obj - the object representing the Digital group.
+port - the port for digital data (either the enumeration enPS5000AChannel.PS5000A_DIGITAL_PORT0 or enPS5000AChannel.PS5000A_DIGITAL_PORT1).
+
+Output Arguments:
+
+status - status code returned by the driver.
+enabled - TRUE (1) if the port is enabled, FALSE (0) otherwise.
+logicLevel - the voltage at which the state transitions between 0 and 1. Range: -5 V to 5 V.</Description>
             </Method>
             <Method>
                <Name>ps5000aSetDigitalPort</Name>
@@ -6501,7 +6545,7 @@ This function may be used with the Test and Measurement Tool.
 Input Arguments:
 
 obj - the object representing the Digital group.
-port - the port for digital data (either the enumeration enPS5000ADigitalPort.PS5000A_DIGITAL_PORT0 or enPS5000ADigitalPort.PS5000A_DIGITAL_PORT1).
+port - the port for digital data (either the enumeration enPS5000AChannel.PS5000A_DIGITAL_PORT0 or enPS5000AChannel.PS5000A_DIGITAL_PORT1).
 enabled - set to TRUE (1) to enable the channel, FALSE (0) otherwise.
 logicLevel - the voltage at which the state transitions between 0 and 1. Range: -5 V to 5 V.
 
