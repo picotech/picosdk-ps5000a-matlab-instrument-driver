@@ -412,7 +412,8 @@
 
         [maxValueStatus, ~]  = calllib('ps5000a', 'ps5000aMaximumValue', unitHandle, maxValPtr);
 
-        obj.UserData.maxADCValue = maxValPtr.Value;
+        obj.DriverData.maxADCValue = maxValPtr.Value;
+        obj.UserData.maxADCValue = obj.DriverData.maxADCValue;
         set(obj, 'maxADCValue', obj.UserData.maxADCValue);
 
         clear maxValPtr;
@@ -423,7 +424,8 @@
 
         [minValueStatus, ~] = calllib('ps5000a', 'ps5000aMinimumValue', unitHandle, minValPtr);
 
-        obj.UserData.minADCValue = minValPtr.Value;
+        obj.DriverData.minADCValue = minValPtr.Value;
+        obj.UserData.minADCValue = obj.DriverData.minADCValue;
         set(obj, 'minADCValue', obj.UserData.minADCValue);
 
         clear minValPtr;
@@ -6424,7 +6426,7 @@ For further information on the ps5000aSetTriggerChannelProperties function and t
         
         if (channelCount == PicoConstants.QUAD_SCOPE)
         
-            currentPowerState = invoke(obj, 'ps5000aCurrentPowerSource');
+            currentPowerState = invoke(deviceObj, 'ps5000aCurrentPowerSource');
         
             if (currentPowerState == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED)
            
@@ -6471,7 +6473,7 @@ For further information on the ps5000aSetTriggerChannelProperties function and t
                 pDBuffer(port) = libpointer('int16Ptr', zeros(totalSamples, 1, 'int16'));
 
                 setBufferStatus = calllib('ps5000a', 'ps5000aSetDataBuffer', ...
-                    unitHandle, (port - 1 + deviceObj.DriverData.enums.enPS5000AChannels.PS5000A_DIGITAL_PORT0), ... 'PORT0 = 128, PORT1 = 129
+                    unitHandle, (port - 1 + deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT0), ... 'PORT0 = 128, PORT1 = 129
                     pDBuffer(port), totalSamples, segmentIndex, ratioMode);
 
                 if (setBufferStatus ~= PicoStatus.PICO_OK)
@@ -6492,9 +6494,8 @@ For further information on the ps5000aSetTriggerChannelProperties function and t
         end
         
         % Call ps5000aGetValues
-        [getValuesStatus, numSamples, overflow] = invoke(obj, ...
-            calllib('ps5000a', 'ps5000aGetValues', unitHandle, startIndex, totalSamples, ratio, ratioMode, ...
-            segmentIndex, overflow);
+        [getValuesStatus, numSamples, overflow] = calllib('ps5000a', 'ps5000aGetValues', unitHandle, ...
+            startIndex, totalSamples, ratio, ratioMode, segmentIndex, overflow);
         
         if (getValuesStatus == PicoStatus.PICO_OK)
             
@@ -6508,13 +6509,13 @@ For further information on the ps5000aSetTriggerChannelProperties function and t
 
                 if (portSettings(port,1) == PicoConstants.TRUE)
 
-                    switch (port - 1 + deviceObj.DriverData.enums.enPS5000AChannels.PS5000A_DIGITAL_PORT0)
+                    switch (port - 1 + deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT0)
 
-                        case deviceObj.DriverData.enums.enPS5000AChannels.PS5000A_DIGITAL_PORT0
+                        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT0
 
                             dPort0 = pDBuffer(port).Value;
 
-                        case deviceObj.DriverData.enums.enPS5000AChannels.PS2000A_DIGITAL_PORT1
+                        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT1
 
                             dPort1 = pDBuffer(port).Value;
 

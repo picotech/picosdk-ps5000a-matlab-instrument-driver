@@ -78,7 +78,14 @@ connect(ps5000aDeviceObj);
 
 [status, timeIntervalNanoSeconds, maxSamples] = invoke(ps5000aDeviceObj, 'ps5000aGetTimebase', 65, 0);
 
-%% SET BLOCK PARAMETERS AND CAPTURE DATA
+%% Set block parameters and capture data
+% Capture a block of data and retrieve data values for channels A and B.
+
+% Block data acquisition properties and functions are located in the 
+% Instrument Driver's Block group.
+
+blockGroupObj = get(ps5000aDeviceObj, 'Block');
+blockGroupObj = blockGroupObj(1);
 
 % Set pre-trigger samples.
 set(ps5000aDeviceObj, 'numPreTriggerSamples', 1024);
@@ -90,13 +97,14 @@ set(ps5000aDeviceObj, 'numPreTriggerSamples', 1024);
 [status] = invoke(ps5000aDeviceObj, 'runBlock', 0);
 
 % Retrieve data values:
-%
-% start index       : 0
-% segment index     : 0
-% downsampling ratio: 1
-% downsampling mode : 0 (PS5000A_RATIO_MODE_NONE)
 
-[chA, chB, chC, chD, numSamples, overflow] = invoke(ps5000aDeviceObj, 'getBlockData', 0, 0, 1, 0);
+startIndex              = 0;
+segmentIndex            = 0;
+downsamplingRatio       = 1;
+downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_NONE;
+
+[numSamples, overflow, chA, chB] = invoke(blockGroupObj, 'getBlockData', startIndex, segmentIndex, ...
+                                            downsamplingRatio, downsamplingRatioMode);
 
 % Stop the device
 [status] = invoke(ps5000aDeviceObj, 'ps5000aStop');
