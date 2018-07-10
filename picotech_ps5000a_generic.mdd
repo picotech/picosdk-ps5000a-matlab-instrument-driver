@@ -595,7 +595,7 @@
         
         if(obj.DriverData.digitalPortCount &gt; 0)
            
-            fprintf('     Digital Channels: %d\n', obj.DriverData.digitalPortCount * 8);
+            fprintf('      Digital Channels: %d\n', obj.DriverData.digitalPortCount * 8);
             
         end
         
