@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000 Series (A API)</InstrumentModel>
-   <InstrumentVersion>2.2.1</InstrumentVersion>
+   <InstrumentVersion>2.2.2</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -6521,7 +6521,7 @@ status - status code returned by the driver.</Description>
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
-                  <MCode>function setDigitalPortDefaults(obj)
+                  <MCode>function status = setDigitalPortDefaults(obj)
 % If this is a group function, OBJ is the group object. If
 % it a base device function, OBJ is the device object.
 
@@ -6534,8 +6534,8 @@ status - status code returned by the driver.</Description>
         
     end
 
-    dPort0 = deviceObj.DriverData.enums.enPS5000ADigitalPort.PS5000A_DIGITAL_PORT0;
-    dPort1 = deviceObj.DriverData.enums.enPS5000ADigitalPort.PS5000A_DIGITAL_PORT1;
+    dPort0 = deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT0;
+    dPort1 = deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT1;
     
     true = PicoConstants.TRUE;
     logicLevelVoltage = 1.5; % Default value (Volts)
