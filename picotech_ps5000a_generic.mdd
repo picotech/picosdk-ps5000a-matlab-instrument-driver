@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000 Series (A API)</InstrumentModel>
-   <InstrumentVersion>2.2.2</InstrumentVersion>
+   <InstrumentVersion>2.2.3</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -668,7 +668,7 @@
 
             if (currentPowerStatus == PicoStatus.PICO_POWER_SUPPLY_CONNECTED)
 
-                fprintf('5V Power Supply connected: True\n');
+                fprintf('5 V Power Supply connected: True\n');
 
             else
 
@@ -5322,17 +5322,17 @@ status - status code returned by the wrapper:
     fprintf('Default Channel Setup:-\n');
     fprintf('-----------------------\n\n');
 
-    ch_a = evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A');
-    ch_b = evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_B');
+    chA = obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A;
+    chB = obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_B;
 
     % Assign values used repeatedly to local variable
 
     true = PicoConstants.TRUE;
-    range_5V = evalin('base', 'ps5000aEnuminfo.enPS5000ARange.PS5000A_5V');
-    analogue_offset = 0;
+    range5V = obj.DriverData.enums.enPS5000ARange.PS5000A_5V;
+    analogueOffset = 0;
 
     % Set default values for output in case channels are not available on 
-    % the device - PicoScope 5000 series does not have digital channels.
+    % the device.
     setChC = [];
     setChD = [];
     setD0 = [];
@@ -5348,15 +5348,13 @@ status - status code returned by the wrapper:
     % Update internal setting
     channel_settings(1).enabled = true;
     channel_settings(1).dc = true;
-    channel_settings(1).range = range_5V;
-    channel_settings(1).offset = analogue_offset;
+    channel_settings(1).range = range5V;
+    channel_settings(1).offset = analogueOffset;
     
     channel_settings(2).enabled = true;
     channel_settings(2).dc = true;
-    channel_settings(2).range = range_5V;
-    channel_settings(2).offset = analogue_offset;
-    
-    %disp('DEBUG: setChannelDefaults')
+    channel_settings(2).range = range5V;
+    channel_settings(2).offset = analogueOffset;
     
     % Create a num channels x fields array
     ch_settings = zeros(PicoConstants.QUAD_SCOPE);
@@ -5373,32 +5371,32 @@ status - status code returned by the wrapper:
     
     set(obj, 'channelSettings', obj.UserData.channelSettings);
     
-    setChA = invoke(obj, 'ps5000aSetChannel', ch_a, true, true, range_5V, analogue_offset);
-    fprintf('Channel A:-\n\tEnabled: True\n\tCoupling: DC\n\tRange: 5V\n\tAnalogue Offset: 0.0V\n\n');
+    setChA = invoke(obj, 'ps5000aSetChannel', chA, true, true, range5V, analogueOffset);
+    fprintf('Channel A:-\n\tEnabled: True\n\tCoupling: DC\n\tRange: 5 V\n\tAnalog offset: 0.0 V\n\n');
 
-    setChB = invoke(obj, 'ps5000aSetChannel', ch_b, true, true, range_5V, analogue_offset);
-    fprintf('Channel B:-\n\tEnabled: True\n\tCoupling: DC\n\tRange: 5V\n\tAnalogue Offset: 0.0V\n\n');
+    setChB = invoke(obj, 'ps5000aSetChannel', chB, true, true, range5V, analogueOffset);
+    fprintf('Channel B:-\n\tEnabled: True\n\tCoupling: DC\n\tRange: 5 V\n\tAnalog offset: 0.0 V\n\n');
     
-    % If device is a 544XA/B enable channels C and D
+    % If device is a 544XA/B/D/D MSO enable channels C and D
     % Check power status
-    power_status = invoke(obj, 'ps5000aCurrentPowerSource');
+    powerStatus = invoke(obj, 'ps5000aCurrentPowerSource');
     
-    if(obj.UserData.channelCount == PicoConstants.QUAD_SCOPE &amp;&amp; ...
-            power_status == PicoStatus.PICO_POWER_SUPPLY_CONNECTED)
+    if (obj.UserData.channelCount == PicoConstants.QUAD_SCOPE &amp;&amp; ...
+            powerStatus == PicoStatus.PICO_POWER_SUPPLY_CONNECTED)
     
-        ch_c = evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_C');
-        ch_d = evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_D');
+        chC = obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_C;
+        chD = obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_D;
         
         % Update internal setting
         channel_settings(3).enabled = true;
         channel_settings(3).dc = true;
-        channel_settings(3).range = range_5V;
-        channel_settings(3).offset = analogue_offset;
+        channel_settings(3).range = range5V;
+        channel_settings(3).offset = analogueOffset;
 
         channel_settings(4).enabled = true;
         channel_settings(4).dc = true;
-        channel_settings(4).range = range_5V;
-        channel_settings(4).offset = analogue_offset;
+        channel_settings(4).range = range5V;
+        channel_settings(4).offset = analogueOffset;
         
         % Add to the channel settings array
         ch_c_info = cell2mat(struct2cell(channel_settings(3)))';
@@ -5407,41 +5405,37 @@ status - status code returned by the wrapper:
         ch_settings(3, :) = ch_c_info;
         ch_settings(4, :) = ch_d_info;
     
-        obj.UserData.channelSettings = ch_settings;
+        obj.DriverData.channelSettings = ch_settings;
+        obj.UserData.channelSettings = obj.DriverData.channelSettings;
     
         set(obj, 'channelSettings', obj.UserData.channelSettings);
 
-        setChC = invoke(obj, 'ps5000aSetChannel', ch_c, true, true, range_5V, analogue_offset);
-        fprintf('Channel C:-\n\tEnabled: True\n\tCoupling: DC\n\tRange: 5V\n\tAnalogue Offset: 0.0V\n\n');
+        setChC = invoke(obj, 'ps5000aSetChannel', chC, true, true, range5V, analogueOffset);
+        fprintf('Channel C:-\n\tEnabled: True\n\tCoupling: DC\n\tRange: 5 V\n\tAnalog offset: 0.0 V\n\n');
 
-        setChD = invoke(obj, 'ps5000aSetChannel', ch_d, true, true, range_5V, analogue_offset);
-        fprintf('Channel D:-\n\tEnabled: True\n\tCoupling: DC\n\tRange: 5V\n\tAnalogue Offset: 0.0V\n\n');
+        setChD = invoke(obj, 'ps5000aSetChannel', chD, true, true, range5V, analogueOffset);
+        fprintf('Channel D:-\n\tEnabled: True\n\tCoupling: DC\n\tRange: 5 V\n\tAnalog offset: 0.0 V\n\n');
         
-        clear ch_c;
-        clear ch_d;
+        clear chC;
+        clear chD;
         clear ch_c_info;
         clear ch_d_info;
     end
     
     % Clear local variables
-    clear ch_a;
-    clear ch_b;
+    clear chA;
+    clear chB;
     clear true;
     clear range_5V;
         </MCode>
                </Code>
-               <Description>setChannelDefaults(obj) sets the following default values for any Analogue and Digital channels found on the device:
+               <Description>setChannelDefaults(obj) sets the following default values for any analog channels found on the device:
 
 Analogue Channel:
 
 Enabled: True
 Coupling: DC
-Voltage Range: 5V
-
-Digital:
-
-Enabled: True
-LogicLevel: 1.5V</Description>
+Voltage Range: 5V</Description>
             </Method>
             <Method>
                <Name>setMaxMinAppAndDriverBuffers</Name>
