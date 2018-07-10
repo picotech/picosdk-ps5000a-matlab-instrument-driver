@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.5</InstrumentVersion>
+   <InstrumentVersion>2.2.6</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -1934,8 +1934,8 @@ Output parameters:
             
         channel_count = get(obj, 'channelCount');
         
-        % For 4 channel models verify power supply is connected
-        % Only 2 channels are enabled if the power supply is not connected
+        % For 4-channel models verify power supply is connected
+        % Only 2-channels are enabled if the power supply is not connected
         
         if (channel_count == PicoConstants.QUAD_SCOPE)
         
@@ -5339,8 +5339,9 @@ status - status code returned by the wrapper:
     setD1 = [];
     
     % Matrix of values to represent channels (rows) x properties (cols)
-    obj.UserData.channelSettings = zeros(PicoConstants.QUAD_SCOPE);
-
+    obj.DriverData.channelSettings = zeros(PicoConstants.QUAD_SCOPE);
+    obj.UserData.channelSettings = obj.DriverData.channelSettings;
+    
     % Set Channel A and B, updating internal settings
     % Parameters are channel index, enabled, dc coupling, range index and 
     % analogue offset
@@ -5367,8 +5368,8 @@ status - status code returned by the wrapper:
     ch_settings(1, :) = ch_a_info;
     ch_settings(2, :) = ch_b_info;
     
-    obj.UserData.channelSettings = ch_settings;
-    
+    obj.DriverData.channelSettings = ch_settings;
+    obj.UserData.channelSettings = obj.DriverData.channelSettings;
     set(obj, 'channelSettings', obj.UserData.channelSettings);
     
     setChA = invoke(obj, 'ps5000aSetChannel', chA, true, true, range5V, analogueOffset);
@@ -5381,7 +5382,7 @@ status - status code returned by the wrapper:
     % Check power status
     powerStatus = invoke(obj, 'ps5000aCurrentPowerSource');
     
-    if (obj.UserData.channelCount == PicoConstants.QUAD_SCOPE &amp;&amp; ...
+    if (obj.DriverData.channelCount == PicoConstants.QUAD_SCOPE &amp;&amp; ...
             powerStatus == PicoStatus.PICO_POWER_SUPPLY_CONNECTED)
     
         chC = obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_C;
@@ -6348,6 +6349,291 @@ Output parameters:
 status - status code returned by the device.
 
 For further information on the ps5000aSetTriggerChannelProperties function and the TRIGGER_CHANNEL_PROPERTIES structure please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+         </MethodInfo>
+      </Group>
+      <Group>
+         <Name>block</Name>
+         <Description>The Block group contains a set of properties and functions related to the block mode capture functionality of the device.</Description>
+         <Command/>
+         <Size>1</Size>
+         <Mappings>
+            <ChannelMap Command="Block1" Index="1"/>
+         </Mappings>
+         <PropertyInfo/>
+         <MethodInfo>
+            <Method>
+               <Name>getBlockData</Name>
+               <Location>block</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [numSamples, overflow, channelA, channelB, channelC, channelD, dPort0, dPort1] = getBlockData(obj, startIndex, segmentIndex, ratio, ratioMode)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+
+    % Check ratio mode is not aggregated
+    if (ratioMode ~= deviceObj.DriverData.enums.enPS5000ARatioMode.PS5000A_RATIO_MODE_AGGREGATE)
+        
+        unitHandle = deviceObj.DriverData.unitHandle;
+        
+        channelCount = deviceObj.DriverData.channelCount;
+
+        portCount = deviceObj.DriverData.digitalPortCount;
+
+        % Retrieve channel settings - channel x data field matrix
+        channelSettings = deviceObj.DriverData.channelSettings;
+
+        % Retrieve port settings - port x data field matrix
+        portSettings = deviceObj.DriverData.digitalPortSettings;
+        
+        % Create empty arrays for channel data.
+        channelA = [];
+        channelB = [];
+        channelC = [];
+        channelD = [];
+        
+        dPort0 = [];
+        dPort1 = [];
+
+        % Overflow indicator
+        overflow = 0;
+
+        % Initialise variable for array of libpointers for analogue
+        % channels
+        pABuffer = libpointer;
+        
+        % Initialise status
+        setBufferStatus = 0;
+
+        % Total number of samples to set for data buffers, taking into
+        % account the downsampling ratio
+        totalSamples = ceil((deviceObj.DriverData.numPreTriggerSamples + ...
+            deviceObj.DriverData.numPostTriggerSamples) / ratio);
+        
+        if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+            
+            fprintf('getBlockData: Setting up data buffers...\n');
+
+        end
+        
+        % For 4-channel models verify power supply is connected
+        % Only 2-channels are enabled if the power supply is not connected
+        
+        if (channelCount == PicoConstants.QUAD_SCOPE)
+        
+            currentPowerState = invoke(obj, 'ps5000aCurrentPowerSource');
+        
+            if (currentPowerState == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED)
+           
+                channelCount = PicoConstants.DUAL_SCOPE;
+                
+            end
+            
+        end
+        
+        for ch = 1:channelCount
+
+            % Set Data Buffer if channel is enabled - index 1 indicates if
+            % channel is enabled
+            if (channelSettings(ch,1) == PicoConstants.TRUE)
+                
+                % Store array of libpointers
+                pABuffer(ch) = libpointer('int16Ptr', zeros(totalSamples, 1, 'int16'));
+
+                setBufferStatus = calllib('ps5000a', 'ps5000aSetDataBuffer', unitHandle, ...
+                    (ch - 1), pABuffer(ch), totalSamples, segmentIndex, ratioMode);
+                
+                if (setBufferStatus ~= PicoStatus.PICO_OK)
+                    
+                    error('getBlockData: Set Data Buffer for Channel %d error code %d', ...
+                        (ch - 1), setBufferStatus);
+                    
+                end
+
+            end
+
+        end
+
+        % Initialise variable for array of libpointers for digital
+        % channels
+        pDBuffer = libpointer;
+
+        for port = 1:portCount
+
+            % Set Data Buffer if channel is enabled - index 1 indicates if
+            % channel is enabled
+            if (portSettings(port,1) == PicoConstants.TRUE)
+
+                % Store array of libpointers
+                pDBuffer(port) = libpointer('int16Ptr', zeros(totalSamples, 1, 'int16'));
+
+                setBufferStatus = calllib('ps5000a', 'ps5000aSetDataBuffer', ...
+                    unitHandle, (port - 1 + deviceObj.DriverData.enums.enPS5000AChannels.PS5000A_DIGITAL_PORT0), ... 'PORT0 = 128, PORT1 = 129
+                    pDBuffer(port), totalSamples, segmentIndex, ratioMode);
+
+                if (setBufferStatus ~= PicoStatus.PICO_OK)
+
+                    error('getBlockData:- Set Data Buffer for Digital Port %d status code: %d', ...
+                        (port - 1), setBufferStatus);
+
+                end
+
+            end
+
+        end
+        
+        if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+            
+            fprintf('getBlockData: Retrieving data...\n');
+            
+        end
+        
+        % Call ps5000aGetValues
+        [getValuesStatus, numSamples, overflow] = invoke(obj, ...
+            calllib('ps5000a', 'ps5000aGetValues', unitHandle, startIndex, totalSamples, ratio, ratioMode, ...
+            segmentIndex, overflow);
+        
+        if (getValuesStatus == PicoStatus.PICO_OK)
+            
+            if (portCount &gt; 0 &amp;&amp; deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+
+                fprintf('getBlockData: Assigning digital data to port array.\n');
+
+            end
+            
+            for port = 1:portCount
+
+                if (portSettings(port,1) == PicoConstants.TRUE)
+
+                    switch (port - 1 + deviceObj.DriverData.enums.enPS5000AChannels.PS5000A_DIGITAL_PORT0)
+
+                        case deviceObj.DriverData.enums.enPS5000AChannels.PS5000A_DIGITAL_PORT0
+
+                            dPort0 = pDBuffer(port).Value;
+
+                        case deviceObj.DriverData.enums.enPS5000AChannels.PS2000A_DIGITAL_PORT1
+
+                            dPort1 = pDBuffer(port).Value;
+
+                        otherwise
+
+                            % Do nothing
+
+                    end
+
+                end
+
+            end
+            
+            if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+            
+                fprintf('getBlockData: Assigning analog data to array and converting to millivolts.\n');
+                
+            end
+            
+            % Obtain max ADC count value
+            maxADCValue = double(deviceObj.DriverData.maxADCValue);
+            
+            % Retrieve data values for enabled channels
+            for ch = 1:channelCount
+
+                if (channelSettings(ch,1) == PicoConstants.TRUE)
+                    
+                    % Obtain the index for the
+                    % PicoConstants.SCOPE_INPUT_RANGES array corresponding
+                    % to the voltage range selected for the channel.
+                    scopeInputIndex = channelSettings(ch,3) + 1;
+                    voltageRange = PicoConstants.SCOPE_INPUT_RANGES(scopeInputIndex);
+                    
+                    bufferValues = adc2mv(pABuffer(ch).Value, voltageRange, maxADCValue);
+
+                    switch(ch - 1)
+
+                        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A
+
+                            channelA = bufferValues;
+
+                        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_B
+
+                            channelB = bufferValues;
+
+                        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_C
+
+                            channelC = bufferValues;
+
+                        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_D
+
+                            channelD = bufferValues;
+
+                        otherwise
+
+                            % Do nothing
+
+                    end
+                    
+                end
+                
+            end
+            
+            if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+            
+                fprintf('getBlockData: Data succesfully retrieved.\n');
+                
+            end
+            
+        else
+            
+            error('getBlockData:- status code: %d. Please refer to the PicoStatus.m file.', getValuesStatus);
+            
+        end
+        
+        
+    else
+        
+        error('getBlockData: Aggregate Mode data collection not supported by this function.');
+        
+    end
+    
+    if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+            
+        fprintf('\n');
+        
+    end</MCode>
+               </Code>
+               <Description>getBlockData(obj, startIndex, segmentIndex, ratio, ratioMode) returns block mode data with or without downsampling starting at the specified sample number.
+
+Memory for the data arrays is allocated and the driver is informed where to store the data prior to retrieval. Data collection in Aggregation mode or with more than one downsampling mode is NOT supported by this function.
+
+Channels not enabled or not supported by the device (e.g. channels C and D for a 2-channel oscilloscope) will be returned as an empty array.
+
+This function can be used with the Test and Measurement Tool.
+
+Input Arguments:
+
+obj - the object representing the Block group.
+startIndex - a zero-based index that indicates the start point for data collection. Use zero to start at the first sample.
+segmentIndex - the number of the memory segment to be used/where the data is stored. Use 0 if the memory has not been segmented.
+ratio - the downsampling factor that will be applied to the raw data.
+ratioMode - which downsampling mode to use (specified by an enumeration from the enPS5000aRatioMode range of enumerations excluding PS5000A_RATIO_MODE_AGGREGATE).
+
+
+Output Arguments:
+
+status - status code returned by the driver.
+numSamples - the number of samples retrieved from the driver.
+overflow - a set of flags that indicate whether an overvoltage has occurred on any of the channels.
+channelA - an array containing data values (in millivolts) for channel A.
+channelB - an array containing data values (in millivolts) for channel B.
+channelC - an array containing data values (in millivolts) for channel C.
+channelD - an array containing data values (in millivolts) for channel D.
+portD0 - an array containing data values in binary format for digital Port 0 (in MSB order)
+portD1 - an array containing data values in binary format for digital Port 1 (in MSB order)
+
+Please also refer to the ps5000aSetDataBuffer, and ps5000aGetValues functions in the PicoScope 5000 Series (A API) - MATLAB Generic Instrument Driver Toolbox Help Documentation.
+</Description>
             </Method>
          </MethodInfo>
       </Group>
