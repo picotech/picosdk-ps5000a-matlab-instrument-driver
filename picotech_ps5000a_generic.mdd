@@ -5,8 +5,8 @@
    <DriverType>MATLAB generic</DriverType>
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
-   <InstrumentModel>PicoScope 5000 Series (A API)</InstrumentModel>
-   <InstrumentVersion>2.2.3</InstrumentVersion>
+   <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
+   <InstrumentVersion>2.2.4</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -588,29 +588,29 @@
         % Display unit information to user if not using TM Tool
         fprintf('\n');
         fprintf('Connected to PicoScope 5000 Series (A API) device:-\n\n');
-        fprintf('      Instrument Model: %s\n', obj.InstrumentModel);
-        fprintf('   Batch/Serial Number: %s\n', unitSerial);
-        fprintf('           USB Version: %s\n', usbVersion);
-        fprintf('       Analog Channels: %d\n', get(obj, 'channelCount'));
-        
+        fprintf('          Instrument Model: %s\n', obj.InstrumentModel);
+        fprintf('       Batch/Serial Number: %s\n', unitSerial);
+        fprintf('               USB Version: %s\n', usbVersion);
+        fprintf('           Analog Channels: %d\n', get(obj, 'channelCount'));
+ 
         if(obj.DriverData.digitalPortCount &gt; 0)
            
-            fprintf('      Digital Channels: %d\n', obj.DriverData.digitalPortCount * 8);
+            fprintf('          Digital Channels: %d\n', obj.DriverData.digitalPortCount * 8);
             
         end
         
-        fprintf('            Resolution: %d bits\n', get(obj, 'resolution'));
-            
+        fprintf('                Resolution: %d bits\n', get(obj, 'resolution'));
+        
         % Bandwidth information
         bandwidthHz = get(obj, 'bandwidth');
         
         if (bandwidthHz &gt; 0 &amp;&amp; bandwidthHz &lt; 1e9)
             
-           fprintf('             Bandwidth: %d MHz\n', (bandwidthHz/1e6));
+           fprintf('                 Bandwidth: %d MHz\n', (bandwidthHz/1e6));
            
         elseif(bandwithHz &gt;= 1e9)
             
-           fprintf('             Bandwidth: %d GHz\n', (bandwidthHz/1e9));
+           fprintf('                 Bandwidth: %d GHz\n', (bandwidthHz/1e9));
            
         else
             
@@ -618,18 +618,18 @@
             
         end
         
-        fprintf('         Buffer memory: %d MS\n', get(obj, 'bufferMemory')/pow2(20));
+        fprintf('             Buffer memory: %d MS\n', get(obj, 'bufferMemory')/pow2(20));
         
         % Sampling rate information
         maxSamplingRate = get(obj, 'maxSamplingRate');
         
         if (maxSamplingRate &gt; 0 &amp;&amp; maxSamplingRate &lt; 1e9)
             
-            fprintf(' Maximum sampling rate: %d MS/s\n', maxSamplingRate/1e6);
+            fprintf('     Maximum sampling rate: %d MS/s\n', maxSamplingRate/1e6);
             
         elseif (maxSamplingRate &gt;= 1e9)
            
-            fprintf(' Maximum sampling rate: %d GS/s\n', maxSamplingRate/1e9);
+            fprintf('     Maximum sampling rate: %d GS/s\n', maxSamplingRate/1e9);
             
         else
             
@@ -659,8 +659,8 @@
 
         end
     
-        fprintf(' Signal Generator Type: %s\n', sigGenType);
-
+        fprintf('     Signal Generator Type: %s\n', sigGenType);
+  
         % Output if power supply connected.
         if (obj.DriverData.channelCount == PicoConstants.QUAD_SCOPE)
 
@@ -672,7 +672,7 @@
 
             else
 
-                fprintf('Power Supply connected: False\n');
+                fprintf('5 V Power Supply connected: False\n');
 
             end
 
