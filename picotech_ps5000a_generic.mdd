@@ -146,8 +146,15 @@
 
     obj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE = 5; % Max threshold, volts
     obj.DriverData.constants.PS5000A_EXT_MIN_VOLTAGE = -5; % Min threshold, volts
+    
+    % MSO Properties
+    obj.DriverData.constants.PS5000A_MAX_LOGIC_LEVEL	= 32767;
+    obj.DriverData.constants.PS5000A_MIN_LOGIC_LEVEL    = -32767;
 
-    % ETS information
+    obj.DriverData.constants.PS5000A_MAX_LOGIC_VOLTAGE  = 5;
+    obj.DriverData.constants.PS5000A_MIN_LOGIC_VOLTAGE  = -5;
+    
+    % ETS Information
     obj.DriverData.constants.PS5244A_MAX_ETS_CYCLES      = 500;		% PS5242A, PS5242B, PS5442A, PS5442B
     obj.DriverData.constants.PS5244A_MAX_ETS_INTERLEAVE  = 40;
 

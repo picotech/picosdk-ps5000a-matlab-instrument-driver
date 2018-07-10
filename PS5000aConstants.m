@@ -9,6 +9,7 @@
 % sub-sections:
 % 
 % * ADC Count properties
+% * Mixed Signal Oscilloscope properties
 % * ETS Mode properties
 % * Trigger properties
 % * Function/Arbitrary waveform parameters
@@ -36,6 +37,13 @@ classdef PS5000aConstants
         
         PS5000A_EXT_MAX_VOLTAGE = 5; % Max threshold, volts
         PS5000A_EXT_MIN_VOLTAGE = -5; % Min threshold, volts
+        
+        % MSO properties
+        PS5000A_MAX_LOGIC_LEVEL	= 32767;
+        PS5000A_MIN_LOGIC_LEVEL = -32767;
+        
+        PS5000A_MAX_LOGIC_VOLTAGE = 5;
+        PS5000A_MIN_LOGIC_VOLTAGE = -5;
         
         % ETS information
         PS5244A_MAX_ETS_CYCLES      = 500;		% PS5242A, PS5242B, PS5442A, PS5442B
