@@ -490,23 +490,21 @@
 
         end
         
-        disp('DEBUG:MSO')
         % Determine if device is an MSO
         obj.DriverData.digitalPortCount = 0;
         obj.DriverData.maxLogicLevel = 0;
         obj.DriverData.minLogicLevel = 0;
-        
         
         isMSO = strfind(obj.InstrumentModel, 'MSO');
 
         if (~isempty(isMSO))
 
             obj.DriverData.digitalPortCount = 2;
-            obj.DriverData.maxLogicLevel = obj.DriverData.constants.PS2000A_MAX_LOGIC_LEVEL;
-            obj.DriverData.minLogicLevel = obj.DriverData.constants.PS2000A_MIN_LOGIC_LEVEL;
+            obj.DriverData.maxLogicLevel = obj.DriverData.constants.PS5000A_MAX_LOGIC_LEVEL;
+            obj.DriverData.minLogicLevel = obj.DriverData.constants.PS5000A_MIN_LOGIC_LEVEL;
 
         end
-        disp('Sig Gen')
+
         % Set the max AWG Buffer Size if the device has an AWG
         obj.DriverData.awgBufferSize = 0;
         
@@ -4993,6 +4991,18 @@ For further information on the ps5000aStop function please refer to the PicoScop
 
     % Digital ports
     
+    % Obtain Digital group object
+    digitalGroupObj = get(obj, 'Digital');
+    digitalGroupObj = digitalGroupObj(1);
+
+    % Set digital port defaults if device has digital channels
+
+    if (obj.DriverData.digitalPortCount &gt; 0)
+
+        setDigitalPortStatus = invoke(digitalGroupObj, 'setDigitalPortDefaults');
+
+    end
+    
     % Turn off ETS
 
     disp('Turning off Equivalent Time Sampling...');
@@ -6341,7 +6351,7 @@ For further information on the ps5000aSetTriggerChannelProperties function and t
          </MethodInfo>
       </Group>
       <Group>
-         <Name>Digital</Name>
+         <Name>digital</Name>
          <Description>The Digital group contains a set of properties and functions related to the digital ports of the device (applicable to MSO models only).</Description>
          <Command/>
          <Size>1</Size>
@@ -6350,67 +6360,68 @@ For further information on the ps5000aSetTriggerChannelProperties function and t
          </Mappings>
          <PropertyInfo>
             <Property>
-               <Name>digitalPortSettings</Name>
-               <Location>Digital</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>InstrumentCommand</Type>
-               <Code>
-                  <Commands>
-                     <ConfigureCommand/>
-                     <QueryCommand/>
-                  </Commands>
-               </Code>
-               <PermissibleType>
-                  <Type>Double</Type>
-                  <Constraint>none</Constraint>
-               </PermissibleType>
-               <DefaultValue/>
-               <ReadOnly>Never</ReadOnly>
-               <Description/>
-            </Property>
-            <Property>
                <Name>maxLogicLevel</Name>
-               <Location>Digital</Location>
+               <Location>digital</Location>
                <CapabilityGroup>Base</CapabilityGroup>
-               <Type>InstrumentCommand</Type>
+               <Type>MCode</Type>
                <Code>
-                  <Commands>
-                     <ConfigureCommand/>
-                     <QueryCommand/>
-                  </Commands>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    propertyValue = deviceObj.DriverData.maxLogicLevel;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
                   <Constraint>none</Constraint>
                </PermissibleType>
-               <DefaultValue/>
-               <ReadOnly>Never</ReadOnly>
-               <Description/>
+               <DefaultValue>32767</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>The maximum count level for a digital port (corresponding to +5 V).</Description>
             </Property>
             <Property>
                <Name>minLogicLevel</Name>
-               <Location>Digital</Location>
+               <Location>digital</Location>
                <CapabilityGroup>Base</CapabilityGroup>
-               <Type>InstrumentCommand</Type>
+               <Type>MCode</Type>
                <Code>
-                  <Commands>
-                     <ConfigureCommand/>
-                     <QueryCommand/>
-                  </Commands>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    propertyValue = deviceObj.DriverData.minLogicLevel;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
                   <Constraint>none</Constraint>
                </PermissibleType>
-               <DefaultValue/>
-               <ReadOnly>Never</ReadOnly>
-               <Description/>
+               <DefaultValue>-32767</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>The minimum count level for a digital port (corresponding to -5 V).</Description>
             </Property>
          </PropertyInfo>
          <MethodInfo>
             <Method>
                <Name>getDigitalPortSettings</Name>
-               <Location>Digital</Location>
+               <Location>digital</Location>
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
@@ -6423,7 +6434,7 @@ For further information on the ps5000aSetTriggerChannelProperties function and t
             </Method>
             <Method>
                <Name>ps5000aSetDigitalPort</Name>
-               <Location>Digital</Location>
+               <Location>digital</Location>
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
@@ -6480,17 +6491,108 @@ For further information on the ps5000aSetTriggerChannelProperties function and t
         
     end</MCode>
                </Code>
-               <Description/>
+               <Description>ps5000aSetDigitalPort(obj, port, enabled, logicLevel) is used to enable the digital port and set the logic level (the voltage point at which the state transitions from 0 to 1 for a digital channel).
+
+This function is for MSO devices only and is not compatible with ETS mode.
+
+This function may be used with the Test and Measurement Tool.
+
+Input Arguments:
+
+obj - the object representing the Digital group.
+port - the port for digital data (either the enumeration enPS5000ADigitalPort.PS5000A_DIGITAL_PORT0 or enPS5000ADigitalPort.PS5000A_DIGITAL_PORT1).
+enabled - set to TRUE (1) to enable the channel, FALSE (0) otherwise.
+logicLevel - the voltage at which the state transitions between 0 and 1. Range: -5 V to 5 V.
+
+Output Arguments:
+
+status - status code returned by the driver.</Description>
             </Method>
             <Method>
                <Name>setDigitalPortDefaults</Name>
-               <Location>Digital</Location>
+               <Location>digital</Location>
                <CapabilityGroup>Base</CapabilityGroup>
-               <Type>InstrumentCommand</Type>
+               <Type>MCode</Type>
                <Code>
-                  <Commands/>
+                  <MCode>function setDigitalPortDefaults(obj)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+
+    if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+        
+        fprintf('Default Digital Port Setup:-\n');
+        fprintf('----------------------------\n\n');
+        
+    end
+
+    dPort0 = deviceObj.DriverData.enums.enPS5000ADigitalPort.PS5000A_DIGITAL_PORT0;
+    dPort1 = deviceObj.DriverData.enums.enPS5000ADigitalPort.PS5000A_DIGITAL_PORT1;
+    
+    true = PicoConstants.TRUE;
+    logicLevelVoltage = 1.5; % Default value (Volts)
+    
+    % Matrix of values to represent digital ports (rows) x properties (cols)
+    deviceObj.DriverData.digitalPortSettings = zeros(deviceObj.DriverData.digitalPortCount, 2);
+
+    % Set Digital Ports count updating internal settings
+    % Parameters are enabled and logic level.
+
+    % Update internal settings
+    
+    % Create a number of ports x fields array
+    dpSettings = zeros(deviceObj.DriverData.digitalPortCount, 2);
+    
+    for ch = 1:deviceObj.DriverData.digitalPortCount
+        
+        digiPortSettings(ch).enabled = true;
+        digiPortSettings(ch).logicLevel = logicLevelVoltage;
+        
+        % Transpose the resulting array for the channel and combine
+        dpSettings(ch, :) = cell2mat(struct2cell(digiPortSettings(ch)))';
+
+    end
+    
+    deviceObj.DriverData.digitalPortSettings = dpSettings;
+    
+    status = zeros(deviceObj.DriverData.digitalPortCount, 1);
+    
+    status(1) = invoke(obj, 'ps5000aSetDigitalPort', dPort0, true, logicLevelVoltage);
+    
+    if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+        
+        fprintf('PORT0:-\n\tEnabled: True\n\tLogic Level: +1.5 V\n\n');
+        
+    end
+
+    status(2) = invoke(obj, 'ps5000aSetDigitalPort', dPort1, true, logicLevelVoltage);
+    
+    if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+        
+        fprintf('PORT1:-\n\tEnabled: True\n\tLogic Level: +1.5 V\n\n');
+        
+    end
+
+    % Clear local variables
+    
+    clear true;
+    clear logicLevel;</MCode>
                </Code>
-               <Description/>
+               <Description>setDigitalPortDefaults(obj) sets the following default values for any digital ports found on the device:
+
+Digital Port:
+
+Enabled               : True
+Logic Level	: +1.5 V
+
+Input Arguments:
+
+obj - the object representing the Digital group.
+
+Output Arguments:
+
+status - status code returned by the driver.</Description>
             </Method>
          </MethodInfo>
       </Group>
