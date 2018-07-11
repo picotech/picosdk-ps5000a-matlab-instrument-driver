@@ -127,6 +127,15 @@ set(ps5000aDeviceObj2, 'timebase', scope2.timebaseIndex);
 
 %% SET BLOCK PARAMETERS AND CAPTURE DATA
 
+% Block data acquisition properties and functions are located in the 
+% Instrument Driver's Block group.
+
+blockGroupObj1 = get(ps5000aDeviceObj1, 'Block');
+blockGroupObj1 = blockGroupObj1(1);
+
+blockGroupObj2 = get(ps5000aDeviceObj2, 'Block');
+blockGroupObj2 = blockGroupObj2(1);
+
 % Set pre-trigger and post-trigger samples.
 set(ps5000aDeviceObj1, 'numPreTriggerSamples', 1024);
 set(ps5000aDeviceObj1, 'numPostTriggerSamples', 2048);
@@ -160,15 +169,17 @@ end
 
 
 % Retrieve data values:
-%
-% start index       : 0
-% segment index     : 0
-% downsampling ratio: 1
-% downsampling mode : 0 (PS5000A_RATIO_MODE_NONE)
 
-[scope1.chA, scope1.chB, scope1.chC, scope1.chD, scope1.numSamples, scope1.overflow] = invoke(ps5000aDeviceObj1, 'getBlockData', 0, 0, 1, 0);
+startIndex              = 0;
+segmentIndex            = 0;
+downsamplingRatio       = 1;
+downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_NONE;
 
-[scope2.chA, scope2.chB, scope2.chC, scope2.chD, scope2.numSamples, scope2.overflow] = invoke(ps5000aDeviceObj2, 'getBlockData', 0, 0, 1, 0);
+[scope1.numSamples, scope1.overflow, scope1.chA, scope1.chB, scope1.chC, scope1.chD] = invoke(blockGroupObj1, 'getBlockData', startIndex, segmentIndex, ... 
+                                                                                            downsamplingRatio, downsamplingRatioMode);
+
+[scope2.numSamples, scope2.overflow, scope2.chA, scope2.chB, scope2.chC, scope2.chD] = invoke(blockGroupObj1, 'getBlockData', startIndex, segmentIndex, ...
+                                                                                            downsamplingRatio, downsamplingRatioMode);
 
 
 %% PROCESS DATA

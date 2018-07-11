@@ -116,8 +116,16 @@ status.advTrigStatus = invoke(ps5000aDeviceObj, 'setAdvancedTrigger', channelPro
 
 %% SET BLOCK PARAMETERS AND CAPTURE DATA
 
+% Block data acquisition properties and functions are located in the 
+% Instrument Driver's Block group.
+
+blockGroupObj = get(ps5000aDeviceObj, 'Block');
+blockGroupObj = blockGroupObj(1);
+
 % Set pre-trigger samples.
-set(ps5000aDeviceObj, 'numPreTriggerSamples', 1024);
+
+numPreTriggerSamples = 1024;
+set(ps5000aDeviceObj, 'numPreTriggerSamples', numPreTriggerSamples);
 
 % Capture a block of data:
 %
@@ -126,13 +134,14 @@ set(ps5000aDeviceObj, 'numPreTriggerSamples', 1024);
 [status.runBlock] = invoke(ps5000aDeviceObj, 'runBlock', 0);
 
 % Retrieve data values:
-%
-% start index       : 0
-% segment index     : 0
-% downsampling ratio: 1
-% downsampling mode : 0 (PS5000A_RATIO_MODE_NONE)
 
-[chA, chB, chC, chD, numSamples, overflow] = invoke(ps5000aDeviceObj, 'getBlockData', 0, 0, 1, 0);
+startIndex              = 0;
+segmentIndex            = 0;
+downsamplingRatio       = 1;
+downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_NONE;
+
+[numSamples, overflow, chA, chB] = invoke(blockGroupObj, 'getBlockData', startIndex, segmentIndex, ...
+                                            downsamplingRatio, downsamplingRatioMode);
 
 % Stop the device
 [status.stop] = invoke(ps5000aDeviceObj, 'ps5000aStop');
@@ -150,11 +159,14 @@ figure;
 timeNs = double(timeIntervalNanoSeconds) * double(0:numSamples - 1);
 timeMs = timeNs / 1e6;
 
+% Obtain trigger point
+triggerIndex = get(ps5000aDeviceObj, 'numPreTriggerSamples') + 1;
+
 % Channel A
 axisHandleChA = subplot(2,1,1); 
 plot(timeMs, chA, 'b');
 hold on;
-plot(timeMs(1025), chA(1025), 'rx'); % Plot the trigger point
+plot(timeMs(triggerIndex), chA(triggerIndex), 'rx'); % Plot the trigger point
 plot(timeMs, 1000*ones(length(chA),1), 'k--'); % Show upper window bound
 plot(timeMs, -1000*ones(length(chA),1), 'k--'); % Show lower window bound
 title('Channel A');
@@ -170,6 +182,8 @@ plot(timeMs, chB, 'r');
 title('Channel B');
 xlabel(axisHandleChB, 'Time (ms)');
 ylabel(axisHandleChB, 'Voltage (mV)');
+grid on;
+hold off;
 
 %% DEVICE DISCONNECTION
 
