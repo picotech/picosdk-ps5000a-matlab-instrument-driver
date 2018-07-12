@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.7</InstrumentVersion>
+   <InstrumentVersion>2.2.8</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -332,6 +332,7 @@
     
     % Default resolution set to 8-bits
     resolution8bit = obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_8BIT;
+    obj.DriverData.resolution = 8;
     obj.UserData.resolution = 8;
 
     % Open the unit
@@ -349,9 +350,17 @@
     % 4 channels consisting of enabled, coupling, range, analogue offset
     % Default will be set later via resetDevice
     
-    obj.UserData.channelSettings = zeros(PicoConstants.QUAD_SCOPE);
+    obj.DriverData.channelSettings = zeros(PicoConstants.QUAD_SCOPE, 4);
+    obj.UserData.channelSettings = obj.DriverData.channelSettings
     set(obj, 'channelSettings', obj.UserData.channelSettings);
 
+    % Initialise matrix for digital port settings
+    % Setup initial channel settings (2 x 2)
+    % 2 channels consisting of enabled state and logic level
+    % Default will be set later via resetDevice
+    
+    obj.DriverData.digitalPortSettings = zeros(PicoConstants.DUAL_SCOPE, 2)
+    
     % Power supply not connected or 2-channel 5000D device on non-USB 3.0
     % port
     if (connectStatus.openUnit == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED || ...
@@ -5008,10 +5017,7 @@ For further information on the ps5000aStop function please refer to the PicoScop
     digitalGroupObj = get(obj, 'Digital');
     digitalGroupObj = digitalGroupObj(1);
 
-    % Set digital port defaults if device has digital channels
-
-    obj.DriverData.digitalPortSettings = [];
-    
+    % Set digital port defaults if device has digital channels   
     if (obj.DriverData.digitalPortCount &gt; 0)
 
         setDigitalPortStatus = invoke(digitalGroupObj, 'setDigitalPortDefaults');
