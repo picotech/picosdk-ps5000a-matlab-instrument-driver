@@ -87,6 +87,18 @@ set(ps5000aDeviceObj, 'timebase', 4);
 
 %% SET UP RAPID BLOCK PARAMETERS AND CAPTURE DATA
 
+% Rapid Block specific properties and functions are located in the
+% Instrument Driver's Rapidblock group.
+
+rapidBlockGroupObj = get(ps5000aDeviceObj, 'Rapidblock');
+rapidBlockGroupObj = rapidBlockGroupObj(1);
+
+% Block specific properties and functions are located in the Instrument
+% Driver's Block group.
+
+blockGroupObj = get(ps5000aDeviceObj, 'Block');
+blockGroupObj = blockGroupObj(1);
+
 % Configure number of memory segments, ideally a power of 2, query
 % ps5000aGetMaxSegments to find the maximum number of segments for the
 % device.
@@ -96,7 +108,8 @@ set(ps5000aDeviceObj, 'timebase', 4);
 % Set number of captures - can be less than or equal to the number of
 % segments.
 
-[status] = invoke(ps5000aDeviceObj, 'ps5000aSetNoOfCaptures', 8);
+numCaptures = 8;
+[status] = invoke(ps5000aDeviceObj, 'ps5000aSetNoOfCaptures', numCaptures);
 
 % Set number of samples to collect pre- and post-trigger. Ensure that the
 % total does not exceeed nMaxSamples above.
@@ -112,12 +125,14 @@ set(ps5000aDeviceObj, 'numPostTriggerSamples', 2048);
 [status, timeIndisposedMs] = invoke(ps5000aDeviceObj, 'runBlock', 0);
 
 % Retrieve rapid block data values:
-%
-% numCaptures       : 8
-% downsampling ratio: 1
-% downsampling mode : 0 (PS5000A_RATIO_MODE_NONE)
 
-[chA, chB, chC, chD, numSamples, overflow] = invoke(ps5000aDeviceObj, 'getRapidBlockData', 8, 1, 0);
+downsamplingRatio       = 1;
+downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_NONE;
+
+% Provide additional output arguments for the remaining channels e.g. chC
+% for Channel C
+[numSamples, overflow, chA, chB] = invoke(rapidBlockGroupObj, 'getRapidBlockData', numCaptures, ...
+                                    downsamplingRatio, downsamplingRatioMode);
 
 % Stop the device
 [status] = invoke(ps5000aDeviceObj, 'ps5000aStop');
@@ -139,7 +154,7 @@ view(axes1,[-15 24]);
 grid(axes1,'on');
 hold(axes1,'all');
 
-for i = 1:8
+for i = 1:numCaptures
     
     plot3(timeNs, i * (ones(numSamples, 1)), chA(:, i));
     
@@ -159,7 +174,7 @@ view(axes2,[-15 24]);
 grid(axes2,'on');
 hold(axes2,'all');
 
-for i = 1:8
+for i = 1:numCaptures
     
     plot3(timeNs, i * (ones(numSamples, 1)), chB(:, i));
     

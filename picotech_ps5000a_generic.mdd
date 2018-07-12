@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.8</InstrumentVersion>
+   <InstrumentVersion>2.2.9.1</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -6399,7 +6399,7 @@ For further information on the ps5000aSetTriggerChannelProperties function and t
 
         % Retrieve channel settings - channel x data field matrix
         channelSettings = deviceObj.DriverData.channelSettings;
-
+        
         % Retrieve port settings - port x data field matrix
         portSettings = deviceObj.DriverData.digitalPortSettings;
         
@@ -6973,7 +6973,7 @@ status - status code returned by the driver.</Description>
         
         % Retrieve channel settings - channel x data field matrix.
         channelSettings = deviceObj.DriverData.channelSettings;
-
+    
         % Retrieve port settings - port x data field matrix.
         portSettings = deviceObj.DriverData.digitalPortSettings;
         
@@ -7028,8 +7028,7 @@ status - status code returned by the driver.</Description>
         % Create a 2D matrix of libpointers to allocate memory space for
         % each channel and segment combination
         
-        % Iterate down rows in inner loop
-        
+        % Iterate down rows in inner loop      
         for segment = 1:numCaptures
             
             for ch = 1:channelCount
@@ -7054,31 +7053,35 @@ status - status code returned by the driver.</Description>
                 
             end
 
-        end
-        
-        % Repeat for Digital ports
-        for port = 1:portCount
+            if (portCount &gt; 0)
+                
+                % Repeat for Digital ports
+                for port = 1:portCount
 
-            % Set Data Buffer if channel is enabled - index 1 indicates if
-            % channel is enabled
-            if (portSettings(port,1) == PicoConstants.TRUE)
+                    % Set Data Buffer if channel is enabled - index 1 indicates if
+                    % channel is enabled
+                    if (portSettings(port,1) == PicoConstants.TRUE)
 
-                % Store array of libpointers
-                pDBuffer(port, segment) = libpointer('int16Ptr', zeros(totalSamples, 1, 'int16'));
+                        % Store array of libpointers
+                        pDBuffer(port, segment) = libpointer('int16Ptr', zeros(totalSamples, 1, 'int16'));
 
-                setBufferStatus = calllib('ps5000a', 'ps5000aSetDataBuffer', ...
-                    unitHandle, (port - 1 + deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT0), ... 'PORT0 = 128, PORT1 = 129
-                    pDBuffer(port, segment), totalSamples, (segment-1), ratioMode);
+                        setBufferStatus = calllib('ps5000a', 'ps5000aSetDataBuffer', ...
+                            unitHandle, (port - 1 + deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT0), ... 'PORT0 = 128, PORT1 = 129
+                            pDBuffer(port, segment), totalSamples, (segment-1), ratioMode);
 
-                if (setBufferStatus ~= PicoStatus.PICO_OK)
+                        if (setBufferStatus ~= PicoStatus.PICO_OK)
 
-                    error('getRapidBlockData:- Set Data Buffer for Port %d Segment % status code: %d', ...
-                        (port - 1), (segment - 1), setBufferStatus);
+                            error('getRapidBlockData:- Set Data Buffer for Port %d Segment % status code: %d', ...
+                                (port - 1), (segment - 1), setBufferStatus);
+
+                        end
+
+                    end
 
                 end
-
+                
             end
-
+            
         end
 
         if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
@@ -7113,22 +7116,16 @@ status - status code returned by the driver.</Description>
 
                     % Obtain a cell array representing the waveforms for
                     % the channel
-                    disp('Debug 1');
-                    pDBuffer
-                    pDBuffer(port,:)
-
                     bufferCells = get(pDBuffer(port, :), 'Value');
 
                     % Combine the cell contents into a total_samples x
                     % numCaptures array               
-                    disp('Debug 2');
                     if (numCaptures &gt; 1)
 
                         bufferCells = horzcat(bufferCells{1:end});                    
 
                     end
 
-                    disp('Debug 3');
                     switch (port - 1 + deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT0)
 
                         case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_DIGITAL_PORT0
