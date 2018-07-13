@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.10.8</InstrumentVersion>
+   <InstrumentVersion>2.2.11.9</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -3290,7 +3290,7 @@ For further information on the ps5000aGetTriggerTimeOffset64 function please ref
             </Method>
             <Method>
                <Name>ps5000aGetValues</Name>
-               <Location>parent</Location>
+               <Location>block</Location>
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
@@ -3537,7 +3537,7 @@ For further information on the ps5000aGetValuesTriggerTimeOffsetBulk64 function 
             </Method>
             <Method>
                <Name>ps5000aIsReady</Name>
-               <Location>parent</Location>
+               <Location>block</Location>
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
@@ -3757,7 +3757,7 @@ For further information on the ps5000aPingUnit function please refer to the Pico
             </Method>
             <Method>
                <Name>ps5000aRunBlock</Name>
-               <Location>parent</Location>
+               <Location>block</Location>
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
@@ -4449,7 +4449,7 @@ For further information on the ps5000aSetDeviceResolution  function please refer
             </Method>
             <Method>
                <Name>ps5000aSetEts</Name>
-               <Location>parent</Location>
+               <Location>block</Location>
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
@@ -4683,7 +4683,7 @@ For further information on the ps5000aSetEts function please refer to the PicoSc
             </Method>
             <Method>
                <Name>ps5000aSetEtsTimeBuffer</Name>
-               <Location>parent</Location>
+               <Location>block</Location>
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
@@ -4722,7 +4722,7 @@ For further information on the ps5000aSetEtsTimeBuffer function please refer to 
             </Method>
             <Method>
                <Name>ps5000aSetEtsTimeBuffers</Name>
-               <Location>parent</Location>
+               <Location>block</Location>
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
@@ -5001,7 +5001,7 @@ This includes the folliowing:
             </Method>
             <Method>
                <Name>runBlock</Name>
-               <Location>parent</Location>
+               <Location>block</Location>
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
