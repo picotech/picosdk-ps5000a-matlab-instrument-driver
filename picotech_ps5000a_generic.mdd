@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.10.7</InstrumentVersion>
+   <InstrumentVersion>2.2.10.8</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -629,18 +629,18 @@
             
         end
         
-        fprintf('             Buffer memory: %d MS\n', get(obj, 'bufferMemory')/pow2(20));
+        fprintf('             Buffer Memory: %d MS\n', get(obj, 'bufferMemory')/pow2(20));
         
         % Sampling rate information
         maxSamplingRate = get(obj, 'maxSamplingRate');
         
         if (maxSamplingRate &gt; 0 &amp;&amp; maxSamplingRate &lt; 1e9)
             
-            fprintf('     Maximum sampling rate: %d MS/s\n', maxSamplingRate/1e6);
+            fprintf('     Maximum Sampling Rate: %d MS/s\n', maxSamplingRate/1e6);
             
         elseif (maxSamplingRate &gt;= 1e9)
            
-            fprintf('     Maximum sampling rate: %d GS/s\n', maxSamplingRate/1e9);
+            fprintf('     Maximum Sampling Rate: %d GS/s\n', maxSamplingRate/1e9);
             
         else
             
@@ -654,7 +654,7 @@
         % Output the signal generator type
         sigGenType = 'None';
     
-        switch (get(obj, 'sigGenType'))
+        switch (obj.DriverData.sigGenType)
 
             case PicoConstants.SIG_GEN_FUNCT_GEN
 
