@@ -127,14 +127,20 @@ end
 maxADCCount = get(ps5000aDeviceObj, 'maxADCValue');
 
 %% TRIGGER SETUP
+% Set a trigger on channel A, with an auto timeout - the default value for
+% delay is used.
 
-% Channel     : 0 (PS5000A_CHANNEL_A)
-% Threshold   : 500 (mV)
-% Direction   : 2 (Rising)
-% Delay       : 0
-% Auto trigger: 0 (wait indefinitely)
+% Trigger properties and functions are located in the Instrument
+% Driver's Trigger group.
 
-[status.setSimpleTrigger] = invoke(ps5000aDeviceObj, 'setSimpleTrigger', 0, 500, 2, 0, 0);
+triggerGroupObj = get(ps5000aDeviceObj, 'Trigger');
+triggerGroupObj = triggerGroupObj(1);
+
+% Channel     : 0 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A)
+% Threshold   : 500 mV
+% Direction   : 2 (ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING)
+
+[status.setSimpleTrigger] = invoke(triggerGroupObj, 'setSimpleTrigger', 0, 500, 2);
 
 %% SET DATA BUFFERS
 % Data buffers for Channel A and B - buffers should be set with the driver,
