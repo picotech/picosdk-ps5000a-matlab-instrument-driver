@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.10.5</InstrumentVersion>
+   <InstrumentVersion>2.2.10.6</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -7009,7 +7009,7 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
-                  <MCode>function advTrigStatus = setAdvancedTrigger(obj, channelProperties, triggerConditions, directions, delay, autoTriggerMs)
+                  <MCode>function advTrigStatus = setAdvancedTrigger(obj, channelProperties, triggerConditions, directions)
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
 
@@ -7025,7 +7025,7 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
     % No aux output so set to 0
     advTrigStatus.setProperties = calllib('ps5000a', ...
         'ps5000aSetTriggerChannelProperties', deviceObj.DriverData.unitHandle, ...
-        channelProperties, length(channelProperties), 0, autoTriggerMs);
+        channelProperties, length(channelProperties), 0, deviceObj.DriverData.autoTriggerMs);
 
     if (obj.DriverData.displayOutput == PicoConstants.TRUE)
         
@@ -7045,7 +7045,7 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
 
     % Post trigger delay
     advTrigStatus.setTriggerDelay = calllib('ps5000a', ...
-        'ps5000aSetTriggerDelay', deviceObj.DriverData.unitHandle, delay);</MCode>
+        'ps5000aSetTriggerDelay', deviceObj.DriverData.unitHandle, deviceObj.DriverData.delay);</MCode>
                </Code>
                <Description>setAdvancedTrigger(obj, channelProperties, triggerConditions, directions, delay, autoTriggerMs) sets the Advanced Trigger properties for the oscilloscope.
 
