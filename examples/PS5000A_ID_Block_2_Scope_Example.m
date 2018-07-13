@@ -61,14 +61,32 @@ connect(ps5000aDeviceObj2);
 
 %% SET SIMPLE TRIGGER
 
+% Set a trigger on channel A, with an auto timeout - the default value for
+% delay is used.
+
+% Trigger properties and functions are located in the Instrument
+% Driver's Trigger group.
+
+triggerGroupObj1 = get(ps5000aDeviceObj1, 'Trigger');
+triggerGroupObj1 = triggerGroupObj1(1);
+
+triggerGroupObj2 = get(ps5000aDeviceObj2, 'Trigger');
+triggerGroupObj2 = triggerGroupObj2(1);
+
+% Set the |autoTriggerMs| property in order to automatically trigger the
+% oscilloscope after 2 seconds if a trigger event has not occurred. Set to 0
+% to wait indefinitely for a trigger event.
+
+set(triggerGroupObj1, 'autoTriggerMs', 2000);
+set(triggerGroupObj2, 'autoTriggerMs', 2000);
+
 % Channel     : 0 (PS5000A_CHANNEL_A)
 % Threshold   : 1000 (mV) on device 1, 500 (mV) on device 2
 % Direction   : 2 (Rising)
 % Delay       : 0
-% Auto trigger: 2000 ms
 
-[status1.setSimpleTrigger] = invoke(ps5000aDeviceObj1, 'setSimpleTrigger', 0, 1000, 2, 0, 2000);
-[status2.setSimpleTrigger] = invoke(ps5000aDeviceObj2, 'setSimpleTrigger', 0, 500, 2, 0, 2000);
+[status1.setSimpleTrigger] = invoke(triggerGroupObj1, 'setSimpleTrigger', 0, 1000, 2);
+[status2.setSimpleTrigger] = invoke(triggerGroupObj2, 'setSimpleTrigger', 0, 500, 2);
 
 %% GET TIMEBASE
 

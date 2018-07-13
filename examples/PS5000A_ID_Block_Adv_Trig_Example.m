@@ -66,6 +66,12 @@ connect(ps5000aDeviceObj);
 % Setup a window trigger on channel A. Device should trigger when the input
 % signal is exits a ±1 V window.
 
+% Trigger properties and functions are located in the Instrument
+% Driver's Trigger group.
+
+triggerGroupObj = get(ps5000aDeviceObj, 'Trigger');
+triggerGroupObj = triggerGroupObj(1);
+
 % Trigger channel conditions
 
 triggerConditions = ps5000aStructs.tPS5000ATriggerConditions.members;
@@ -97,11 +103,17 @@ channelProperties.thresholdLowerHysteresis  = mv2adc(10, 5000, ps5000aDeviceObj.
 channelProperties.thresholdMode             = ps5000aEnuminfo.enPS5000AThresholdMode.PS5000A_WINDOW;
 channelProperties.channel                   = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
 
+% Set the |autoTriggerMs| property in order to automatically trigger the
+% oscilloscope after 1 second if a trigger event has not occurred. Set to 0
+% to wait indefinitely for a trigger event.
 
-triggerDelay = 0;
+set(triggerGroupObj, 'autoTriggerMs', 1000);
+
+% Set trigger delay to 0
+set(triggerGroupObj, 'delay', 0);
 
 % Set Advanced trigger
-status.advTrigStatus = invoke(ps5000aDeviceObj, 'setAdvancedTrigger', channelProperties, triggerConditions, triggerDirections, triggerDelay, autoTrigMs);
+status.advTrigStatus = invoke(triggerGroupObj, 'setAdvancedTrigger', channelProperties, triggerConditions, triggerDirections);
 
 %% GET TIMEBASE
 
