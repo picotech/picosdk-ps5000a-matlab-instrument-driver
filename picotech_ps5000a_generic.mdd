@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.9.2</InstrumentVersion>
+   <InstrumentVersion>2.2.9.3</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -7260,7 +7260,7 @@ This function can be used with the Test and Measurement Tool.
 
 Input parameters:
 
-obj - the object representing the device.
+obj - the object representing the Rapidblock group.
 ratio - the downsampling factor that will be applied to the raw data.
 ratioMode - which downsampling mode to use (specified by enumeration from the enPS5000aRatioMode range excluding PS5000A_RATIO_MODE_AGGREGATE).
 
