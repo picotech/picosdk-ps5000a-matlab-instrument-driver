@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.10.4</InstrumentVersion>
+   <InstrumentVersion>2.2.10.5</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -351,7 +351,7 @@
     % Default will be set later via resetDevice
     
     obj.DriverData.channelSettings = zeros(PicoConstants.QUAD_SCOPE, 4);
-    obj.UserData.channelSettings = obj.DriverData.channelSettings
+    obj.UserData.channelSettings = obj.DriverData.channelSettings;
     set(obj, 'channelSettings', obj.UserData.channelSettings);
 
     % Initialise matrix for digital port settings
@@ -359,7 +359,7 @@
     % 2 channels consisting of enabled state and logic level
     % Default will be set later via resetDevice
     
-    obj.DriverData.digitalPortSettings = zeros(PicoConstants.DUAL_SCOPE, 2)
+    obj.DriverData.digitalPortSettings = zeros(PicoConstants.DUAL_SCOPE, 2);
     
     % Power supply not connected or 2-channel 5000D device on non-USB 3.0
     % port
