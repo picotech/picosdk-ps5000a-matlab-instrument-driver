@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.10.2</InstrumentVersion>
+   <InstrumentVersion>2.2.10.3</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -4893,12 +4893,16 @@ For further information on the ps5000aStop function please refer to the PicoScop
 
     % Turn off trigger
 
+    % Obtain Digital group object
+    triggerGroupObj = get(obj, 'Trigger');
+    triggerGroupObj = triggerGroupObj(1);
+    
     obj.DriverData.autoTriggerMs = 0;
     obj.DriverData.autoTriggerUs = 0;
     obj.DriverData.delay = 0;
     
     fprintf('Turning off trigger...\n\n');
-    triggerStatus = invoke(obj, 'setTriggerOff');
+    triggerStatus = invoke(triggerGroupObj, 'setTriggerOff');
 
     fprintf('Default Block mode parameters:-\n\n');
     
