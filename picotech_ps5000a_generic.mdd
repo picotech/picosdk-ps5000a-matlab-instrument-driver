@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.10.1</InstrumentVersion>
+   <InstrumentVersion>2.2.10.2</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -1356,19 +1356,12 @@ Note: Output will still be sent to the Command Window when calling the icdevice,
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If maxADCValue doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'maxADCValue') )
-        obj.UserData.maxADCValue = 0;
-    else
-        propertyValue = obj.UserData.maxADCValue;
-    end</GetMCode>
+    propertyValue = obj.DriverData.maxADCValue;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.maxADCValue = propertyValue;</SetMCode>
+%   the property is a base device property, OBJ is the device object.</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -1424,20 +1417,12 @@ Note: Output will still be sent to the Command Window when calling the icdevice,
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If minADCValue doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'minADCValue') )
-        obj.UserData.minADCValue = 0;
-    else
-        propertyValue = obj.UserData.minADCValue;
-    end
-</GetMCode>
+        propertyValue = obj.DriverData.minADCValue;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.minADCValue = propertyValue;</SetMCode>
+%   the property is a base device property, OBJ is the device object.</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -4908,6 +4893,10 @@ For further information on the ps5000aStop function please refer to the PicoScop
 
     % Turn off trigger
 
+    obj.DriverData.autoTriggerMs = 0;
+    obj.DriverData.autoTriggerUs = 0;
+    obj.DriverData.delay = 0;
+    
     fprintf('Turning off trigger...\n\n');
     triggerStatus = invoke(obj, 'setTriggerOff');
 
@@ -6809,7 +6798,72 @@ Please also refer to the  ps5000aSetDataBuffer and ps5000aGetValues functions.</
          <Mappings>
             <ChannelMap Command="Trigger1" Index="1"/>
          </Mappings>
-         <PropertyInfo/>
+         <PropertyInfo>
+            <Property>
+               <Name>autoTriggerMs</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent'); 
+    propertyValue = deviceObj.DriverData.autoTriggerMs;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    deviceObj.DriverData.autoTriggerMs = propertyValue;</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>The number of milliseconds the device will wait if no trigger occurs. If this is set to zero, the scope device will wait indefinitely for a trigger.
+
+This property will only be used with setSimpleTrigger().</Description>
+            </Property>
+            <Property>
+               <Name>delay</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    propertyValue = deviceObj.DriverData.delay;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    deviceObj.DriverData.delay = propertyValue;</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>The time, in sample periods, between the trigger occurring and the first sample being taken.</Description>
+            </Property>
+         </PropertyInfo>
          <MethodInfo>
             <Method>
                <Name>ps5000aIsTriggerOrPulseWidthQualifierEnabled</Name>
@@ -6818,20 +6872,26 @@ Please also refer to the  ps5000aSetDataBuffer and ps5000aGetValues functions.</
                <Type>MCode</Type>
                <Code>
                   <MCode>function [status, triggerEnabled, pwqEnabled] = ps5000aIsTriggerOrPulseWidthQualifierEnabled(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
+    deviceObj = get(obj, 'Parent');
+    
     % Allocate values for variables
-    triggerEnabled = 0;
-    pwqEnabled = 0;
+    pTriggerEnabled = libpointer('int16Ptr', 0);
+    pPwqEnabled = libpointer('int16Ptr', 0);
 
-    [status, triggerEnabled, pwqEnabled] = calllib('ps5000a', ...
-        'ps5000aIsTriggerOrPulseWidthQualifierEnabled', get(obj, 'unitHandle'), ...
-        triggerEnabled, pwqEnabled);
+    [status, ~, ~] = calllib('ps5000a', 'ps5000aIsTriggerOrPulseWidthQualifierEnabled', ...
+        deviceObj.DriverData.unitHandle, pTriggerEnabled, pPwqEnabled);
     
     if (status ~= PicoStatus.PICO_OK)
            
-        % TBD - Error handling 
+        error('ps5000aIsTriggerOrPulseWidthQualifierEnabled:- status code: %d. Please refer to the PicoStatus.m file.', status); 
         
-    end</MCode>
+    end
+    
+    triggerEnabled = pTriggerEnabled.Value; 
+    pwqEnabled = pPwqEnabled.Value;</MCode>
                </Code>
                <Description>ps5000aIsTriggerOrPulseWidthQualifierEnabled(obj) discovers whether a trigger, or pulse width triggering, is enabled.
 
@@ -6839,15 +6899,13 @@ This function may be used with the Test and Measurement Tool.
 
 Input parameters:
 
-obj - the object representing the device.
+obj - the object representing the Trigger group.
 
 Output parameters:
 
 status - status code returned by the device.
 triggerEnabled - indicates if trigger is set.
-pwqEnabled - indicates if pulse widtrh qualifier is set.
-
-For further information on the ps5000aIsTriggerOrPulseWidthQualifierEnabled function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+pwqEnabled - indicates if pulse width qualifier is set.</Description>
             </Method>
             <Method>
                <Name>ps5000aSetPulseWidthQualifier</Name>
@@ -6856,47 +6914,51 @@ For further information on the ps5000aIsTriggerOrPulseWidthQualifierEnabled func
                <Type>MCode</Type>
                <Code>
                   <MCode>function status = ps5000aSetPulseWidthQualifier(obj, conditions, nConditions, direction, lower, upper, type)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    max_pwq_conditions = evalin('base'), 'PS5000aConstants.MAX_PULSE_WIDTH_QUALIFIER_COUNT');
+    deviceObj = get(obj, 'Parent');
+    
+    maxPwqConditions = deviceObj.DriverData.constants.MAX_PULSE_WIDTH_QUALIFIER_COUNT;
     
     % Verify number of conditions is set correctly
-    if (nConditions &gt; 0 &amp;&amp; nConditions &lt;= max_pwq_conditions)
+    if (nConditions &gt; 0 &amp;&amp; nConditions &lt;= maxPwqConditions)
             
         status = calllib('ps5000a', 'ps5000aSetPulseWidthQualifier', ...
-            get(obj, 'unitHandle'), conditions, nConditions, direction, lower, ...
+            deviceObj.DriverData.unitHandle, conditions, nConditions, direction, lower, ...
             upper, type)
         
     else
        
-        error('ps5000aSetPulseWidthQualifier: Number of PWQ conditions must be between 0 and %d', max_pwq_conditions);
+        error('ps5000aSetPulseWidthQualifier: Number of PWQ conditions must be between 0 and %d', maxPwqConditions);
         
     end
     
     if (status ~= PicoStatus.PICO_OK)
            
-        % TBD - Error handling 
+        error('ps5000aSetPulseWidthQualifier:- status code: %d. Please refer to the PicoStatus.m file.', status); 
         
     end</MCode>
                </Code>
                <Description>ps5000aSetPulseWidthQualifier(obj, conditions, nConditions, direction, lower, upper, type) sets up pulse-width qualification, which can be used on its own for pulse width triggering or combined with window triggering to produce more complex triggers.
 
-If using the Test and Measurement Tool, please use SetPulseWidthQualifier.
+If using the Test and Measurement Tool, please use setPulseWidthQualifier.
 
 Input parameters:
 
-obj - the object representing the device.
+obj - the object representing the Trigger group.
 pwqConditions -  an array of tPS5000APwqConditions structures specifying the conditions that should be applied to each channel.
 nConditions - the number of elements in the conditions array.
-direction - the direction of the signal required for the pulse width trigger to fire (a PS5000A_THRESHOLD_DIRECTION enumeration).
+direction - the direction of the signal required for the pulse width trigger to fire (an enPS5000AThresholdDirection enumeration).
 lower - the lower limit of the pulse-width counter with relation to number of samples captured on the device.
 upper - the upper limit of the pulse-width counter with relation to number of samples captured on the device.
-type - the pulse-width type (a PS5000A_PULSE_WIDTH_TYPE enumeration).
+type - the pulse-width type (an enPS5000APulseWidthType enumeration).
 
 Output parameters:
 
 status - status code returned by the device.
 
-For further information on the  ps5000aSetPulseWidthQualifer function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+For further information on the ps5000aSetPulseWidthQualifier function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
                <Name>ps5000aSetTriggerChannelDirections</Name>
@@ -6908,15 +6970,17 @@ For further information on the  ps5000aSetPulseWidthQualifer function please ref
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
 
+    deviceObj = get(obj, 'Parent');
+
     % Aux parameter not used.
     aux = 0;
     
     status = calllib('ps5000a', 'ps5000aSetTriggerChannelDirections', ...
-        get(obj, 'unitHandle'), channelA, channelB, channelC, channelD, ext, aux);
+        deviceObj.DriverData.unitHandle, channelA, channelB, channelC, channelD, ext, aux);
     
     if (status ~= PicoStatus.PICO_OK)
            
-        % TBD - Error handling 
+        error('ps5000aSetTriggerChannelDirections:- status code: %d. Please refer to the PicoStatus.m file.', status); 
         
     end </MCode>
                </Code>
@@ -6926,8 +6990,8 @@ This function may be used with the Test and Measurement Tool.
 
 Input parameters:
 
-obj - the object representing the device.
-channelA, channelB,channelC, channelD, ext - the direction in which the signal must pass through the threshold to activate the trigger (an enumeration from the PS5000A_THRESHOLD_DIRECTION range).
+obj - the object representing the Trigger group.
+channelA, channelB,channelC, channelD, ext - the direction in which the signal must pass through the threshold to activate the trigger (an enumeration from the enPS5000AThresholdDirection range).
 
 Output parameters:
 
@@ -6942,8 +7006,12 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
                <Type>MCode</Type>
                <Code>
                   <MCode>function advTrigStatus = setAdvancedTrigger(obj, channelProperties, triggerConditions, directions, delay, autoTriggerMs)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    if (obj.DriverData.displayOutput == PicoConstants.TRUE)
+    deviceObj = get(obj, 'Parent');
+    
+    if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
         
         fprintf('setAdvancedTrigger: Number of channelProperties elements: %d\n', length(channelProperties));
 
@@ -6951,11 +7019,9 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
     
     % Set the trigger channel properties
     % No aux output so set to 0
-    advTrigStatus.set_trig_ch_prop_status = calllib('ps5000a', ...
-        'ps5000aSetTriggerChannelProperties', get(obj, 'unitHandle'), ...
+    advTrigStatus.setProperties = calllib('ps5000a', ...
+        'ps5000aSetTriggerChannelProperties', deviceObj.DriverData.unitHandle, ...
         channelProperties, length(channelProperties), 0, autoTriggerMs);
-
-    advTrigStatus.set_trig_ch_prop_status;
 
     if (obj.DriverData.displayOutput == PicoConstants.TRUE)
         
@@ -6964,24 +7030,18 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
     end
     
     % Set trigger conditions
-    advTrigStatus.set_trig_ch_conditions_status = calllib('ps5000a', ...
-        'ps5000aSetTriggerChannelConditions', get(obj, 'unitHandle'), ...
+    advTrigStatus.setConditions = calllib('ps5000a', ...
+        'ps5000aSetTriggerChannelConditions', deviceObj.DriverData.unitHandle, ...
         triggerConditions, length(triggerConditions));
 
-    advTrigStatus.set_trig_ch_conditions_status;
-
     % Set directions
-    advTrigStatus.set_trig_ch_dirs_status = invoke(obj, 'ps5000aSetTriggerChannelDirections', ...
+    advTrigStatus.setDirections = invoke(obj, 'ps5000aSetTriggerChannelDirections', ...
         directions.channelA, directions.channelB, directions.channelC, ...
         directions.channelD, directions.external, directions.aux);
 
-    advTrigStatus.set_trig_ch_dirs_status;
-
     % Post trigger delay
-    advTrigStatus.set_trig_delay_status = calllib('ps5000a', ...
-        'ps5000aSetTriggerDelay', get(obj, 'unitHandle'), delay);
-
-    advTrigStatus.set_trig_delay_status;</MCode>
+    advTrigStatus.setTriggerDelay = calllib('ps5000a', ...
+        'ps5000aSetTriggerDelay', deviceObj.DriverData.unitHandle, delay);</MCode>
                </Code>
                <Description>setAdvancedTrigger(obj, channelProperties, triggerConditions, directions, delay, autoTriggerMs) sets the Advanced Trigger properties for the oscilloscope.
 
@@ -6997,64 +7057,66 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
 % If this is a group function, OBJ is the group object. If
 % it a base device function, OBJ is the device object.
 
+    deviceObj = get(obj, 'Parent');
+
     % Determine if the number of sub-elements in the array is correct.
     % Find the number of elements in the structure and use this with the
     % length of the conditions array.
-    pwq_conditions_struct = evalin('base', 'ps5000aStructs.tPS5000APwqConditions.members');
-    pwq_conditions_elements = length(fieldnames(pwq_conditions_struct));
+    pwqConditionsStruct = deviceObj.DriverData.structs.tPS5000APwqConditions.members;
+    pwqConditionsElements = length(fieldnames(pwqConditionsStruct));
     
     % Length of array containing PWQ elements
-    pwq_length = length(pwqConditions)
+    pwqLength = length(pwqConditions)
     
-    if (mod(pwq_length, pwq_conditions_elements) == 0)
+    if (mod(pwqLength, pwqConditionsElements) == 0)
         
         % Calculate the number of conditions
-        num_conditions = pwq_length / pwq_conditions_elements;
+        numConditions = pwqLength / pwqConditionsElements;
         
-        max_pwq_conditions = evalin('base'), 'PS5000aConstants.MAX_PULSE_WIDTH_QUALIFIER_COUNT');
+        maxPwqConditions = deviceObj.DriverData.constants.MAX_PULSE_WIDTH_QUALIFIER_COUNT;
         
-        if (num_conditions &gt; 0 &amp;&amp; num_conditions &lt;= max_pwq_conditions)
+        if (numConditions &gt; 0 &amp;&amp; numConditions &lt;= maxPwqConditions)
         
             status = calllib('ps5000aWrap', 'SetPulseWidthQualifier', ...
-                        get(obj, 'unitHandle'), properties, num_conditions, ...
+                        deviceObj.DriverData.unitHandle, properties, numConditions, ...
                         direction, lower, upper, type);
                     
         else
            
-            error('SetPulseWidthQualifier: Number of PWQ conditions must be between 0 and %d', max_pwq_conditions);
+            error('setPulseWidthQualifier: Number of PWQ conditions must be between 0 and %d', maxPwqConditions);
             
         end
         
     else
         
-        error('SetPulseWidthQualifier: Incorrect number of sub-elements in pwq conditions array. The array must be 1xN with %d sub-elements', pwq_conditions_elements);
+        error('setPulseWidthQualifier: Incorrect number of sub-elements in pwq conditions array. The array must be 1xN with %d sub-elements', pwqConditionsElements);
     
     end
 
     if (status ~= PicoStatus.PICO_OK)
 
-        % TBD - Error handling 
+        error('setPulseWidthQualifier:- status code: %d. Please refer to the PicoStatus.m file.', status); 
 
     end
     
-    clear pwq_conditions_struct;
-    clear pwq_conditions_elements;
-    clear pwq_length;
-    clear num_conditions;
-    clear max_pwq_conditions;</MCode>
+    clear pwqConditionsStruct;
+    clear pwqConditionsElements;
+    clear pwqLength;
+    clear numConditions;
+    clear maxPwqConditions;</MCode>
                </Code>
-               <Description>SetPulseWidthQualifier(obj, pwqConditions, direction, lower, upper, type) 
+               <Description>setPulseWidthQualifier(obj, pwqConditions, direction, lower, upper, type) 
 
 This function can be used with the Test and Measurement Tool.
 
 Input parameters:
 
-obj - the object representing the device.
-pwqConditions -  a 1-D array of n sub-arrays consisting of the elements in a PS5000A_PWQ_CONDITIONS structure.
-direction - the direction of the signal required for the pulse width trigger to fire (a PS5000A_THRESHOLD_DIRECTION enumeration).
+obj - the object representing the Trigger object.
+pwqConditions -  a 1-D array of n sub-arrays consisting of the elements in a tPS5000APwqConditions structure.
+direction - the direction of the signal required for the pulse width trigger to fire (a enPS5000AThresholdDirection enumeration).
 lower - the lower limit of the pulse-width counter with relation to number of samples captured on the device.
 upper - the upper limit of the pulse-width counter with relation to number of samples captured on the device.
-type - the pulse-width type (a PS5000A_PULSE_WIDTH_TYPE enumeration).
+type - the pulse-width type (an enPS5000APulseWidthType).
 
 Output parameters:
 
@@ -7068,43 +7130,47 @@ For further information on the SetPulseWidthQualifier function please refer to t
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
-                  <MCode>function status = setSimpleTrigger(obj, source, threshold_mv, direction, delay, autoTrigger_ms)
+                  <MCode>function status = setSimpleTrigger(obj, source, thresholdMv, direction)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
 
+    deviceObj = get(obj, 'Parent');
+    
     % Find the voltage range index
-    % Set default as 5V (External trigger will use this range).
-    channel_range =  evalin('base', 'ps5000aEnuminfo.enPS5000ARange.PS5000A_5V');
+    % Set default as 5 V (External trigger will use this range).
+    channelRange = deviceObj.DriverData.enums.enPS5000ARange.PS5000A_5V;
 
     % Obtain information for device 
-    channel_settings = cell2mat(obj.UserData.channelSettings(:));
+    channelSettings = obj.DriverData.channelSettings;
     
     % Range is item 3 in the row for each channel
 
     switch (source)
 
         % Channel A
-        case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A')
+        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A
 
-            channel_range = channel_settings(1,3);
+            channelRange = channelSettings(1,3);
 
         % Channel B
-        case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_B')
+        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_B
 
-            channel_range = channel_settings(2,3);
+            channelRange = channelSettings(2,3);
 
         % Channel C
-        case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_C')
+        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_C
 
-            channel_range = channel_settings(3,3);
+            channelRange = channelSettings(3,3);
 
         % Channel D
-        case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_D')
+        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_D
 
-            channel_range = channel_settings(4,3);
+            channelRange = channelSettings(4,3);
            
         % External trigger
-        case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_EXTERNAL')
+        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_EXTERNAL
             
-            % External trigger has +/-5V range - no need to change.
+            % External trigger has ±5V range - no need to change.
 
         otherwise
 
@@ -7113,14 +7179,14 @@ For further information on the SetPulseWidthQualifier function please refer to t
     end
 
     % Obtain the range being used in milliVolts
-    channel_range_mv = PicoConstants.SCOPE_INPUT_RANGES(channel_range + 1);
+    channelRangeMv = PicoConstants.SCOPE_INPUT_RANGES(channelRange + 1);
 
     % Calculate the threshold in ADC counts
-    threshold_adc = mv2adc(threshold_mv, channel_range_mv, get(obj, 'maxADCValue'));
+    thresholdAdc = mv2adc(thresholdMv, channelRangeMv, deviceObj.DriverData.maxADCValue);
 
     status = calllib('ps5000a', 'ps5000aSetSimpleTrigger', ...
-            get(obj, 'unitHandle'), PicoConstants.TRUE, source, threshold_adc, direction, ...
-            delay, autoTrigger_ms);</MCode>
+            deviceObj.DriverData.unitHandle, PicoConstants.TRUE, source, thresholdAdc, direction, ...
+            deviceObj.DriverData.delay, deviceObj.DriverData.autoTriggerMs);</MCode>
                </Code>
                <Description>setSimpleTrigger(obj, source, threshold, direction, delay, autoTrigger_ms) simplifies arming the trigger. 
 
@@ -7130,12 +7196,10 @@ This function may be used with the Test and Measurement Tool.
 
 Input parameters:
 
-obj - the object representing the device.
-source - the channel on which to trigger (an enumeration from the PS5000A_CHANNEL range).
+obj - the object representing the Trigger group.
+source - the channel on which to trigger (an enumeration from the enPS5000AChannel range).
 threshold - the voltage level (in millivolts) at which the trigger will fire.
-direction - the direction in which the signal must move to cause a trigger (a PS5000A_THRESHOLD_DIRECTION enumeration).
-delay - the time between the trigger occurring and the first sample.
-autoTrigger_ms - the number of milliseconds that the device will wait if no trigger occurs.
+direction - the direction in which the signal must move to cause a trigger (an enPS5000AThresholdDirection enumeration).
 
 Output parameters:
 
@@ -7153,31 +7217,33 @@ For further information on the setSimpleTrigger function please refer to the ps5
 % If this is a group function, OBJ is the group object. If
 % it a base device function, OBJ is the device object.
 
+    deviceObj = get(obj, 'Parent');
+
     % Determine if the number of sub-elements in the array is correct.
     % Find the number of elements in the structure and use this with the
     % length of the properties array.
-    trig_conditions_struct = evalin('base', 'ps5000aStructs.tPS5000ATriggerChannelProperties.members');
-    trig_conditions_elements = length(fieldnames(trig_conditions_struct));
+    trigConditionsStruct = deviceObj.DriverData.structs.tPS5000ATriggerChannelProperties.members;
+    trigConditionsElements = length(fieldnames(trigConditionsStruct));
     
-    conditions_length = length(conditions);
+    conditionsLength = length(conditions);
     
-    if (mod(conditions_length, trig_conditions_elements) == 0)
+    if (mod(conditionsLength, trigConditionsElements) == 0)
         
         % Calculate number of sub-elements in array.
-        num_conditions = conditions_length / trig_properties_elements;
+        numConditions = conditionsLength / trig_properties_elements;
         
         status = calllib('ps5000aWrap', 'SetTriggerConditions', ...
-        get(obj, 'unitHandle'), conditions, num_conditions);
+        deviceObj.DriverData.unitHandle, conditions, numConditions);
         
     else
         
-        error('SetTriggerConditions: Incorrect number of sub-elements in conditions array. The array must be 1xN with %d sub-elements', trig_conditions_elements);
+        error('SetTriggerConditions: Incorrect number of sub-elements in conditions array. The array must be 1xN with %d sub-elements', trigConditionsElements);
     
     end
     
     if (status ~= PicoStatus.PICO_OK)
            
-        % TBD - Error handling 
+        error('setTriggerConditions:- status code: %d. Please refer to the PicoStatus.m file.', status); 
         
     end</MCode>
                </Code>
@@ -7187,8 +7253,8 @@ This function may be used with the Test and Measurement Tool.
 
 Input parameters:
 
-obj - the object representing the device.
-conditions - a 1-D array of n sub-arrays consisting of the elements in a PS5000A_TRIGGER_CONDITIONS structure.
+obj - the object representing the Trigger object.
+conditions - a 1-D array of n sub-arrays consisting of the elements in a tPS5000ATriggerChannelProperties structure.
 
 Output parameters:
 
@@ -7206,24 +7272,19 @@ For further information on the SetTriggerConditions function please refer to the
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
 
+    deviceObj = get(obj, 'Parent');
+
     % Set trigger to false for channel A
+
+    channel = deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A;
     
-    %source = 0; % Channel A
-    %threshold_adc = 0;
-    %direction = 0;
-    %delay = 0;
-    %autoTrigger_ms = 0;
-    
-    %status = calllib('ps5000a', 'ps5000aSetSimpleTrigger', ...
-    %        get(obj, 'unitHandle'), PicoConstants.FALSE, source, ...
-    %        threshold_adc, direction, delay, autoTrigger_ms);
-    
-    status = calllib('ps5000a', 'ps5000aSetTriggerChannelConditions', ...
-        get(obj, 'unitHandle'), [], 0);
+    status = calllib('ps5000a', 'ps5000aSetSimpleTrigger', ...
+            deviceObj.DriverData.unitHandle, PicoConstants.FALSE, channel, 0, 0, ...
+            deviceObj.DriverData.delay, deviceObj.DriverData.autoTriggerMs);
     
     if (status ~= PicoStatus.PICO_OK)
            
-        error('ps5000aSetTriggerChannelConditions: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
+        error('setTriggerOff: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
         
     end</MCode>
                </Code>
@@ -7233,7 +7294,7 @@ This function can be used with the Test and Measurement Tool.
 
 Input parameters:
 
-obj - the object representing the device.
+obj - the object representing the Trigger group.
 
 Output parameters:
 
@@ -7245,34 +7306,36 @@ status - status code returned by the device.</Description>
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
-                  <MCode>function setTriggerProperties(obj, properties, autoTrig)
+                  <MCode>function setTriggerProperties(obj, properties)
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
 
     % Determine if the number of sub-elements in the array is correct.
     % Find the number of elements in the structure and use this with the
     % length of the properties array.
-    trig_properties_struct = evalin('base', 'ps5000aStructs.tPS5000ATriggerChannelProperties.members');
-    trig_properties_elements = length(fieldnames(trig_properties_struct));
+    trigPropertiesStruct = deviceObj.DriverData.structs.tPS5000ATriggerChannelProperties.members;
+    trigPropertiesElements = length(fieldnames(trigPropertiesStruct));
     
-    properties_length = length(properties)
+    propertiesLength = length(properties)
     
-    if (mod(properties_length, trig_properties_elements) == 0)
+    if (mod(propertiesLength, trigPropertiesElements) == 0)
         
-        num_properties = properties_length / trig_properties_elements;
+        numProperties = propertiesLength / trigPropertiesElements;
         
         status = calllib('ps5000aWrap', 'SetTriggerProperties', ...
-        get(obj, 'unitHandle'), properties, num_properties, autoTrig);
+                    deviceObj.DriverData.unitHandle, properties, numProperties, deviceObj.DriverData.autoTriggerMs);
         
     else
         
-        error('SetTriggerProperties: Incorrect number of sub-elements in properties array. The array must be 1xN with %d sub-elements', trig_properties_elements);
+        error('SetTriggerProperties: Incorrect number of sub-elements in properties array. The array must be 1xN with %d sub-elements', trigPropertiesElements);
     
     end
     
     if (status ~= PicoStatus.PICO_OK)
            
-        % TBD - Error handling 
+        error('setTriggerProperties: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
         
     end</MCode>
                </Code>
@@ -7282,9 +7345,8 @@ This function may be used with the Test and Measurement Tool in place of the ps5
 
 Input parameters:
 
-obj - the object representing the device.
-properties - a 1-D array of n sub-arrays consisting of the elements in a PS5000A_TRIGGER_CHANNEL_PROPERTIES structure.
-autoTrig - the time in milliseconds for which the scope device will wait before collecting data if no trigger event occurs.
+obj - the object representing the Trigger group.
+properties - a 1-D array of n sub-arrays consisting of the elements in a tPS5000ATriggerChannelProperties structure.
 
 Output parameters:
 
