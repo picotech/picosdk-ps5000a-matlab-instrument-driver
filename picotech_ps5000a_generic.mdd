@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.10.6</InstrumentVersion>
+   <InstrumentVersion>2.2.10.7</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -7027,7 +7027,7 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
         'ps5000aSetTriggerChannelProperties', deviceObj.DriverData.unitHandle, ...
         channelProperties, length(channelProperties), 0, deviceObj.DriverData.autoTriggerMs);
 
-    if (obj.DriverData.displayOutput == PicoConstants.TRUE)
+    if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
         
         fprintf('setAdvancedTrigger: Number of triggerConditions elements: %d\n', length(triggerConditions));
         
