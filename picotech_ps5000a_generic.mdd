@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.10.3</InstrumentVersion>
+   <InstrumentVersion>2.2.10.4</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -7145,7 +7145,7 @@ For further information on the SetPulseWidthQualifier function please refer to t
     channelRange = deviceObj.DriverData.enums.enPS5000ARange.PS5000A_5V;
 
     % Obtain information for device 
-    channelSettings = obj.DriverData.channelSettings;
+    channelSettings = deviceObj.DriverData.channelSettings;
     
     % Range is item 3 in the row for each channel
 
