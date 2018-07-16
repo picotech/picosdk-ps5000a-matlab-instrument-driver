@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.11.13</InstrumentVersion>
+   <InstrumentVersion>2.2.11.14</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -2079,207 +2079,6 @@ overflow - a set of flags that indicate whether an overvoltage has occurred on a
 Channels not enabled or not supported by this device will be returned as an empty array.
 
 Please also refer to the  ps5000aSetDataBuffer and ps5000aGetValues functions as well as the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
-               <Name>getEtsBlockData</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [etsTimes, channelA, channelB, channelC, channelD, numSamples, overflow] = getEtsBlockData(obj, startIndex, segmentIndex, ratio, ratioMode)
-% For group functions, OBJ is the group object. For
-% base device functions, OBJ is the device object.
-
-    % Check ratio mode is not aggregated
-    if (ratioMode ~= evalin('base', 'ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_AGGREGATE'))
-        
-        % Retrieve channel settings - channel x data field matrix
-        channel_settings = cell2mat(obj.UserData.channelSettings(:)); 
-        
-        % Create empty arrays for channel data.
-        channelA = [];
-        channelB = [];
-        channelC = [];
-        channelD = [];
-
-        % Overflow indicator
-        overflow = 0;
-
-        % Initialise variable for array of libpointers
-        p_buffer = libpointer;
-        
-        % Initialise status
-        set_buffer_status = 0;
-
-        % Total number of samples to set for data buffers, taking into
-        % account the downsampling ratio
-        totalSamples = ceil((get(obj, 'numPreTriggerSamples') + get(obj, 'numPostTriggerSamples')) / ratio);
-        
-        if (obj.DriverData.displayOutput == PicoConstants.TRUE)
-            
-            fprintf('getEtsBlockData: Setting up data buffers...\n');
-            
-        end
-
-        channel_count = get(obj, 'channelCount');
-        
-        % For 4 channel models verify power supply is connected
-        % Only 2 channels are enabled if the power supply is not connected
-        
-        if (channel_count == PicoConstants.QUAD_SCOPE)
-        
-            current_power_state = invoke(obj, 'ps5000aCurrentPowerSource');
-        
-            if (current_power_state == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED)
-           
-                channel_count = PicoConstants.DUAL_SCOPE;
-                
-            end
-            
-        end
-        
-        for ch = 1:channel_count
-
-            % Set Data Buffer if channel is enabled - index 1 indicates if
-            % channel is enabled
-            if (channel_settings(ch,1) == PicoConstants.TRUE)
-                
-                % Store array of libpointers
-                p_buffer(ch) = libpointer('int16Ptr', zeros(totalSamples, 1));
-
-                set_buffer_status = invoke(obj, 'ps5000aSetDataBuffer', ...
-                    (ch - 1), p_buffer(ch), totalSamples, segmentIndex, ratioMode);
-                
-                if (set_buffer_status ~= PicoStatus.PICO_OK)
-                    
-                    error('getEtsBlockData: Set Data Buffer for Channel %d error code %d', ...
-                        (ch - 1), set_buffer_status);
-                    
-                end
-
-            end
-
-        end
-        
-        % Set ETS Time buffer
-        pEtsTimeBuffer = libpointer('int64Ptr', zeros(totalSamples, 1, 'int64'));
-
-        status = calllib('ps5000a', 'ps5000aSetEtsTimeBuffer', ...
-                    get(obj, 'unitHandle'), pEtsTimeBuffer, totalSamples);
-        
-        if (obj.DriverData.displayOutput == PicoConstants.TRUE)
-        
-            fprintf('getEtsBlockData: Retrieving data...\n');
-            
-        end
-        
-        % Call ps5000aGetValues
-        [get_values_status, numSamples, overflow] = invoke(obj, ...
-            'ps5000aGetValues', startIndex, totalSamples, ratio, ratioMode, ...
-            segmentIndex, overflow);
-        
-        if (get_values_status == PicoStatus.PICO_OK)
-            
-            % Retrieve ETS times
-            etsTimes = pEtsTimeBuffer.Value;  
-            
-            if (obj.DriverData.displayOutput == PicoConstants.TRUE)
-                
-                fprintf('getEtsBlockData: Assigning data to array and converting to millivolts.\n');
-                
-            end
-            
-            % Retrieve data values for enabled channels
-            for ch = 1:channel_count
-
-                if(channel_settings(ch,1) == PicoConstants.TRUE)
-                    
-                    scope_input_index = channel_settings(ch,3) + 1;
-                    voltage_range = PicoConstants.SCOPE_INPUT_RANGES(scope_input_index);
-                    
-                    buffer_values = adc2mv(p_buffer(ch).Value, voltage_range, get(obj, 'maxADCValue'));
-
-                    switch(ch - 1)
-
-                        case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A')
-
-                            channelA = buffer_values;
-
-                        case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_B')
-
-                            channelB = buffer_values;
-
-                        case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_C')
-
-                            channelC = buffer_values;
-
-                        case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_D')
-
-                            channelD = buffer_values;
-
-                        otherwise
-
-                            % Do nothing
-
-                    end
-                    
-                end
-                
-            end
-            
-            if (obj.DriverData.displayOutput == PicoConstants.TRUE)
-                
-                fprintf('getEtsBlockData: Data succesfully retrieved.\n');
-                
-            end
-            
-        else
-            
-            error('getEtsBlockData: Error retrieving data values - code: %d', get_values_status);
-            
-        end
-        
-        
-    else
-        
-        error('getEtsBlockData: Aggregate Mode data collection not supported by this function.');
-        
-    end
-    
-    if (obj.DriverData.displayOutput == PicoConstants.TRUE)
-        
-        fprintf('\n');
-        
-    end</MCode>
-               </Code>
-               <Description>getEtsBlockData(obj, startIndex, segmentIndex, ratio, ratioMode) returns Equivalent Time Sampling (ETS) block mode data with or without downsampling starting at the specified sample number.
-
-Memory for the data arrays is allocated and the driver is informed where to store the data prior to retrieval. Data collection in Aggregation mode or with more than one downsampling mode  is NOT supported by this function.
-
-This function can be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-startIndex - a zero-based index that indicates the start point for data collection.
-segmentIndex - the number of the memory segment to be used/where the data is stored.
-ratio - the downsampling factor that will be applied to the raw data.
-ratioMode - which downsampling mode to use (specified by enumeration from the PS5000A_RATIO_MODE excluding PS5000A_RATIO_MODE_AGGREGATE).
-
-
-Output parameters:
-
-etsTimes - an array containing the times (in femtoseconds) at which each sample was captured.
-channelA - an array containing data values (in millivolts) for channel A.
-channelB - an array containing data values (in millivolts) for channel B.
-channelC - an array containing data values (in millivolts) for channel C.
-channelD - an array containing data values (in millivolts) for channel D.
-numSamples - the number of samples retrieved from the driver.
-overflow - a set of flags that indicate whether an overvoltage has occurred on any of the channels.
-
-Channels not enabled or not supported by this device will be returned as an empty array.
-
-Please also refer to the ps5000aSetEtsTimeBuffer, ps5000aSetDataBuffer and ps5000aGetValues functions as well as the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
                <Name>getRapidBlockData</Name>
@@ -5624,6 +5423,218 @@ portD1 - an array containing data values in binary format for digital Port 1 (in
 
 Please also refer to the ps5000aSetDataBuffer, and ps5000aGetValues functions.
 </Description>
+            </Method>
+            <Method>
+               <Name>getEtsBlockData</Name>
+               <Location>block</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [etsTimes, channelA, channelB, channelC, channelD, numSamples, overflow] = getEtsBlockData(obj, startIndex, segmentIndex, ratio, ratioMode)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    unitHandle = deviceObj.DriverData.unitHandle;
+
+    % Check ratio mode is not aggregated
+    if (ratioMode ~= deviceObj.DriverData.enums.enPS5000ARatioMode.PS5000A_RATIO_MODE_AGGREGATE)
+        
+        % Retrieve channel settings - channel x data field matrix
+        channelSettings = deviceObj.DriverData.channelSettings; 
+        
+        % Create empty arrays for channel data.
+        channelA = [];
+        channelB = [];
+        channelC = [];
+        channelD = [];
+
+        % Overflow indicator
+        overflow = 0;
+
+        % Initialise variable for array of libpointers
+        pBuffer = libpointer;
+        
+        % Initialise status
+        setBufferStatus = 0;
+
+        % Total number of samples to set for data buffers, taking into
+        % account the downsampling ratio
+        totalSamples = ceil((deviceObj.DriverData.numPreTriggerSamples + deviceObj.DriverData.numPostTriggerSamples) / ratio);
+        
+        if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+            
+            fprintf('getEtsBlockData: Setting up data buffers...\n');
+            
+        end
+
+        channelCount = deviceObj.DriverData.channelCount;
+        
+        % For 4 channel models verify power supply is connected
+        % Only 2 channels are enabled if the power supply is not connected
+        
+        if (channelCount == PicoConstants.QUAD_SCOPE)
+        
+            currentPowerState = invoke(obj, 'ps5000aCurrentPowerSource');
+        
+            if (currentPowerState == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED)
+           
+                channelCount = PicoConstants.DUAL_SCOPE;
+                
+            end
+            
+        end
+
+        for ch = 1:channelCount
+
+            % Set Data Buffer if channel is enabled - index 1 indicates if
+            % channel is enabled
+            if (channelSettings(ch,1) == PicoConstants.TRUE)
+                
+                % Store array of libpointers
+                pBuffer(ch) = libpointer('int16Ptr', zeros(totalSamples, 1, 'int16'));
+
+                setBufferStatus = calllib('ps5000a', 'ps5000aSetDataBuffer', unitHandle, ...
+                    (ch - 1), pBuffer(ch), totalSamples, segmentIndex, ratioMode);
+                
+                if (setBufferStatus ~= PicoStatus.PICO_OK)
+                    
+                    error('getEtsBlockData: Set Data Buffer for Channel %d error code %d', ...
+                        (ch - 1), setBufferStatus);
+                    
+                end
+
+            end
+
+        end
+        
+        % Set ETS Time buffer
+        pEtsTimeBuffer = libpointer('int64Ptr', zeros(totalSamples, 1, 'int64'));
+
+        status = calllib('ps5000a', 'ps5000aSetEtsTimeBuffer', ...
+                    unitHandle, pEtsTimeBuffer, totalSamples);
+        
+        if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+        
+            fprintf('getEtsBlockData: Retrieving data...\n');
+            
+        end
+
+        % Call ps5000aGetValues
+        [getValuesStatus, numSamples, overflow] = calllib('ps5000a', 'ps5000aGetValues', ...
+            unitHandle, startIndex, totalSamples, ratio, ratioMode, ...
+            segmentIndex, overflow);
+
+        if (getValuesStatus == PicoStatus.PICO_OK)
+            
+            % Retrieve ETS times
+            etsTimes = pEtsTimeBuffer.Value;  
+            
+            if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+                
+                fprintf('getEtsBlockData: Assigning data to array and converting to millivolts.\n');
+                
+            end
+            
+            % Obtain max ADC count value
+            maxADCValue = double(deviceObj.DriverData.maxADCValue);
+            
+            % Retrieve data values for enabled channels
+            for ch = 1:channelCount
+
+                if (channelSettings(ch,1) == PicoConstants.TRUE)
+                    
+                    % Obtain the index for the
+                    % PicoConstants.SCOPE_INPUT_RANGES array corresponding
+                    % to the voltage range selected for the channel.
+                    scopeInputIndex = channelSettings(ch,3) + 1;
+                    voltageRange = PicoConstants.SCOPE_INPUT_RANGES(scopeInputIndex);
+                    
+                    % Obtain the voltage range for the channel.
+                    bufferValues = adc2mv(pBuffer(ch).Value, voltageRange, maxADCValue);
+
+                    switch(ch - 1)
+
+                        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A
+
+                            channelA = bufferValues;
+
+                        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_B
+
+                            channelB = bufferValues;
+
+                        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_C
+
+                            channelC = bufferValues;
+
+                        case deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_D
+
+                            channelD = bufferValues;
+
+                        otherwise
+
+                            % Do nothing
+
+                    end
+                    
+                end
+                
+            end
+            
+            if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+                
+                fprintf('getEtsBlockData: Data succesfully retrieved.\n');
+                
+            end
+            
+        else
+            
+            error('getEtsBlockData: Error retrieving data values - code: %d', getValuesStatus);
+            
+        end
+        
+        
+    else
+        
+        error('getEtsBlockData: Aggregate Mode data collection not supported by this function.');
+        
+    end
+    
+    if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+        
+        fprintf('\n');
+        
+    end</MCode>
+               </Code>
+               <Description>getEtsBlockData(obj, startIndex, segmentIndex, ratio, ratioMode) returns Equivalent Time Sampling (ETS) block mode data with or without downsampling starting at the specified sample number.
+
+Memory for the data arrays is allocated and the driver is informed where to store the data prior to retrieval. Data collection in Aggregation mode or with more than one downsampling mode  is NOT supported by this function.
+
+This function can be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the device.
+startIndex - a zero-based index that indicates the start point for data collection.
+segmentIndex - the number of the memory segment to be used/where the data is stored.
+ratio - the downsampling factor that will be applied to the raw data.
+ratioMode - which downsampling mode to use (specified by enumeration from the PS5000A_RATIO_MODE excluding PS5000A_RATIO_MODE_AGGREGATE).
+
+
+Output parameters:
+
+etsTimes - an array containing the times (in femtoseconds) at which each sample was captured.
+channelA - an array containing data values (in millivolts) for channel A.
+channelB - an array containing data values (in millivolts) for channel B.
+channelC - an array containing data values (in millivolts) for channel C.
+channelD - an array containing data values (in millivolts) for channel D.
+numSamples - the number of samples retrieved from the driver.
+overflow - a set of flags that indicate whether an overvoltage has occurred on any of the channels.
+
+Channels not enabled or not supported by this device will be returned as an empty array.
+
+Please also refer to the ps5000aSetEtsTimeBuffer, ps5000aSetDataBuffer and ps5000aGetValues functions as well as the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
                <Name>ps5000aGetValues</Name>

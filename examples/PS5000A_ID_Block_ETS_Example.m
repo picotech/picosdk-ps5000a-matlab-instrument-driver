@@ -56,7 +56,7 @@ connect(ps5000aDeviceObj);
 
 status.chB = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', 1, 0, 1, 8, 0.0);
         
-if(ps5000aDeviceObj.channelCount == PicoConstants.QUAD_SCOPE)
+if (ps5000aDeviceObj.channelCount == PicoConstants.QUAD_SCOPE)
 
     status.currentPowerSource = invoke(ps5000aDeviceObj, 'ps5000aCurrentPowerSource');
 
@@ -75,35 +75,34 @@ end
 % Set Equivalent Time Sampling Parameters
 % Note: ETS mode is only supported in 8-bit resolution
 
-mode            = ps5000aEnuminfo.enPS5000AEtsMode.PS5000A_ETS_SLOW;
-etsCycles       = 50;
-etsInterleave   = 10;
+% Block data acquisition properties and functions are located in the 
+% Instrument Driver's Block group.
 
-[status.setEts, sampleTimePicoSeconds] = invoke(ps5000aDeviceObj, 'ps5000aSetEts', mode, etsCycles, etsInterleave);
+blockGroupObj = get(ps5000aDeviceObj, 'Block');
+blockGroupObj = blockGroupObj(1);
+
+mode            = ps5000aEnuminfo.enPS5000AEtsMode.PS5000A_ETS_SLOW;
+etsCycles       = 20;
+etsInterleave   = 5;
+
+[status.setEts, sampleTimePicoSeconds] = invoke(blockGroupObj, 'ps5000aSetEts', mode, etsCycles, etsInterleave);
 
 %% SET SIMPLE TRIGGER
+% Set a trigger on channel A.
 
-% Channel     : 0 (PS5000A_CHANNEL_A)
-% Threshold   : 1000 (mV)
-% Direction   : 2 (Rising)
-% Delay       : 0
-% Auto trigger: 0 (wait indefinitely)
+% Trigger properties and functions are located in the Instrument
+% Driver's Trigger group.
 
-[status.setSimpleTrigger] = invoke(ps5000aDeviceObj, 'setSimpleTrigger', 0, 1000, 2, 0, 0);
+triggerGroupObj = get(ps5000aDeviceObj, 'Trigger');
+triggerGroupObj = triggerGroupObj(1);
 
-%% GET TIMEBASE
+% Channel     : 0 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A)
+% Threshold   : 1000 mV
+% Direction   : 2 (ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING)
 
-% Driver default timebase index used - use ps5000aGetTimebase or
-% ps5000aGetTimebase2 to query the driver as to suitability of using a
-% particular timebase index then set the 'timebase' property if required.
-
-% timebase     : 4
-% segment index: 0
-
-timebase = 4;
-
-[status.getTimebase, timeIntervalNanoSeconds, maxSamples] = invoke(ps5000aDeviceObj, 'ps5000aGetTimebase', timebase, 0);
-set(ps5000aDeviceObj, 'timebase', timebase);
+[status.setSimpleTrigger] = invoke(triggerGroupObj, 'setSimpleTrigger', 0, 1000, 2);
+%status.setSimpleTrigger = calllib('ps5000a', 'ps5000aSetSimpleTrigger', ps5000aDeviceObj.unitHandle, 1, ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A, 16256, ...
+%    ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING, 0, 0);
 
 %% SET BLOCK PARAMETERS AND CAPTURE DATA
 
@@ -115,7 +114,7 @@ set(ps5000aDeviceObj, 'numPostTriggerSamples', 5000);
 %
 % segment index: 0
 
-[status.runBlock] = invoke(ps5000aDeviceObj, 'runBlock', 0);
+[status.runBlock] = invoke(blockGroupObj, 'runBlock', 0);
 
 % Retrieve data values:
 %
@@ -124,7 +123,7 @@ set(ps5000aDeviceObj, 'numPostTriggerSamples', 5000);
 % downsampling ratio: 1
 % downsampling mode : 0 (PS5000A_RATIO_MODE_NONE)
 
-[etsTimes, chA, ~, ~, ~, numSamples, overflow] = invoke(ps5000aDeviceObj, 'getEtsBlockData', 0, 0, 1, 0);
+[etsTimes, chA, ~, ~, ~, numSamples, overflow] = invoke(blockGroupObj, 'getEtsBlockData', 0, 0, 1, 0);
 
 % Stop the device
 [status.stop] = invoke(ps5000aDeviceObj, 'ps5000aStop');
