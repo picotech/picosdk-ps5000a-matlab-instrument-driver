@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.11.10</InstrumentVersion>
+   <InstrumentVersion>2.2.11.12</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -4446,12 +4446,18 @@ For further information on the ps5000aStop function please refer to the PicoScop
 
     end
     
+    % Obtain Digital group object
+    blockGroupObj = get(obj, 'Block');
+    blockGroupObj = blockGroupObj(1);
+    
     % Turn off ETS
 
     disp('Turning off Equivalent Time Sampling...');
     
-    [etsStatus, stPs] = invoke(obj, 'ps5000aSetEts', obj.DriverData.enums.enPS5000AEtsMode.PS5000A_ETS_OFF, 0, 0);
-
+    [etsStatus, stPs] = invoke(blockGroupObj, 'ps5000aSetEts', obj.DriverData.enums.enPS5000AEtsMode.PS5000A_ETS_OFF, 0, 0);
+    
+    fprintf('Equivalent Time Sampling turned off.\n\n');
+    
     % Turn off trigger
 
     % Obtain Digital group object
@@ -4462,9 +4468,12 @@ For further information on the ps5000aStop function please refer to the PicoScop
     obj.DriverData.autoTriggerUs = 0;
     obj.DriverData.delay = 0;
     
-    fprintf('Turning off trigger...\n\n');
+    fprintf('Turning off trigger...\n');
+    
     triggerStatus = invoke(triggerGroupObj, 'setTriggerOff');
 
+    fprintf('Trigger turned off.\n\n');
+    
     fprintf('Default Block mode parameters:-\n\n');
     
     % Set the default number of pre-trigger and post-trigger samples
@@ -5769,12 +5778,12 @@ For further information on the  ps5000aRunBlock function please refer to the Pic
 % base device functions, OBJ is the device object.
 
     deviceObj = get(obj, 'Parent');
-
-    pSampleTimePicoSeconds = 0; % Initialise to pass as pointer
+    
+    pSampleTimePicoSeconds = libpointer('int32Ptr', 0); % Initialise to pass as pointer
     
     if (mode == deviceObj.DriverData.enums.enPS5000AEtsMode.PS5000A_ETS_OFF)
         
-        [status] = calllib('ps5000a', 'ps5000aSetEts', deviceObj.DriverData.unitHandle, ...
+        [status, ~] = calllib('ps5000a', 'ps5000aSetEts', deviceObj.DriverData.unitHandle, ...
                     mode, etsCycles, etsInterleave, pSampleTimePicoSeconds);
                 
         if (status ~= PicoStatus.PICO_OK)
@@ -5787,94 +5796,94 @@ For further information on the  ps5000aRunBlock function please refer to the Pic
     
     elseif (etsCycles &gt; 0 &amp;&amp; etsInterleave &gt; 0)
     
-        switch(deviceObj.InstrumentModel)
+        switch (deviceObj.InstrumentModel)
 
-                case {obj.DriverData.constants.MODEL_PS5242A, obj.DriverData.constants.MODEL_PS5442A, ...
-                        obj.DriverData.constants.MODEL_PS5242B, obj.DriverData.constants.MODEL_PS5442B}
+                case {deviceObj.DriverData.constants.MODEL_PS5242A, deviceObj.DriverData.constants.MODEL_PS5442A, ...
+                        deviceObj.DriverData.constants.MODEL_PS5242B, deviceObj.DriverData.constants.MODEL_PS5442B}
 
-                    if (etsCycles &gt; obj.DriverData.constants.PS5242A_MAX_ETS_CYCLES)
+                    if (etsCycles &gt; deviceObj.DriverData.constants.PS5242A_MAX_ETS_CYCLES)
                        
                         error('ps5000aSetEts: etsCycles out of range (Max. 125).')
                            
                     end
                     
-                    if (etsInterleave &gt; obj.DriverData.constants.PS5242A_MAX_ETS_INTERLEAVE)
+                    if (etsInterleave &gt; deviceObj.DriverData.constants.PS5242A_MAX_ETS_INTERLEAVE)
                        
                         error('ps5000aSetEts: etsInterleave out of range (Max. 10).')
                         
                     end
                     
-                case {obj.DriverData.constants.MODEL_PS5243A, obj.DriverData.constants.MODEL_PS5443A, ...
-                        obj.DriverData.constants.MODEL_PS5243B, obj.DriverData.constants.MODEL_PS5443B}
+                case {deviceObj.DriverData.constants.MODEL_PS5243A, deviceObj.DriverData.constants.MODEL_PS5443A, ...
+                        deviceObj.DriverData.constants.MODEL_PS5243B, deviceObj.DriverData.constants.MODEL_PS5443B}
 
-                    if (etsCycles &gt; PS5000aConstants.PS5243A_MAX_ETS_CYCLES)
+                    if (etsCycles &gt; deviceObj.DriverData.constants.PS5243A_MAX_ETS_CYCLES)
                        
                         error('ps5000aSetEts: etsCycles out of range (Max. 250).')
                            
                     end
                     
-                    if (etsInterleave &gt; PS5000aConstants.PS5243A_MAX_ETS_INTERLEAVE)
+                    if (etsInterleave &gt; deviceObj.DriverData.constants.PS5243A_MAX_ETS_INTERLEAVE)
                        
                         error('ps5000aSetEts: etsInterleave out of range (Max. 20).')
                         
                     end
                     
-                case {obj.DriverData.constants.MODEL_PS5244A, obj.DriverData.constants.MODEL_PS5444A, ...
-                        obj.DriverData.constants.MODEL_PS5244B, obj.DriverData.constants.MODEL_PS5444B, ...
-                        obj.DriverData.constants.MODEL_PS5444B_034}
+                case {deviceObj.DriverData.constants.MODEL_PS5244A, deviceObj.DriverData.constants.MODEL_PS5444A, ...
+                        deviceObj.DriverData.constants.MODEL_PS5244B, deviceObj.DriverData.constants.MODEL_PS5444B, ...
+                        deviceObj.DriverData.constants.MODEL_PS5444B_034}
 
-                    if (etsCycles &gt; PS5000aConstants.PS5244A_MAX_ETS_CYCLES)
+                    if (etsCycles &gt; deviceObj.DriverData.constants.PS5244A_MAX_ETS_CYCLES)
                        
                         error('ps5000aSetEts: etsCycles out of range (Max. 500).')
                            
                     end
                     
-                    if (etsInterleave &gt; PS5000aConstants.PS5244A_MAX_ETS_INTERLEAVE)
+                    if (etsInterleave &gt; deviceObj.DriverData.constants.PS5244A_MAX_ETS_INTERLEAVE)
                        
                         error('ps5000aSetEts: etsInterleave out of range (Max. 40).')
                         
                     end
                     
-                case {obj.DriverData.constants.MODEL_PS5242D, obj.DriverData.constants.MODEL_PS5442D, ...
-                        obj.DriverData.constants.MODEL_PS5242D_MSO, obj.DriverData.constants.MODEL_PS5442D_MSO}
+                case {deviceObj.DriverData.constants.MODEL_PS5242D, deviceObj.DriverData.constants.MODEL_PS5442D, ...
+                        deviceObj.DriverData.constants.MODEL_PS5242D_MSO, deviceObj.DriverData.constants.MODEL_PS5442D_MSO}
 
-                    if (etsCycles &gt; obj.DriverData.constants.PS5X42D_MAX_ETS_CYCLES)
+                    if (etsCycles &gt; deviceObj.DriverData.constants.PS5X42D_MAX_ETS_CYCLES)
                        
                         error('ps5000aSetEts: etsCycles out of range (Max. 125).')
                            
                     end
                     
-                    if (etsInterleave &gt; obj.DriverData.constants.PS5X42D_MAX_ETS_INTERLEAVE)
+                    if (etsInterleave &gt; deviceObj.DriverData.constants.PS5X42D_MAX_ETS_INTERLEAVE)
                        
                         error('ps5000aSetEts: etsInterleave out of range (Max. 5).')
                         
                     end
                     
-                case {obj.DriverData.constants.MODEL_PS5243D, obj.DriverData.constants.MODEL_PS5443D, ...
-                        obj.DriverData.constants.MODEL_PS5243D_MSO, obj.DriverData.constants.MODEL_PS5443D_MSO}
+                case {deviceObj.DriverData.constants.MODEL_PS5243D, deviceObj.DriverData.constants.MODEL_PS5443D, ...
+                        deviceObj.DriverData.constants.MODEL_PS5243D_MSO, deviceObj.DriverData.constants.MODEL_PS5443D_MSO}
 
-                    if (etsCycles &gt; obj.DriverData.constants.PS5X43D_MAX_ETS_CYCLES)
+                    if (etsCycles &gt; deviceObj.DriverData.constants.PS5X43D_MAX_ETS_CYCLES)
                        
                         error('ps5000aSetEts: etsCycles out of range (Max. 250).')
                            
                     end
                     
-                    if (etsInterleave &gt; obj.DriverData.constants.PS5X43D_MAX_ETS_INTERLEAVE)
+                    if (etsInterleave &gt; deviceObj.DriverData.constants.PS5X43D_MAX_ETS_INTERLEAVE)
                        
                         error('ps5000aSetEts: etsInterleave out of range (Max. 40).')
                         
                     end
                     
-                case {obj.DriverData.constants.MODEL_PS5244D, obj.DriverData.constants.MODEL_PS5444D, ...
-                        obj.DriverData.constants.MODEL_PS5244D_MSO, obj.DriverData.constants.MODEL_PS5444D_MSO}
+                case {deviceObj.DriverData.constants.MODEL_PS5244D, deviceObj.DriverData.constants.MODEL_PS5444D, ...
+                        deviceObj.DriverData.constants.MODEL_PS5244D_MSO, deviceObj.DriverData.constants.MODEL_PS5444D_MSO}
 
-                    if (etsCycles &gt; obj.DriverData.constants.PS5X44D_MAX_ETS_CYCLES)
+                    if (etsCycles &gt; deviceObj.DriverData.constants.PS5X44D_MAX_ETS_CYCLES)
                        
                         error('ps5000aSetEts: etsCycles out of range (Max. 500).')
                            
                     end
                     
-                    if (etsInterleave &gt; obj.DriverData.constants.PS5X44D_MAX_ETS_INTERLEAVE)
+                    if (etsInterleave &gt; deviceObj.DriverData.constants.PS5X44D_MAX_ETS_INTERLEAVE)
                        
                         error('ps5000aSetEts: etsInterleave out of range (Max. 80).')
                         
@@ -5885,8 +5894,8 @@ For further information on the  ps5000aRunBlock function please refer to the Pic
                 % Do nothing
         end
         
-        [status] = calllib('ps5000a', 'ps5000aSetEts', ...
-            deviceObj.DriverData.unitHandle, mode, etsCycles, etsInterleave, pSampleTimePicoSeconds);
+        [status, ~] = calllib('ps5000a', 'ps5000aSetEts', deviceObj.DriverData.unitHandle, ...
+                        mode, etsCycles, etsInterleave, pSampleTimePicoSeconds);
         
         if (status ~= PicoStatus.PICO_OK)
            
@@ -5894,7 +5903,7 @@ For further information on the  ps5000aRunBlock function please refer to the Pic
         
         end
         
-        sampleTimePicoSeconds = pSampleTimePicoSeconds.Values;
+        sampleTimePicoSeconds = pSampleTimePicoSeconds.Value;
         
     else
         
