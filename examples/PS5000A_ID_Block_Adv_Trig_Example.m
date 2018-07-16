@@ -143,7 +143,7 @@ set(ps5000aDeviceObj, 'numPreTriggerSamples', numPreTriggerSamples);
 %
 % segment index: 0
 
-[status.runBlock] = invoke(ps5000aDeviceObj, 'runBlock', 0);
+[status.runBlock] = invoke(blockGroupObj, 'runBlock', 0);
 
 % Retrieve data values:
 

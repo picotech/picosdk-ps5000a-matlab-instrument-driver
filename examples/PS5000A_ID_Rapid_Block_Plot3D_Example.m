@@ -134,7 +134,7 @@ set(ps5000aDeviceObj, 'numPostTriggerSamples', 2048);
 %
 % segment index: 0
 
-[status, timeIndisposedMs] = invoke(ps5000aDeviceObj, 'runBlock', 0);
+[status, timeIndisposedMs] = invoke(blockGroupObj, 'runBlock', 0);
 
 % Retrieve rapid block data values:
 

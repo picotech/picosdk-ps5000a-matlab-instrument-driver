@@ -168,8 +168,8 @@ set(ps5000aDeviceObj2, 'numPostTriggerSamples', 4096);
 %
 % segment index: 0
 
-status1.ps5000aRunBlock = invoke(ps5000aDeviceObj1, 'ps5000aRunBlock', 0);
-status2.ps5000aRunBlock = invoke(ps5000aDeviceObj2, 'ps5000aRunBlock', 0);
+status1.ps5000aRunBlock = invoke(blockGroupObj1, 'ps5000aRunBlock', 0);
+status2.ps5000aRunBlock = invoke(blockGroupObj2, 'ps5000aRunBlock', 0);
 
 % Poll the device driver to see if data is available
 
@@ -178,8 +178,8 @@ scope2.ready = PicoConstants.FALSE;
 
 while (scope1.ready == PicoConstants.FALSE || scope2.ready == PicoConstants.FALSE)
     
-    [status1.ready, scope1.ready] = invoke(ps5000aDeviceObj1, 'ps5000aIsReady');
-    [status2.ready, scope2.ready] = invoke(ps5000aDeviceObj2, 'ps5000aIsReady');
+    [status1.ready, scope1.ready] = invoke(blockGroupObj1, 'ps5000aIsReady');
+    [status2.ready, scope2.ready] = invoke(blockGroupObj2, 'ps5000aIsReady');
     
     pause(0.01);
     
