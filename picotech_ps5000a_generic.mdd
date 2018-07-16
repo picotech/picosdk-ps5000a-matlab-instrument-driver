@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.11.9</InstrumentVersion>
+   <InstrumentVersion>2.2.11.10</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -1719,14 +1719,17 @@ To output a signal with constant frequency, ensure that stopFrequency is equal t
         obj.UserData.timebase = 1;
     else
         propertyValue = obj.UserData.timebase;
-    end</GetMCode>
+    end
+    
+    propertyValue = obj.DriverData.timebase;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    obj.UserData.timebase = propertyValue;</SetMCode>
+    obj.UserData.timebase = propertyValue;
+    obj.DriverData.timebase = propertyValue;</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -1758,9 +1761,7 @@ To output a signal with constant frequency, ensure that stopFrequency is equal t
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.unitHandle = propertyValue;</SetMCode>
+%   the property is a base device property, OBJ is the device object.</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -1792,9 +1793,7 @@ To output a signal with constant frequency, ensure that stopFrequency is equal t
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.unitSerial = propertyValue;</SetMCode>
+%   the property is a base device property, OBJ is the device object.</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>String</Type>
@@ -3289,45 +3288,6 @@ For further information on the ps5000aGetTriggerTimeOffset64 function please ref
 </Description>
             </Method>
             <Method>
-               <Name>ps5000aGetValues</Name>
-               <Location>block</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, numSamples, overflow] = ps5000aGetValues(obj, startIndex, noOfSamples, downSampleRatio, downSampleRatioMode, segmentIndex)
-
-    overflow = 0;
-    
-    [status, numSamples, overflow] = calllib('ps5000a', 'ps5000aGetValues', ...
-        get(obj, 'unitHandle'), startIndex, noOfSamples, downSampleRatio, ....
-        downSampleRatioMode, segmentIndex, overflow);
-    
-    if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aGetValues(obj, startIndex, noOfSamples, downSampleRatio, downSampleRatioMode, segmentIndex) returns block-mode data, with or without downsampling, starting at the specified sample number.
-
-Input parameters:
-
-obj - the object representing the device.
-startIndex - a zero-based index that indicates the start point for data collection.
-noOfSamples - the number of samples required.
-downSampleRatio - the downsampling factor that will be applied to the raw data.
-downSampleRatioMode - which downsampling mode to use (specified by enumeration).
-segmentIndex - the zero-based number of the memory segment where the data is stored.
-
-Output parameters:
-
-status - status code returned by the driver.
-numSamples - the actual number retrieved from the driver.
-overflow - a set of flags that indicate whether an overvoltage has occurred on any of the channels.
-
-For further information on the ps5000aGetValues function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
                <Name>ps5000aGetValuesBulk</Name>
                <Location>parent</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -3536,38 +3496,6 @@ timeUnits - an array of integers representing the time unit for each time entry.
 For further information on the ps5000aGetValuesTriggerTimeOffsetBulk64 function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
-               <Name>ps5000aIsReady</Name>
-               <Location>block</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, ready] = ps5000aIsReady(obj)
-
-    ready = 0;
-
-    [status, ready] = calllib('ps5000a', 'ps5000aIsReady', ...
-        get(obj, 'unitHandle'), ready);
-    
-    if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aIsReady(obj) may be used to poll the driver  to see if it has finished collecting the requested samples after ps5000aRunBlock has been called.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-status - status code returned by the driver.
-ready - indicates the state of the collection. If zero, the device is still collecting. If non-zero, the device has finished collecting and ps5000aGetValues can be used to retrieve the data.
-
-For further information on the ps5000aIsReady function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
                <Name>ps5000aMaximumValue</Name>
                <Location>parent</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -3754,57 +3682,6 @@ Output parameters:
 status - status code returned by the driver.
 
 For further information on the ps5000aPingUnit function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
-               <Name>ps5000aRunBlock</Name>
-               <Location>block</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function status = ps5000aRunBlock(obj, segmentIndex)
-% For group functions, OBJ is the group object. For
-% base device functions, OBJ is the device object.
-
-    timeIndisposedMs = 0;   % Initialise to pass as pointer.
-    lpReady = [];           % Set to NULL - Callback function not used.
-    pParameter = [];        % Set to NULL - Callback function not used.
-    
-    timebase_index = get(obj, 'timebase');
-    pre_trigger_samples = get(obj, 'numPreTriggerSamples');
-    post_trigger_samples = get(obj, 'numPostTriggerSamples');
-    
-    unitHandle = obj.UserData.unitHandle;
-    
-    if (obj.DriverData.displayOutput == PicoConstants.TRUE)
-        
-        fprintf('runBlock:- Collecting block of data:\n\tTimebase: %u\n\tPre-trigger samples: %u\n\tPost-trigger samples: %u\n\n', ...
-            timebase_index, pre_trigger_samples, post_trigger_samples);
-        
-    end
-
-    [status, timeIndisposedMs] = calllib('ps5000a', 'ps5000aRunBlock', ...
-        unitHandle, pre_trigger_samples, post_trigger_samples, ...
-        timebase_index, timeIndisposedMs, segmentIndex, lpReady, pParameter);
-    
-    if (status ~= PicoStatus.PICO_OK)
-           
-        error('ps5000aRunBlock: Error in ps5000aRunBlock call - code %d', status); 
-        
-    end</MCode>
-               </Code>
-               <Description>runBlock(obj, segmentIndex) starts collecting data in block mode.
-
-Input parameters:
-
-obj - the object representing the device.
-segmentIndex - zero-based index, specifying which memory segment to use.
-
-Output parameters:
-
-status - 0 if the ps5000aRunBlock function has been executed correctly. 
-
-For further information on the  ps5000aRunBlock function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
-</Description>
             </Method>
             <Method>
                <Name>ps5000aRunStreaming</Name>
@@ -4448,322 +4325,6 @@ For further information on the ps5000aSetDeviceResolution  function please refer
 </Description>
             </Method>
             <Method>
-               <Name>ps5000aSetEts</Name>
-               <Location>block</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, sampleTimePicoSeconds] = ps5000aSetEts(obj, mode, etsCycles, etsInterleave)
-
-    sampleTimePicoSeconds = 0; % Initialise to pass as pointer
-    
-    if (mode == evalin('base', 'ps5000aEnuminfo.enPS5000AEtsMode.PS5000A_ETS_OFF'))
-        
-        [status, sampleTimePicoSeconds] = calllib('ps5000a', 'ps5000aSetEts', ...
-            get(obj, 'unitHandle'), mode, etsCycles, etsInterleave, sampleTimePicoSeconds);
-    
-    elseif(etsCycles &gt; 0 &amp;&amp; etsInterleave &gt; 0)
-    
-        % Confirm if number of cycles or interleave is correct
-
-        ets_ratio = etsCycles / etsInterleave;
-
-        if (ets_ratio &lt; 2 || ets_ratio &gt; 5)
-
-            error('ps5000aSetEts: etsCycles must be between two and five times the value of etsInterleave');
-
-        end
-
-        switch(obj.InstrumentModel)
-
-                case PS5000aConstants.MODEL_PS5242A
-
-                    if (etsCycles &gt; PS5000aConstants.PS5242A_MAX_ETS_CYCLES)
-                       
-                        error('ps5000aSetEts: etsCycles out of range (Max. 125).')
-                           
-                    end
-                    
-                    if (etsInterleave &gt; PS5000aConstants.PS5242A_MAX_ETS_INTERLEAVE)
-                       
-                        error('ps5000aSetEts: etsInterleave out of range (Max. 10).')
-                        
-                    end
-                    
-                case PS5000aConstants.MODEL_PS5242B
-                    
-                    if (etsCycles &gt; PS5000AConstants.PS5242A_MAX_ETS_CYCLES)
-                       
-                        error('ps5000aSetEts: etsCycles out of range (Max. 125).')
-                           
-                    end
-                    
-                    if (etsInterleave &gt; PS5000aConstants.PS5242A_MAX_ETS_INTERLEAVE)
-                       
-                        error('ps5000aSetEts: etsInterleave out of range (Max. 10).')
-                        
-                    end
-                    
-                case PS5000aConstants.MODEL_PS5243A
-
-                    if (etsCycles &gt; PS5000aConstants.PS5243A_MAX_ETS_CYCLES)
-                       
-                        error('ps5000aSetEts: etsCycles out of range (Max. 250).')
-                           
-                    end
-                    
-                    if (etsInterleave &gt; PS5000aConstants.PS5243A_MAX_ETS_INTERLEAVE)
-                       
-                        error('ps5000aSetEts: etsInterleave out of range (Max. 20).')
-                        
-                    end
-                    
-                case PS5000aConstants.MODEL_PS5243B
-
-                    if (etsCycles &gt; PS5000AConstants.PS5243A_MAX_ETS_CYCLES)
-                       
-                        error('ps5000aSetEts: etsCycles out of range (Max. 250).')
-                           
-                    end
-                    
-                    if (etsInterleave &gt; PS5000aConstants.PS5243A_MAX_ETS_INTERLEAVE)
-                       
-                        error('ps5000aSetEts: etsInterleave out of range (Max. 20).')
-                        
-                    end
-                    
-                case PS5000aConstants.MODEL_PS5244A
-
-                    if (etsCycles &gt; PS5000aConstants.PS5244A_MAX_ETS_CYCLES)
-                       
-                        error('ps5000aSetEts: etsCycles out of range (Max. 500).')
-                           
-                    end
-                    
-                    if (etsInterleave &gt; PS5000aConstants.PS5244A_MAX_ETS_INTERLEAVE)
-                       
-                        error('ps5000aSetEts: etsInterleave out of range (Max. 40).')
-                        
-                    end
-                    
-                case PS5000aConstants.MODEL_PS5244B
-
-                    if (etsCycles &gt; PS5000aConstants.PS5244A_MAX_ETS_CYCLES)
-                       
-                        error('ps5000aSetEts: etsCycles out of range (Max. 500).')
-                           
-                    end
-                    
-                    if (etsInterleave &gt; PS5000aConstants.PS5244A_MAX_ETS_INTERLEAVE)
-                       
-                        error('ps5000aSetEts: etsInterleave out of range (Max. 40).')
-                        
-                    end
-                    
-                case PS5000aConstants.MODEL_PS5442A
-
-                    if (etsCycles &gt; PS5000aConstants.PS5242A_MAX_ETS_CYCLES)
-                       
-                        error('ps5000aSetEts: etsCycles out of range (Max. 125).')
-                           
-                    end
-                    
-                    if (etsInterleave &gt; PS5000aConstants.PS5242A_MAX_ETS_INTERLEAVE)
-                       
-                        error('ps5000aSetEts: etsInterleave out of range (Max. 10).')
-                        
-                    end
-                    
-                case PS5000aConstants.MODEL_PS5442B
-                    
-                    if (etsCycles &gt; PS5000aConstants.PS5242A_MAX_ETS_CYCLES)
-                       
-                        error('ps5000aSetEts: etsCycles out of range (Max. 125).')
-                           
-                    end
-                    
-                    if (etsInterleave &gt; PS5000aConstants.PS5242A_MAX_ETS_INTERLEAVE)
-                       
-                        error('ps5000aSetEts: etsInterleave out of range (Max. 10).')
-                        
-                    end
-                    
-                    case PS5000aConstants.MODEL_PS5443A
-
-                    if (etsCycles &gt; PS5000aConstants.PS5243A_MAX_ETS_CYCLES)
-                       
-                        error('ps5000aSetEts: etsCycles out of range (Max. 250).')
-                           
-                    end
-                    
-                    if (etsInterleave &gt; PS5000aConstants.PS5243A_MAX_ETS_INTERLEAVE)
-                       
-                        error('ps5000aSetEts: etsInterleave out of range (Max. 20).')
-                        
-                    end
-                    
-                case PS5000aConstants.MODEL_PS5443B
-
-                    if (etsCycles &gt; PS5000aConstants.PS5243A_MAX_ETS_CYCLES)
-                       
-                        error('ps5000aSetEts: etsCycles out of range (Max. 250).')
-                           
-                    end
-                    
-                    if (etsInterleave &gt; PS5000aConstants.PS5243A_MAX_ETS_INTERLEAVE)
-                       
-                        error('ps5000aSetEts: etsInterleave out of range (Max. 20).')
-                        
-                    end
-                
-                case PS5000aConstants.MODEL_PS5444A
-
-                    if (etsCycles &gt; PS5000AConstants.PS5244A_MAX_ETS_CYCLES)
-                       
-                        error('ps5000aSetEts: etsCycles out of range (Max. 500).')
-                           
-                    end
-                    
-                    if (etsInterleave &gt; PS5000aConstants.PS5244A_MAX_ETS_INTERLEAVE)
-                       
-                        error('ps5000aSetEts: etsInterleave out of range (Max. 40).')
-                        
-                    end
-                    
-                case PS5000aConstants.MODEL_PS5444B
-
-                    if (etsCycles &gt; PS5000aConstants.PS5244A_MAX_ETS_CYCLES)
-                       
-                        error('ps5000aSetEts: etsCycles out of range (Max. 500).')
-                           
-                    end
-                    
-                    if (etsInterleave &gt; PS5000aConstants.PS5244A_MAX_ETS_INTERLEAVE)
-                       
-                        error('ps5000aSetEts: etsInterleave out of range (Max. 40).')
-                        
-                    end
-        
-            otherwise
-        
-                % Do nothing
-        end
-        
-        [status, sampleTimePicoSeconds] = calllib('ps5000a', 'ps5000aSetEts', ...
-            get(obj, 'unitHandle'), mode, etsCycles, etsInterleave, sampleTimePicoSeconds);
-        
-    else
-        
-        error('ps5000aSetEts: etsCycles and etsInterleave must both be greater than 0.')
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aSetEts(obj, mode, etsCycles, etsInterleave) is used to enable or disable ETS (equivalent-time sampling) and to set the ETS parameters.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-mode - must be one of the following:
-
-	PS5000A_ETS_OFF    (0)
-	PS5000A_ETS_FAST  (1)
-	PS5000A_ETS_SLOW (2)
-
-etsCycles - the number of cycles to store; must be greater than zero and between 2 and 5 times greater than etsInterleave.
-etsInterleave - the number of waveforms to combine into a single ETS capture. Must be greater than zero.
-
-Output parameters:
-
-status - status code returned by the driver.
-sampleTimePicoSeconds - the effective sampling interval of the ETS data.
-
-For further information on the ps5000aSetEts function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
-               <Name>ps5000aSetEtsTimeBuffer</Name>
-               <Location>block</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, etsBuffer] = ps5000aSetEtsTimeBuffer(obj, bufferLth)
-
-    % Pointer to array
-    p_buffer = libpointer('int64Ptr', zeros(bufferLth, 1, 'int64'));
-
-    status = calllib('ps5000a', 'ps5000aSetEtsTimeBuffer', ...
-        get(obj, 'unitHandle'), p_buffer, bufferLth);
-    
-    etsBuffer = p_buffer.Value;
-    
-    if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aSetEtsTimeBuffer(obj, bufferLth) tells the driver where to find your application's ETS time buffers.
-
-If using a 32-bit version of MATLAB, use ps5000aSetEtsTimeBuffers instead.
-
-Input parameters:
-
-obj - the object representing the device.
-bufferLth - the number of ETS samples.
-
-Output parameters:
-
-status - status code returned by the device.
-etsBuffer - a 1-D array of 64-bit words, each representing the time in picoseconds at which the sample was captured.
-
-For further information on the ps5000aSetEtsTimeBuffer function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
-</Description>
-            </Method>
-            <Method>
-               <Name>ps5000aSetEtsTimeBuffers</Name>
-               <Location>block</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, etsTimeUpper, etsTimeLower] = ps5000aSetEtsTimeBuffers(obj, bufferLth)
-
-    % Pointer to arrays
-    p_buffer_upper = libpointer('int32Ptr', zeros(bufferLth, 1));
-    p_buffer_lower = libpointer('int32Ptr', zeros(bufferLth, 1));
-
-    status = calllib('ps5000a', 'ps5000aSetEtsTimeBuffers', ...
-        get(obj, 'unitHandle'), p_buffer_upper, p_buffer_lower, bufferLth);
-    
-    etsTimeUpper = p_buffer_upper.Value;
-    etsTimeLower = p_buffer_lower.Value;
-    
-    if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aSetEtsTimeBuffers(obj, bufferLth) tells the driver where to find your application's ETS time buffers. These buffers contain the timing information for each ETS sample after you run a block mode ETS capture.
-
-For 64-bit versions of MATLAB please use ps5000aSetEtsTimeBuffer instead.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-bufferLth - the number of ETS samples.
-
-Output parameters:
-
-status - status code returned by the device.
-etsTimeUpper - an array of 32-bit words, each representing the upper 32 bits of the time in picoseconds at which the sample was captured.
-etsTimeLower - an array of 32-bit words, each representing the lower 32 bits of the time in picoseconds at which the sample was captured.
-
-For further information on the ps5000aSetEtsTimeBuffers function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
                <Name>ps5000aSetNoOfCaptures</Name>
                <Location>parent</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -4996,109 +4557,6 @@ This includes the folliowing:
         
 	startFrequency = 1000 (Hz)
 	stopFrequency = 1000 (Hz)
-
-</Description>
-            </Method>
-            <Method>
-               <Name>runBlock</Name>
-               <Location>block</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, timeIndisposedMs] = runBlock(obj, segmentIndex)
-
-    timeIndisposedMs = 0;   % Initialise to pass as pointer.
-    lpReady = [];           % Set to NULL - Callback function not used.
-    pParameter = [];        % Set to NULL - Callback function not used.
-    
-    timebase_index = get(obj, 'timebase');
-    pre_trigger_samples = get(obj, 'numPreTriggerSamples');
-    post_trigger_samples = get(obj, 'numPostTriggerSamples');
-    
-    if (obj.DriverData.displayOutput == PicoConstants.TRUE)
-        
-        fprintf('runBlock:- Collecting block of data:\n\tTimebase: %u\n\tPre-trigger samples: %u\n\tPost-trigger samples: %u\n\n', ...
-            timebase_index, pre_trigger_samples, post_trigger_samples);
-    
-    end
-
-    [run_block_status, timeIndisposedMs] = calllib('ps5000a', 'ps5000aRunBlock', ...
-        get(obj, 'unitHandle'), pre_trigger_samples, post_trigger_samples, ...
-        timebase_index, segmentIndex, timeIndisposedMs, lpReady, pParameter);
-    
-    if (run_block_status ~= PicoStatus.PICO_OK)
-           
-        error('runBlock: Error in ps5000aRunBlock call - code %d', run_block_status); 
-        
-    end
-    
-    if (obj.DriverData.displayOutput == PicoConstants.TRUE)
-        
-        fprintf('runBlock: Waiting for device to become ready...\n');
-        
-    end
-    
-    ready = 0; % Initialise value for pointer
-    
-    while (ready == 0)
-        
-        [ready_status, ready] = calllib('ps5000a', 'ps5000aIsReady', ...
-                            get(obj, 'unitHandle'), ready);
-                        
-        if(ready_status ~= PicoStatus.PICO_OK)
-           
-            error('runBlock: Error in ps5000aIsReady call - code %d', ready_status); 
-        
-        end
-                        
-    end
-    
-    if (obj.DriverData.displayOutput == PicoConstants.TRUE)
-        
-        fprintf('runBlock: Device ready.\n\n');
-        
-    end
-    
-    % Other conditions would have been captured.
-    if (run_block_status == PicoStatus.PICO_OK &amp;&amp; ready_status == PicoStatus.PICO_OK)
-        
-        status = PicoStatus.PICO_OK;
-        
-    else
-        
-        if (run_block_status ~= PicoStatus.PICO_OK)
-            
-            error('runBlock:- ps5000aRunBlock error code: %d\n', run_block_status);
-            
-        else
-            
-            error('runBlock:- ps5000aIsReady error code: %d\n', ready_status);
-                
-        end
-            
-        
-    end</MCode>
-               </Code>
-               <Description>runBlock(obj, segmentIndex) starts collecting data in block mode and returns when the device is ready for data to be collected.
-
-Use this function when no further action is required between the start of data collection and retrieval of data from the device.
-
-If additional functions need to be called in your script while waiting for the data to be collected, call the ps5000aRunBlock function, followed by the other required commands, and poll the device using the ps5000aIsReady function.
-
-This function can be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-segmentIndex - zero-based index, specifying which memory segment to use.
-
-Output parameters:
-
-status - 0 if the ps5000aRunBlock and ps5000aIsReady functions have been executed correctly. 
-
-For further information on the  ps5000aRunBlock and ps5000aIsReady functions please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
-
-
 
 </Description>
             </Method>
@@ -6158,6 +5616,511 @@ portD0 - an array containing data values in binary format for digital Port 0 (in
 portD1 - an array containing data values in binary format for digital Port 1 (in MSB order)
 
 Please also refer to the ps5000aSetDataBuffer, and ps5000aGetValues functions.
+</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aGetValues</Name>
+               <Location>block</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, numSamples, overflow] = ps5000aGetValues(obj, startIndex, noOfSamples, downSampleRatio, downSampleRatioMode, segmentIndex)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    pNumSamples = libpointer('uint32Ptr', noOfSamples);
+    pOverflow = libpointer('int16Ptr', 0);
+    
+    [status, ~, ~] = calllib('ps5000a', 'ps5000aGetValues', ...
+                        deviceObj.DriverData.unitHandle, startIndex, pNumSamples, downSampleRatio, ....
+                        downSampleRatioMode, segmentIndex, pOverflow);
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aGetValues:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+    else
+        
+        numSamples = pNumSamples.Value;
+        overflow = pOverflow.Value;
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aGetValues(obj, startIndex, noOfSamples, downSampleRatio, downSampleRatioMode, segmentIndex) returns block-mode data, with or without downsampling, starting at the specified sample number.
+
+Input parameters:
+
+obj - the object representing the Block group.
+startIndex - a zero-based index that indicates the start point for data collection.
+noOfSamples - the number of samples required.
+downSampleRatio - the downsampling factor that will be applied to the raw data.
+downSampleRatioMode - which downsampling mode to use (specified by enumeration).
+segmentIndex - the zero-based number of the memory segment where the data is stored.
+
+Output parameters:
+
+status - status code returned by the driver.
+numSamples - the actual number retrieved from the driver.
+overflow - a set of flags that indicate whether an overvoltage has occurred on any of the channels.
+
+For further information on the ps5000aGetValues function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aIsReady</Name>
+               <Location>block</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, ready] = ps5000aIsReady(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    pReady = libpointer('int16Ptr', 0);
+
+    [status] = calllib('ps5000a', 'ps5000aIsReady', ...
+                        deviceObj.DriverData.unitHandle, pReady);
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aIsReady:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+    else
+        
+        ready = pReady.Value;
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aIsReady(obj) may be used to poll the driver  to see if it has finished collecting the requested samples after ps5000aRunBlock has been called.
+
+Input parameters:
+
+obj - the object representing the Block group.
+
+Output parameters:
+
+status - status code returned by the driver.
+ready - indicates the state of the collection. If zero, the device is still collecting. If non-zero, the device has finished collecting and ps5000aGetValues can be used to retrieve the data.
+
+For further information on the ps5000aIsReady function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aRunBlock</Name>
+               <Location>block</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aRunBlock(obj, segmentIndex)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+
+    timeIndisposedMs = 0;   % Initialise to pass as pointer.
+    lpReady = [];           % Set to NULL - Callback function not used.
+    pParameter = [];        % Set to NULL - Callback function not used.
+    
+    timebaseIndex = deviceObj.DriverData.timebase;
+    preTriggerSamples = deviceObj.DriverData.numPreTriggerSamples;
+    postTriggerSamples = deviceObj.DriverData.numPostTriggerSamples;
+    
+    if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+        
+        fprintf('ps5000aRunBlock:- Collecting block of data:\n\tTimebase: %u\n\tPre-trigger samples: %u\n\tPost-trigger samples: %u\n\n', ...
+            timebaseIndex, preTriggerSamples, postTriggerSamples);
+        
+    end
+
+    [status, timeIndisposedMs] = calllib('ps5000a', 'ps5000aRunBlock', ...
+        deviceObj.DriverData.unitHandle, preTriggerSamples, postTriggerSamples, ...
+        timebaseIndex, timeIndisposedMs, segmentIndex, lpReady, pParameter);
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aRunBlock:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+    end</MCode>
+               </Code>
+               <Description>runBlock(obj, segmentIndex) starts collecting data in block mode.
+
+Input parameters:
+
+obj - the object representing the Block group.
+segmentIndex - zero-based index, specifying which memory segment to use.
+
+Output parameters:
+
+status - 0 if the ps5000aRunBlock function has been executed correctly. 
+
+For further information on the  ps5000aRunBlock function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
+</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aSetEts</Name>
+               <Location>block</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, sampleTimePicoSeconds] = ps5000aSetEts(obj, mode, etsCycles, etsInterleave)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+
+    pSampleTimePicoSeconds = 0; % Initialise to pass as pointer
+    
+    if (mode == deviceObj.DriverData.enums.enPS5000AEtsMode.PS5000A_ETS_OFF)
+        
+        [status] = calllib('ps5000a', 'ps5000aSetEts', deviceObj.DriverData.unitHandle, ...
+                    mode, etsCycles, etsInterleave, pSampleTimePicoSeconds);
+                
+        if (status ~= PicoStatus.PICO_OK)
+           
+            error('ps5000aSetEts:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+        end
+                
+        sampleTimePicoSeconds = pSampleTimePicoSeconds.Value;
+    
+    elseif (etsCycles &gt; 0 &amp;&amp; etsInterleave &gt; 0)
+    
+        switch(deviceObj.InstrumentModel)
+
+                case {obj.DriverData.constants.MODEL_PS5242A, obj.DriverData.constants.MODEL_PS5442A, ...
+                        obj.DriverData.constants.MODEL_PS5242B, obj.DriverData.constants.MODEL_PS5442B}
+
+                    if (etsCycles &gt; obj.DriverData.constants.PS5242A_MAX_ETS_CYCLES)
+                       
+                        error('ps5000aSetEts: etsCycles out of range (Max. 125).')
+                           
+                    end
+                    
+                    if (etsInterleave &gt; obj.DriverData.constants.PS5242A_MAX_ETS_INTERLEAVE)
+                       
+                        error('ps5000aSetEts: etsInterleave out of range (Max. 10).')
+                        
+                    end
+                    
+                case {obj.DriverData.constants.MODEL_PS5243A, obj.DriverData.constants.MODEL_PS5443A, ...
+                        obj.DriverData.constants.MODEL_PS5243B, obj.DriverData.constants.MODEL_PS5443B}
+
+                    if (etsCycles &gt; PS5000aConstants.PS5243A_MAX_ETS_CYCLES)
+                       
+                        error('ps5000aSetEts: etsCycles out of range (Max. 250).')
+                           
+                    end
+                    
+                    if (etsInterleave &gt; PS5000aConstants.PS5243A_MAX_ETS_INTERLEAVE)
+                       
+                        error('ps5000aSetEts: etsInterleave out of range (Max. 20).')
+                        
+                    end
+                    
+                case {obj.DriverData.constants.MODEL_PS5244A, obj.DriverData.constants.MODEL_PS5444A, ...
+                        obj.DriverData.constants.MODEL_PS5244B, obj.DriverData.constants.MODEL_PS5444B, ...
+                        obj.DriverData.constants.MODEL_PS5444B_034}
+
+                    if (etsCycles &gt; PS5000aConstants.PS5244A_MAX_ETS_CYCLES)
+                       
+                        error('ps5000aSetEts: etsCycles out of range (Max. 500).')
+                           
+                    end
+                    
+                    if (etsInterleave &gt; PS5000aConstants.PS5244A_MAX_ETS_INTERLEAVE)
+                       
+                        error('ps5000aSetEts: etsInterleave out of range (Max. 40).')
+                        
+                    end
+                    
+                case {obj.DriverData.constants.MODEL_PS5242D, obj.DriverData.constants.MODEL_PS5442D, ...
+                        obj.DriverData.constants.MODEL_PS5242D_MSO, obj.DriverData.constants.MODEL_PS5442D_MSO}
+
+                    if (etsCycles &gt; obj.DriverData.constants.PS5X42D_MAX_ETS_CYCLES)
+                       
+                        error('ps5000aSetEts: etsCycles out of range (Max. 125).')
+                           
+                    end
+                    
+                    if (etsInterleave &gt; obj.DriverData.constants.PS5X42D_MAX_ETS_INTERLEAVE)
+                       
+                        error('ps5000aSetEts: etsInterleave out of range (Max. 5).')
+                        
+                    end
+                    
+                case {obj.DriverData.constants.MODEL_PS5243D, obj.DriverData.constants.MODEL_PS5443D, ...
+                        obj.DriverData.constants.MODEL_PS5243D_MSO, obj.DriverData.constants.MODEL_PS5443D_MSO}
+
+                    if (etsCycles &gt; obj.DriverData.constants.PS5X43D_MAX_ETS_CYCLES)
+                       
+                        error('ps5000aSetEts: etsCycles out of range (Max. 250).')
+                           
+                    end
+                    
+                    if (etsInterleave &gt; obj.DriverData.constants.PS5X43D_MAX_ETS_INTERLEAVE)
+                       
+                        error('ps5000aSetEts: etsInterleave out of range (Max. 40).')
+                        
+                    end
+                    
+                case {obj.DriverData.constants.MODEL_PS5244D, obj.DriverData.constants.MODEL_PS5444D, ...
+                        obj.DriverData.constants.MODEL_PS5244D_MSO, obj.DriverData.constants.MODEL_PS5444D_MSO}
+
+                    if (etsCycles &gt; obj.DriverData.constants.PS5X44D_MAX_ETS_CYCLES)
+                       
+                        error('ps5000aSetEts: etsCycles out of range (Max. 500).')
+                           
+                    end
+                    
+                    if (etsInterleave &gt; obj.DriverData.constants.PS5X44D_MAX_ETS_INTERLEAVE)
+                       
+                        error('ps5000aSetEts: etsInterleave out of range (Max. 80).')
+                        
+                    end
+        
+            otherwise
+        
+                % Do nothing
+        end
+        
+        [status] = calllib('ps5000a', 'ps5000aSetEts', ...
+            deviceObj.DriverData.unitHandle, mode, etsCycles, etsInterleave, pSampleTimePicoSeconds);
+        
+        if (status ~= PicoStatus.PICO_OK)
+           
+            error('ps5000aSetEts:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+        end
+        
+        sampleTimePicoSeconds = pSampleTimePicoSeconds.Values;
+        
+    else
+        
+        error('ps5000aSetEts: etsCycles and etsInterleave must both be greater than 0.')
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aSetEts(obj, mode, etsCycles, etsInterleave) is used to enable or disable ETS (equivalent-time sampling) and to set the ETS parameters.
+
+This function may be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the Block group.
+mode - must be one of the following:
+
+	PS5000A_ETS_OFF    (0)
+	PS5000A_ETS_FAST  (1)
+	PS5000A_ETS_SLOW (2)
+
+etsCycles - the number of cycles to store; must be greater than zero and between 2 and 5 times greater than etsInterleave.
+etsInterleave - the number of waveforms to combine into a single ETS capture. Must be greater than zero.
+
+Output parameters:
+
+status - status code returned by the driver.
+sampleTimePicoSeconds - the effective sampling interval of the ETS data.
+
+For further information on the ps5000aSetEts function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aSetEtsTimeBuffer</Name>
+               <Location>block</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, etsBuffer] = ps5000aSetEtsTimeBuffer(obj, bufferLth)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    % Pointer to array
+    pBuffer = libpointer('int64Ptr', zeros(bufferLth, 1, 'int64'));
+
+    status = calllib('ps5000a', 'ps5000aSetEtsTimeBuffer', ...
+                        deviceObj.DriverData.unitHandle, pBuffer, bufferLth);
+    
+    etsBuffer = pBuffer.Value;
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aSetEtsTimeBuffer:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aSetEtsTimeBuffer(obj, bufferLth) tells the driver where to find your application's ETS time buffers.
+
+If using a 32-bit version of MATLAB, use ps5000aSetEtsTimeBuffers instead.
+
+Input parameters:
+
+obj - the object representing the Block group.
+bufferLth - the number of ETS samples.
+
+Output parameters:
+
+status - status code returned by the device.
+etsBuffer - a 1-D array of 64-bit words, each representing the time in femtoseconds at which the sample was captured.
+
+For further information on the ps5000aSetEtsTimeBuffer function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
+</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aSetEtsTimeBuffers</Name>
+               <Location>block</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, etsTimeUpper, etsTimeLower] = ps5000aSetEtsTimeBuffers(obj, bufferLth)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    % Pointer to arrays
+    pBufferUpper = libpointer('int32Ptr', zeros(bufferLth, 1));
+    pBufferLower = libpointer('int32Ptr', zeros(bufferLth, 1));
+
+    status = calllib('ps5000a', 'ps5000aSetEtsTimeBuffers', ...
+                deviceObj.DriverData.unitHandle, pBufferUpper, pBufferLower, bufferLth);
+    
+    etsTimeUpper = pBufferUpper.Value;
+    etsTimeLower = pBufferLower.Value;
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aSetEtsTimeBuffer:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aSetEtsTimeBuffers(obj, bufferLth) tells the driver where to find your application's ETS time buffers. These buffers contain the timing information for each ETS sample after you run a block mode ETS capture.
+
+This function may be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the Block group.
+bufferLth - the number of ETS samples.
+
+Output parameters:
+
+status - status code returned by the device.
+etsTimeUpper - an array of 32-bit words, each representing the upper 32 bits of the time in femtoseconds at which the sample was captured.
+etsTimeLower - an array of 32-bit words, each representing the lower 32 bits of the time in femtoseconds at which the sample was captured.
+
+For further information on the ps5000aSetEtsTimeBuffers function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+            <Method>
+               <Name>runBlock</Name>
+               <Location>block</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, timeIndisposedMs] = runBlock(obj, segmentIndex)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    timeIndisposedMs = 0;   % Initialise to pass as pointer.
+    lpReady = [];           % Set to NULL - Callback function not used.
+    pParameter = [];        % Set to NULL - Callback function not used.
+    
+    timebaseIndex = deviceObj.DriverData.timebase;
+    preTriggerSamples = deviceObj.DriverData.numPreTriggerSamples;
+    postTriggerSamples = deviceObj.DriverData.numPostTriggerSamples;
+    
+    if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+        
+        fprintf('runBlock:- Collecting block of data:\n\tTimebase: %u\n\tPre-trigger samples: %u\n\tPost-trigger samples: %u\n\n', ...
+            timebaseIndex, preTriggerSamples, postTriggerSamples);
+    
+    end
+
+    [runBlockStatus, timeIndisposedMs] = calllib('ps5000a', 'ps5000aRunBlock', ...
+        deviceObj.DriverData.unitHandle, preTriggerSamples, postTriggerSamples, ...
+        timebaseIndex, segmentIndex, timeIndisposedMs, lpReady, pParameter);
+    
+    if (runBlockStatus ~= PicoStatus.PICO_OK)
+           
+        error('runBlock: Error in ps5000aRunBlock call - code %d', runBlockStatus); 
+        
+    end
+    
+    if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+        
+        fprintf('runBlock: Waiting for device to become ready...\n');
+        
+    end
+    
+    ready = 0; % Initialise value for pointer
+    pReady = libpointer('int16Ptr', ready);
+    
+    while (ready == 0)
+        
+        [readyStatus] = calllib('ps5000a', 'ps5000aIsReady', ...
+                            deviceObj.DriverData.unitHandle, pReady);
+                        
+        ready = pReady.Value;
+                        
+        if (readyStatus ~= PicoStatus.PICO_OK)
+           
+            error('runBlock: Error in ps5000aIsReady call - code %d', readyStatus); 
+        
+        end
+                        
+    end
+    
+    if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+        
+        fprintf('runBlock: Device ready.\n\n');
+        
+    end
+    
+    % Other conditions would have been captured.
+    if (runBlockStatus == PicoStatus.PICO_OK &amp;&amp; readyStatus == PicoStatus.PICO_OK)
+        
+        status = PicoStatus.PICO_OK;
+        
+    else
+        
+        if (runBlockStatus ~= PicoStatus.PICO_OK)
+            
+            error('runBlock:- ps5000aRunBlock error code: %d\n', runBlockStatus);
+            
+        else
+            
+            error('runBlock:- ps5000aIsReady error code: %d\n', readyStatus);
+                
+        end
+            
+        
+    end</MCode>
+               </Code>
+               <Description>runBlock(obj, segmentIndex) starts collecting data in block mode and returns when the device is ready for data to be collected.
+
+Use this function when no further action is required between the start of data collection and retrieval of data from the device.
+
+If additional functions need to be called in your script while waiting for the data to be collected, call the ps5000aRunBlock function, followed by the other required commands, and poll the device using the ps5000aIsReady function.
+
+This function can be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the Block group.
+segmentIndex - zero-based index, specifying which memory segment to use.
+
+Output parameters:
+
+status - 0 if the ps5000aRunBlock and ps5000aIsReady functions have been executed correctly. 
+
+For further information on the  ps5000aRunBlock and ps5000aIsReady functions please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
+
+
+
 </Description>
             </Method>
          </MethodInfo>
