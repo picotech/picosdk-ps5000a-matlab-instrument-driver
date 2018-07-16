@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.11.12</InstrumentVersion>
+   <InstrumentVersion>2.2.11.13</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -383,12 +383,10 @@
         infoLine = blanks(40);
         reqSize = length(infoLine);
 
-        [connectStatus.unitSerial, unitSerial, reqSize]  = calllib('ps5000a', ...
+        [connectStatus.unitSerial, obj.DriverData.unitSerial, reqSize]  = calllib('ps5000a', ...
                 'ps5000aGetUnitInfo', unitHandle, infoLine, ... 
                 length(infoLine), reqSize, PicoStatus.PICO_BATCH_AND_SERIAL);
 
-        set(obj, 'unitSerial', unitSerial);
-        
         % Set variant and channel count information
         infoLineV = blanks(15);
         reqSizeV = 15;
@@ -600,7 +598,7 @@
         fprintf('\n');
         fprintf('Connected to PicoScope 5000 Series (A API) device:-\n\n');
         fprintf('          Instrument Model: %s\n', obj.InstrumentModel);
-        fprintf('       Batch/Serial Number: %s\n', unitSerial);
+        fprintf('       Batch/Serial Number: %s\n', obj.DriverData.unitSerial);
         fprintf('               USB Version: %s\n', usbVersion);
         fprintf('           Analog Channels: %d\n', get(obj, 'channelCount'));
  
@@ -708,9 +706,9 @@
 % OBJ is the device object.
 % End of function definition - DO NOT EDIT
 
-    if (isfield(obj.UserData, 'unitHandle'))
+    if (isfield(obj.DriverData, 'unitHandle'))
     
-        unitHandle = obj.UserData.unitHandle;
+        unitHandle = obj.DriverData.unitHandle;
 
         if (isempty(unitHandle)) 
             % If no unithandle, return without doing anything
@@ -732,7 +730,7 @@
         if (disconnectStatus == PicoStatus.PICO_OK)
 
             fprintf(['Connection to PicoScope %s with serial number %s ' ...
-                'closed successfully.\n'], obj.InstrumentModel, obj.UserData.unitSerial);
+                'closed successfully.\n'], obj.InstrumentModel, obj.DriverData.unitSerial);
 
         elseif (disconnectStatus == PicoStatus.PICO_INVALID_HANDLE)
             
@@ -745,7 +743,7 @@
                 
                 error('Disconnect:ConnectionNotClosed',['Connection to PicoScope %s with serial number %s ' ...
                     'not closed. Status code %d\n'], ...
-                    obj.InstrumentModel, obj.UserData.unitSerial, disconnectStatus);
+                    obj.InstrumentModel, obj.DriverData.unitSerial, disconnectStatus);
                 
             end
 
