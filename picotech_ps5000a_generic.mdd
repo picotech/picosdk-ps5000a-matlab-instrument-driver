@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.11.15</InstrumentVersion>
+   <InstrumentVersion>2.2.11.16</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -7170,8 +7170,14 @@ For further information on the SetPulseWidthQualifier function please refer to t
     thresholdAdc = mv2adc(thresholdMv, channelRangeMv, deviceObj.DriverData.maxADCValue);
 
     status = calllib('ps5000a', 'ps5000aSetSimpleTrigger', ...
-            deviceObj.DriverData.unitHandle, PicoConstants.TRUE, source, thresholdAdc, direction, ...
-            deviceObj.DriverData.delay, deviceObj.DriverData.autoTriggerMs);</MCode>
+            deviceObj.DriverData.unitHandle, PicoConstants.TRUE, source, thresholdAdc, ...
+            direction, deviceObj.DriverData.delay, deviceObj.DriverData.autoTriggerMs);
+        
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('setSimpleTrigger:- status code: %d. Please refer to the PicoStatus.m file.', status); 
+        
+    end</MCode>
                </Code>
                <Description>setSimpleTrigger(obj, source, threshold, direction, delay, autoTrigger_ms) simplifies arming the trigger. 
 
