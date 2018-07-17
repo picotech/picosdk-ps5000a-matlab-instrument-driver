@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.11.14</InstrumentVersion>
+   <InstrumentVersion>2.2.11.15</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -7262,9 +7262,10 @@ For further information on the SetTriggerConditions function please refer to the
     % Set trigger to false for channel A
 
     channel = deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A;
+    direction = deviceObj.DriverData.enums.enPS5000AThresholdDirection.PS5000A_NONE;
     
     status = calllib('ps5000a', 'ps5000aSetSimpleTrigger', ...
-            deviceObj.DriverData.unitHandle, PicoConstants.FALSE, channel, 0, 0, ...
+            deviceObj.DriverData.unitHandle, PicoConstants.FALSE, channel, 0, direction, ...
             deviceObj.DriverData.delay, deviceObj.DriverData.autoTriggerMs);
     
     if (status ~= PicoStatus.PICO_OK)
