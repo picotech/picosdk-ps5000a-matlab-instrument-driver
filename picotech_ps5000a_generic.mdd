@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.11.16</InstrumentVersion>
+   <InstrumentVersion>2.2.11.17</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -3131,42 +3131,6 @@ overflow - an array of integers equal to or larger than the number of waveforms 
 For further information on the ps5000aGetValuesBulk function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
-               <Name>ps5000aGetValuesOverlapped</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status] = ps5000aGetValuesOverlapped(obj, startIndex, pNoOfSamples, downSampleRatio, downSampleRatioMode, segmentIndex, pOverflow)
-
-    [status] = calllib('ps5000a', ...
-        'ps5000aGetValuesOverlapped', get(obj, 'unitHandle'), startIndex, ...
-        pNoOfSamples, downSampleRatio, downSampleRatioMode, segmentIndex, pOverflow)
-    
-    if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aGetValuesOverlapped(obj, startIndex, pNoOfSamples, downSampleRatio, downSampleRatioMode, segmentIndex, pOverflow) allows you to make a deferred data-collection request, which will later be executed, and the arguments validated, when you call runBlock in block mode.
-
-Input parameters:
-
-obj - the object representing the device.
-startIndex - a zero-based index that indicates the start point for data collection.
-noOfSamples - a libpointer object to the number of samples required. On exit, the value retrieved from the libpointer object will be the actual number of samples retrieved from the driver.
-downSampleRatio - the downsampling factor that will be applied to the raw data.
-downSampleRatioMode - which downsampling mode to use (specified by enumeration).
-segmentIndex - the zero-based number of the memory segment where the data is stored.
-overflow - a set of flags that indicate whether an overvoltage has occurred on any of the channels.
-
-Output parameters:
-
-status - status code returned by the driver.
-
-For further information on the ps5000aGetValuesOverlapped function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
                <Name>ps5000aGetValuesOverlappedBulk</Name>
                <Location>parent</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -5684,6 +5648,50 @@ numSamples - the actual number retrieved from the driver.
 overflow - a set of flags that indicate whether an overvoltage has occurred on any of the channels.
 
 For further information on the ps5000aGetValues function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aGetValuesOverlapped</Name>
+               <Location>block</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, numSamples, overflow] = ps5000aGetValuesOverlapped(obj, startIndex, noOfSamples, downSampleRatio, downSampleRatioMode, segmentIndex)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    pOverflow = libpointer('int16Ptr', 0);
+    
+    [status, numSamples] = calllib('ps5000a', 'ps5000aGetValuesOverlapped', deviceObj.DriverData.unitHandle, ...
+        startIndex, noOfSamples, downSampleRatio, downSampleRatioMode, segmentIndex, pOverflow);
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aGetValuesOverlapped:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+    end
+    
+    overflow = pOverflow.Value;</MCode>
+               </Code>
+               <Description>ps5000aGetValuesOverlapped(obj, startIndex, noOfSamples, downSampleRatio, downSampleRatioMode, segmentIndex) allows you to make a deferred data-collection request, which will later be executed, and the arguments validated, when you call runBlock in block mode.
+
+Input parameters:
+
+obj - the object representing the Block group.
+startIndex - a zero-based index that indicates the start point for data collection.
+noOfSamples - the number of samples required. 
+downSampleRatio - the downsampling factor that will be applied to the raw data.
+downSampleRatioMode - which downsampling mode to use (specified by enumeration).
+segmentIndex - the zero-based number of the memory segment where the data is stored.
+
+Output parameters:
+
+status - status code returned by the driver.
+numSamples - the actual number of samples retrieved from the driver.
+overflow - a set of flags that indicate whether an overvoltage has occurred on any of the channels.
+
+For further information on the ps5000aGetValuesOverlapped function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
                <Name>ps5000aIsReady</Name>
