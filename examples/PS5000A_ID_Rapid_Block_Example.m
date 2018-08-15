@@ -121,7 +121,7 @@ blockGroupObj = blockGroupObj(1);
 % segments.
 
 numCaptures = 8;
-[status] = invoke(ps5000aDeviceObj, 'ps5000aSetNoOfCaptures', numCaptures);
+[status] = invoke(rapidBlockGroupObj, 'ps5000aSetNoOfCaptures', numCaptures);
 
 % Set number of samples to collect pre- and post-trigger. Ensure that the
 % total does not exceeed nMaxSamples above.
@@ -145,8 +145,9 @@ downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_
 [numSamples, overflow, chA, chB] = invoke(rapidBlockGroupObj, 'getRapidBlockData', numCaptures, ...
                                     downsamplingRatio, downsamplingRatioMode);
 
-% Stop the device
-[status] = invoke(ps5000aDeviceObj, 'ps5000aStop');
+%% Obtain the number of captures
+
+[status, numCaptures] = invoke(rapidBlockGroupObj, 'ps5000aGetNoOfCaptures');
 
 %% PROCESS DATA
 
@@ -173,6 +174,9 @@ title('Channel B - Rapid Block Capture');
 xlabel('Time (ns)');
 ylabel('Voltage (mV)')
 grid on;
+
+%% Stop the device
+[status] = invoke(ps5000aDeviceObj, 'ps5000aStop');
 
 %% DEVICE DISCONNECTION
 

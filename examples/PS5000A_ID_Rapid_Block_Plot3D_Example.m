@@ -121,7 +121,7 @@ blockGroupObj = blockGroupObj(1);
 % segments.
 
 numCaptures = 8;
-[status] = invoke(ps5000aDeviceObj, 'ps5000aSetNoOfCaptures', numCaptures);
+[status] = invoke(rapidBlockGroupObj, 'ps5000aSetNoOfCaptures', numCaptures);
 
 % Set number of samples to collect pre- and post-trigger. Ensure that the
 % total does not exceeed nMaxSamples above.
@@ -145,9 +145,10 @@ downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_
 % for Channel C
 [numSamples, overflow, chA, chB] = invoke(rapidBlockGroupObj, 'getRapidBlockData', numCaptures, ...
                                     downsamplingRatio, downsamplingRatioMode);
+                                
+%% Obtain the number of captures
 
-% Stop the device
-[status] = invoke(ps5000aDeviceObj, 'ps5000aStop');
+[status, numCaptures] = invoke(rapidBlockGroupObj, 'ps5000aGetNoOfCaptures');
 
 %% PROCESS DATA
 
@@ -157,7 +158,9 @@ downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_
 % Use timeIntervalNanoSeconds output from ps5000aGetTimebase or
 % ps5000aGetTimebase2 or calculate from Programmer's Guide.
 
-timeNs = double(timeIntNs) * double([0:numSamples - 1]);
+timeNs = double(timeIntNs) * double(0:numSamples - 1);
+
+% Obtain the num
 
 % Channel A
 figure1 = figure;
@@ -168,7 +171,7 @@ hold(axes1,'all');
 
 for i = 1:numCaptures
     
-    plot3(timeNs, i * (ones(numSamples, 1)), chA(:, i));
+    plot3(timeNs, i * uint32(ones(numSamples, 1)), chA(:, i));
     
 end
 
@@ -188,7 +191,7 @@ hold(axes2,'all');
 
 for i = 1:numCaptures
     
-    plot3(timeNs, i * (ones(numSamples, 1)), chB(:, i));
+    plot3(timeNs, i * uint32(ones(numSamples, 1)), chB(:, i));
     
 end
 
@@ -198,6 +201,10 @@ ylabel('Capture');
 zlabel('Voltage (mV)')
 
 hold off;
+
+%% Stop the device
+
+[status] = invoke(ps5000aDeviceObj, 'ps5000aStop');
 
 %% DEVICE DISCONNECTION
 

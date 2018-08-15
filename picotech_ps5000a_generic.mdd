@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.12.19</InstrumentVersion>
+   <InstrumentVersion>2.2.12.20</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -2417,74 +2417,6 @@ For further information on the ps5000aGetMaxSegments function please refer to th
 </Description>
             </Method>
             <Method>
-               <Name>ps5000aGetNoOfCaptures</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, nCaptures] = ps5000aGetNoOfCaptures(obj)
-
-    nCaptures = 0; % Value for pointer.
-
-    [status, nCaptures] = calllib('ps5000a', 'ps5000aGetNoOfCaptures', ...
-                            get(obj, 'unitHandle'), nCaptures);
-                        
-    if(status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aGetNoOfCaptures(obj) finds out how many captures are available in rapid block mode after runBlock has been called when either the collection completed or the collection of waveforms was interrupted by calling ps5000aStop.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-status - status code returned by the driver.
-nCaptures - the number of available captures that has been collected from calling runBlock.
-
-For further information on the ps5000aGetNoOfCaptures function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
-               <Name>ps5000aGetNoOfProcessedCaptures</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, nProcessedCaptures] = ps5000aGetNoOfProcessedCaptures(obj)
-
-    nProcessedCaptures = 0;
-
-    [status, nProcessedCaptures] = calllib('ps5000a', 'ps5000aGetNoOfProcessedCaptures', ...
-        get(obj, 'unithandle'), nProcessedCaptures);
-    
-    if(status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aGetNoOfProcessedCaptures(obj, nCaptures) finds out how many captures in rapid block mode have been processed after runBlock has been called when either the collection completed or the collection of waveforms was interrupted by calling ps5000aStop.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-status - status code returned by the driver.
-nProcessedCaptures - the number of available captures that has been collected from calling runBlock.
-
-For further information on the ps5000aGetNoOfProcessedCaptures function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
                <Name>ps5000aGetTimebase</Name>
                <Location>parent</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -2648,91 +2580,6 @@ timeUnits - the time units in which time is measured (as an enumeration).
 
 For further information on the ps5000aGetTriggerTimeOffset64 function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
 
-</Description>
-            </Method>
-            <Method>
-               <Name>ps5000aGetValuesBulk</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, numSamples, overflow] = ps5000aGetValuesBulk(obj, noOfSamples, fromSegmentIndex, toSegmentIndex, downSampleRatio, downSampleRatioMode)
-
-    % overflow must be an array
-    overflow_size = (toSegmentIndex - fromSegmentIndex) + 1;
-    overflow_ptr = libpointer('int16Ptr', zeros(overflow_size, 1));
-    overflow = 0;
-
-    [status, numSamples] = calllib('ps5000a', 'ps5000aGetValuesBulk', ...
-        get(obj, 'unitHandle'), noOfSamples, fromSegmentIndex, toSegmentIndex, ... 
-        downSampleRatio, downSampleRatioMode, overflow_ptr);
-    
-    if (status == PicoStatus.PICO_OK)
-        
-        overflow = get(overflow_ptr, 'Value');
-        
-    else
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aGetValuesBlk(obj, noOfSamples, fromSegmentIndex, toSegmentIndex, downSampleRatio, downSampleRatioMode) retrieves waveforms captured using rapid block mode.
-
-Input parameters:
-
-obj - the object representing the device.
-noOfSamples - the number of samples required.
-fromSegmentIndex - the first segment from which the waveform should be retrieved.
-toSegmentIndex - the last segment from which the waveform should be retrieved.
-downSampleRatio - the downsampling factor that will be applied to the raw data.
-downSampleRatioMode - which downsampling mode to use (specified by enumeration).
-
-Output parameters:
-
-status - status code returned by the driver.
-numSamples - the actual number retrieved from the driver.
-overflow - an array of integers equal to or larger than the number of waveforms to be retrieved with each element corresponding to an overlow value as described in the ps5000aGetValues function.
-
-For further information on the ps5000aGetValuesBulk function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
-               <Name>ps5000aGetValuesOverlappedBulk</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status] = ps5000aGetValuesOverlappedBulk(obj, startIndex, pNoOfSamples, downSampleRatio, downSampleRatioMode, fromSegmentIndex, toSegmentIndex, pOverflow)
-
-    [status, numSamples, pOverflow] = calllib('ps5000a', ...
-        'ps5000aGetValuesOverlappedBulk', get(obj, 'unitHandle'), startIndex, ...
-        pNoOfSamples, downSampleRatio, downSampleRatioMode, fromSegmentIndex, ...
-        toSegmentIndex, pOverflow);
-    
-    if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aGetValuesOverlappedBulk(obj, startIndex, pNoOfSamples, downSampleRatio, downSampleRatioMode, fromSegmentIndex, toSegmentIndex, pOverflow) allows you to make a deferred data-collection request, which will later be executed, and the arguments validated, when you call runBlock in rapid block mode.
-
-Input parameters:
-
-obj - the object representing the device.
-startIndex - a zero-based index that indicates the start point for data collection.
-pNoOfSamples - a libpointer object to the number of samples required, on exit, the value retrieved from the libpointer object will be the actual number of samples retrieved from the driver.
-downSampleRatio - the downsampling factor that will be applied to the raw data.
-downSampleRatioMode - which downsampling mode to use (specified by enumeration).
-fromSegmentIndex - the first segment from which the waveform should be retrieved.
-toSegmentIndex - the last segment from which the waveform should be retrieved.
-overflow - an array of integers equal to or larger than the number of waveforms to be retrieved with each element corresponding to an overlow value as described in the ps5000aGetValues function.
-
-Output parameters:
-
-status - status code returned by the driver.
-
-For further information on the ps5000aGetValuesOverlappedBulk function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
 </Description>
             </Method>
             <Method>
@@ -3650,40 +3497,6 @@ resolution - the resolution set by the driver.
 
 For further information on the ps5000aSetDeviceResolution  function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
 </Description>
-            </Method>
-            <Method>
-               <Name>ps5000aSetNoOfCaptures</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function status = ps5000aSetNoOfCaptures(obj, nCaptures)
-
-    status = calllib('ps5000a', 'ps5000aSetNoOfCaptures', ...
-        get(obj, 'unitHandle'), nCaptures);
-    
-    if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aSetNoOfCaptures(obj, nCaptures) sets the number of captures to be collected in one run of rapid block mode.
-
-If this function is not called prior to a run, only a single waveform will be captured.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-nCaptures - the number of waveforms to capture in one run.
-
-Output parameters:
-
-status - status code returned by the device.
-
-For further information on the ps5000aSetNoOfCaptures function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
                <Name>ps5000aSigGenSoftwareControl</Name>
@@ -6346,6 +6159,226 @@ portD1 - a matrix containing data values in binary format for digital Port 1 (in
 Channel data will be returned as a matrix in the form numSamples x numCaptures. Channels not enabled or not supported by this device will be returned as an empty array.
 
 Please also refer to the  ps5000aSetDataBuffer and ps5000aGetValues functions.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aGetNoOfCaptures</Name>
+               <Location>rapidblock</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, nCaptures] = ps5000aGetNoOfCaptures(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    pNCaptures = libpointer('uint32Ptr', 0); % Value for pointer.
+
+    [status] = calllib('ps5000a', 'ps5000aGetNoOfCaptures', ...
+                           deviceObj.DriverData.unitHandle, pNCaptures);
+                        
+    if(status ~= PicoStatus.PICO_OK)
+           
+       error('ps5000aGetNoOfCaptures:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+    else
+        
+        nCaptures = pNCaptures.Value;
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aGetNoOfCaptures(obj) finds out how many captures are available in rapid block mode after runBlock has been called when either the collection completed or the collection of waveforms was interrupted by calling ps5000aStop.
+
+This function may be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the Rapidblock group.
+
+Output parameters:
+
+status - status code returned by the driver.
+nCaptures - the number of available captures that has been collected from calling runBlock.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aGetNoOfProcessedCaptures</Name>
+               <Location>rapidblock</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, nProcessedCaptures] = ps5000aGetNoOfProcessedCaptures(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    pNumProcessedCaptures = libpointer('uint32Ptr', 0); % Value for pointer.
+
+    [status] = calllib('ps5000a', 'ps5000aGetNoOfProcessedCaptures', ...
+                    deviceObj.DriverData.unitHandle, pNumProcessedCaptures);
+    
+    if(status ~= PicoStatus.PICO_OK)
+           
+       error('ps5000aGetNoOfProcessedCaptures:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+    else
+        
+        nProcessedCaptures = pNumProcessedCaptures.Value;
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aGetNoOfProcessedCaptures(obj, nCaptures) finds out how many captures in rapid block mode have been processed after runBlock has been called when either the collection completed or the collection of waveforms was interrupted by calling ps5000aStop.
+
+This function may be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the Rapidblock group.
+
+Output parameters:
+
+status - status code returned by the driver.
+nProcessedCaptures - the number of available captures that has been collected from calling runBlock.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aGetValuesBulk</Name>
+               <Location>rapidblock</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, numSamples, overflow] = ps5000aGetValuesBulk(obj, noOfSamples, fromSegmentIndex, toSegmentIndex, downSampleRatio, downSampleRatioMode)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    pNumSamples = libpointer('uint32Ptr', noOfSamples);
+    
+    % overflow must be an array
+    overflowSize = (toSegmentIndex - fromSegmentIndex) + 1;
+    pOverflow = libpointer('int16Ptr', zeros(overflowSize, 1));
+    overflow = 0;
+
+    [status] = calllib('ps5000a', 'ps5000aGetValuesBulk', ...
+                deviceObj.DriverData.unitHandle, pNumSamples, fromSegmentIndex, ...
+                toSegmentIndex, downSampleRatio, downSampleRatioMode, pOverflow);
+    
+    if (status ~= PicoStatus.PICO_OK)
+        
+        error('ps5000aGetValuesBulk:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+    else
+           
+        numSamples = pNumSamples.Value;
+        overflow = pOverflow.Value;
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aGetValuesBulk(obj, noOfSamples, fromSegmentIndex, toSegmentIndex, downSampleRatio, downSampleRatioMode) retrieves waveforms captured using rapid block mode.
+
+Input parameters:
+
+obj - the object representing the Rapidblock group.
+noOfSamples - the number of samples required per channels in each segment.
+fromSegmentIndex - the first segment from which the waveform should be retrieved.
+toSegmentIndex - the last segment from which the waveform should be retrieved.
+downSampleRatio - the downsampling factor that will be applied to the raw data.
+downSampleRatioMode - which downsampling mode to use (specified by enumeration).
+
+Output parameters:
+
+status - status code returned by the driver.
+numSamples - the actual number retrieved per channel in each segment.
+overflow - an array of integers equal to or larger than the number of waveforms to be retrieved with each element corresponding to an overlow value as described in the ps5000aGetValues function.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aGetValuesOverlappedBulk</Name>
+               <Location>rapidblock</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, numSamples, overflow] = ps5000aGetValuesOverlappedBulk(obj, startIndex, noOfSamples, downSampleRatio, downSampleRatioMode, fromSegmentIndex, toSegmentIndex)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    pNumSamples = libpointer('uint32Ptr', noOfSamples);
+    
+    % overflow must be an array
+    overflowSize = (toSegmentIndex - fromSegmentIndex) + 1;
+    pOverflow = libpointer('int16Ptr', zeros(overflowSize, 1));
+    overflow = 0;
+    
+    [status] = calllib('ps5000a', 'ps5000aGetValuesOverlappedBulk', deviceObj.DriverData.unitHandle, ...
+        startIndex, pNumSamples, downSampleRatio, downSampleRatioMode, fromSegmentIndex, ...
+        toSegmentIndex, pOverflow);
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aGetValuesOverlappedBulk:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+    else
+           
+        numSamples = pNumSamples.Value;
+        overflow = pOverflow.Value;
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aGetValuesOverlappedBulk(obj, startIndex, pNoOfSamples, downSampleRatio, downSampleRatioMode, fromSegmentIndex, toSegmentIndex, pOverflow) allows you to make a deferred data-collection request, which will later be executed, and the arguments validated, when you call runBlock in rapid block mode.
+
+Input parameters:
+
+obj - the object representing the Rapidblock group.
+startIndex - a zero-based index that indicates the start point for data collection.
+noOfSamples - the number of samples required per channels in each segment.
+downSampleRatio - the downsampling factor that will be applied to the raw data.
+downSampleRatioMode - which downsampling mode to use (specified by enumeration).
+fromSegmentIndex - the first segment from which the waveform should be retrieved.
+toSegmentIndex - the last segment from which the waveform should be retrieved.
+
+Output parameters:
+
+status - status code returned by the driver.
+numSamples - the actual number retrieved per channel in each segment.
+overflow - an array of integers equal to or larger than the number of waveforms to be retrieved with each element corresponding to an overlow value as described in the ps5000aGetValues function.
+</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aSetNoOfCaptures</Name>
+               <Location>rapidblock</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSetNoOfCaptures(obj, nCaptures)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    status = calllib('ps5000a', 'ps5000aSetNoOfCaptures', ...
+        deviceObj.DriverData.unitHandle, nCaptures);
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aSetNoOfCaptures:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aSetNoOfCaptures(obj, nCaptures) sets the number of captures to be collected in one run of rapid block mode.
+
+If this function is not called prior to a run, only a single waveform will be captured.
+
+This function may be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the Rapidblock group.
+nCaptures - the number of waveforms to capture in one run.
+
+Output parameters:
+
+status - status code returned by the device.</Description>
             </Method>
          </MethodInfo>
       </Group>
