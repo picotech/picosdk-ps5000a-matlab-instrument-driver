@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.11.17</InstrumentVersion>
+   <InstrumentVersion>2.2.11.18</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -1749,12 +1749,7 @@ To output a signal with constant frequency, ensure that stopFrequency is equal t
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If UserData.unitHandle doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'unitHandle') )
-        obj.UserData.unitHandle = [ ];
-    else
-        propertyValue = obj.UserData.unitHandle;
-    end</GetMCode>
+    propertyValue = obj.DriverData.unitHandle;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
@@ -1781,12 +1776,7 @@ To output a signal with constant frequency, ensure that stopFrequency is equal t
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If UserData.unitserial doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'unitSerial') )
-        obj.UserData.unitSerial = [ ];
-    else
-        propertyValue = obj.UserData.unitSerial;
-    end</GetMCode>
+    propertyValue = obj.DriverData.unitSerial;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
