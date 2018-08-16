@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.12.20</InstrumentVersion>
+   <InstrumentVersion>2.2.12.22</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -6381,6 +6381,28 @@ Output parameters:
 status - status code returned by the device.</Description>
             </Method>
          </MethodInfo>
+      </Group>
+      <Group>
+         <Name>Signalgenerator</Name>
+         <Description>The Signalgenerator group contains a set of properties and functions related to the signal generator functionality of the device.</Description>
+         <Command/>
+         <Size>1</Size>
+         <Mappings>
+            <ChannelMap Command="Signalgenerator1" Index="1"/>
+         </Mappings>
+         <PropertyInfo/>
+         <MethodInfo/>
+      </Group>
+      <Group>
+         <Name>Streaming</Name>
+         <Description>The Signalgenerator group contains a set of properties and functions related to the signal generator functionality of the device.</Description>
+         <Command/>
+         <Size>1</Size>
+         <Mappings>
+            <ChannelMap Command="Streaming1" Index="1"/>
+         </Mappings>
+         <PropertyInfo/>
+         <MethodInfo/>
       </Group>
       <Group>
          <Name>trigger</Name>
