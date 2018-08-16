@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.12.22</InstrumentVersion>
+   <InstrumentVersion>2.2.13.23</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -874,42 +874,6 @@
 This flag should be set to 0 or 1.</Description>
             </Property>
             <Property>
-               <Name>awgBufferSize</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
-% Return a property value.
-%   This function is called to return the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    % If awgBufferSize doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'awgBufferSize') )
-        obj.UserData.awgBufferSize = 0;
-    else
-        propertyValue = obj.UserData.awgBufferSize;
-    end</GetMCode>
-                  <SetMCode>function set(obj, propertyName, propertyValue)
-% Set a property value.
-%   This function is called to set the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.awgBufferSize = propertyValue;</SetMCode>
-               </Code>
-               <PermissibleType>
-                  <Type>Double</Type>
-                  <Constraint>none</Constraint>
-               </PermissibleType>
-               <DefaultValue>0</DefaultValue>
-               <ReadOnly>never</ReadOnly>
-               <Description>The size of the arbitrary waveform buffer on the device, in samples. Applies only to the 'B variants in the PicoScope 5000 Series range.
-
-</Description>
-            </Property>
-            <Property>
                <Name>bandwidth</Name>
                <Location>parent</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -1067,40 +1031,6 @@ range - an enumeration representing the voltage range.
 analogueOffset - the offset on the channel.
 
 </Description>
-            </Property>
-            <Property>
-               <Name>dacFrequency</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
-% Return a property value.
-%   This function is called to return the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    % If dacFrequency doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'dacFrequency') )
-        obj.UserData.dacFrequency = [ ];
-    end
-    
-    propertyValue = obj.UserData.dacFrequency;</GetMCode>
-                  <SetMCode>function set(obj, propertyName, propertyValue)
-% Set a property value.
-%   This function is called to set the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.dacFrequency = propertyValue;</SetMCode>
-               </Code>
-               <PermissibleType>
-                  <Type>Double</Type>
-                  <Constraint>none</Constraint>
-               </PermissibleType>
-               <DefaultValue>20000000</DefaultValue>
-               <ReadOnly>never</ReadOnly>
-               <Description>dacFrequency is the update frequency of the Arbitrary Waveform Generator.</Description>
             </Property>
             <Property>
                <Name>digitalPorts</Name>
@@ -1550,121 +1480,6 @@ When used in Streaming mode, this is the maximum number of raw samples before th
                <DefaultValue>8.0</DefaultValue>
                <ReadOnly>never</ReadOnly>
                <Description>The resolution of the device, in bits.</Description>
-            </Property>
-            <Property>
-               <Name>sigGenType</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
-% Return a property value.
-%   This function is called to return the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    % If sigGenType doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'sigGenType') )
-        obj.UserData.sigGenType = [ ];
-
-    else
-
-         propertyValue = obj.UserData.sigGenType;
-    end</GetMCode>
-                  <SetMCode>function set(obj, propertyName, propertyValue)
-% Set a property value.
-%   This function is called to set the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.sigGenType = propertyValue;</SetMCode>
-               </Code>
-               <PermissibleType>
-                  <Type>Double</Type>
-                  <Constraint>enum</Constraint>
-                  <ConstraintValue>
-                     <Value>0.0</Value>
-                     <Value>1.0</Value>
-                     <Value>2.0</Value>
-                  </ConstraintValue>
-               </PermissibleType>
-               <DefaultValue>0</DefaultValue>
-               <ReadOnly>never</ReadOnly>
-               <Description>The type of Signal Generator on the device:
-
-0 - None
-1 - Function Generator
-2 - Arbitrary Waveform Generator</Description>
-            </Property>
-            <Property>
-               <Name>startFrequency</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
-% Return a property value.
-%   This function is called to return the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    % If startFrequency doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'startFrequency') )
-        obj.UserData.startFrequency = [ ];
-    end
-    
-    propertyValue = obj.UserData.startFrequency;</GetMCode>
-                  <SetMCode>function set(obj, propertyName, propertyValue)
-% Set a property value.
-%   This function is called to set the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.startFrequency = propertyValue;</SetMCode>
-               </Code>
-               <PermissibleType>
-                  <Type>Double</Type>
-                  <Constraint>none</Constraint>
-               </PermissibleType>
-               <DefaultValue>1000</DefaultValue>
-               <ReadOnly>never</ReadOnly>
-               <Description>The frequency that the signal generator will initially produce (Hertz).</Description>
-            </Property>
-            <Property>
-               <Name>stopFrequency</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
-% Return a property value.
-%   This function is called to return the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    % If stopFrequency doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'stopFrequency') )
-        obj.UserData.stopFrequency = [ ];
-    end
-    
-    propertyValue = obj.UserData.stopFrequency;</GetMCode>
-                  <SetMCode>function set(obj, propertyName, propertyValue)
-% Set a property value.
-%   This function is called to set the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.stopFrequency = propertyValue;</SetMCode>
-               </Code>
-               <PermissibleType>
-                  <Type>Double</Type>
-                  <Constraint>none</Constraint>
-               </PermissibleType>
-               <DefaultValue>0</DefaultValue>
-               <ReadOnly>never</ReadOnly>
-               <Description>The frequency at which the sweep reverses direction or returns to the initial frequency (Hertz).
-
-To output a signal with constant frequency, ensure that stopFrequency is equal to startFrequency.</Description>
             </Property>
             <Property>
                <Name>streamingInterval</Name>
@@ -3499,38 +3314,6 @@ For further information on the ps5000aSetDeviceResolution  function please refer
 </Description>
             </Method>
             <Method>
-               <Name>ps5000aSigGenSoftwareControl</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function status = ps5000aSigGenSoftwareControl(obj, state)
-
-    status = calllib('ps5000a', 'ps5000aSigGenSoftwareControl', ...
-                get(obj, 'unitHandle'), state);
-            
-	if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end </MCode>
-               </Code>
-               <Description>ps5000aSigGenSoftwareControl(obj, state) causes a trigger event, or starts and stops gating.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-state - sets the trigger gate high or low when the trigger type is set to either SIGGEN_GATE_HIGH or SIGGEN_GATE_LOW.
-
-Output parameters:
-
-status - status code returned by the driver.
-
-For further information on the ps5000aSigGenSoftwareControl please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
                <Name>ps5000aStop</Name>
                <Location>parent</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -3916,572 +3699,6 @@ Output parameters:
 status - status code returned by the wrapper:
 
 0, if successful; -1, otherwise</Description>
-            </Method>
-            <Method>
-               <Name>setSigGenArbitrary</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, dwell_time] = setSigGenArbitrary(obj, offsetVoltageMV, pkToPkMV, increment, dwellTime, arbitraryWaveform, sweepType, operation, indexMode, shots, sweeps, triggerType, triggerSource, extInThreshold)
-
-    % Only call function if device has an Arbitrary Waveform Generator
-    if (get(obj, 'sigGenType') == PicoConstants.SIG_GEN_AWG)
-
-        offset_voltage = offsetVoltageMV * 1e3;
-        pk_to_pk = pkToPkMV * 1e3;
-        
-        max_buffer_size = get(obj, 'awgBufferSize');
-        dac_frequency = get(obj, 'dacFrequency');
-        
-        % Convert the waveform to the range for the driver
-        arbitrary_waveform = int16(arbitraryWaveform * double(intmax('int16')));
-        
-        start_frequency = get(obj, 'startFrequency');
-
-        start_delta_phase = 0;
-        
-        [status, start_delta_phase] = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
-                                  obj.unitHandle, ...
-                                  start_frequency, indexMode, ...
-                                  length(arbitrary_waveform),start_delta_phase); 
-
-        stop_delta_phase = 0;
-
-        dwell_count = 0;
-
-
-        % No need to calculate stop delta phase if start and stop frequencies
-        % are the same.
-        
-        stop_frequency = get(obj, 'stopFrequency');
-        
-        if (stop_frequency == start_frequency)
-
-            stop_delta_phase = start_delta_phase;
-
-        else
-
-            [status, stop_delta_phase] = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
-                                  obj.unitHandle, ...
-                                  stop_frequency, indexMode, ...
-                                  length(arbitrary_waveform),stop_delta_phase); 
-
-
-        end
-
-        delta_phase_increment = 0;
-        
-        [status, delta_phase_increment] = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
-                                  obj.unitHandle, ...
-                                  increment, indexMode, ...
-                                  length(arbitrary_waveform),delta_phase_increment); 
-
-        dwell_count = round(dwellTime * dac_frequency); % Round to the nearest integer
-
-        if (dwell_count &lt; PS5000aConstants.MIN_DWELL_COUNT)
-
-            dwell_count = PS5000aConstants.MIN_DWELL_COUNT;
-
-        end
-        
-        % Return dwell time information to the user if it has been
-        % modified.
-        dwell_time = dwell_count / dac_frequency;
-        
-        %fprintf('setSigGenArbitrary:Dwell time: %d\n', dwell_time);
-
-        status = calllib('ps5000a', 'ps5000aSetSigGenArbitrary', ...
-                    get(obj, 'unitHandle'), offset_voltage, pk_to_pk, start_delta_phase, ...
-                    stop_delta_phase, delta_phase_increment, dwell_count, arbitrary_waveform, ...
-                    length(arbitrary_waveform), sweepType, operation, indexMode, shots, ...
-                    sweeps, triggerType, triggerSource, extInThreshold);
-         
-        % Output error message to user if status is not PICO_OK        
-        if (status ~= PicoStatus.PICO_OK)
-                    
-            switch(status)
-
-                case PicoStatus.PICO_SIG_GEN_PARAM
-                    
-                    error('setSigGenArbitrary: Incorrect parameter passed to the signal generator.');
-                    
-                case PicoStatus.PICO_SHOTS_SWEEPS_WARNING
-                    
-                    error('setSigGenArbitrary: Conflict between the shots and sweeps parameters sent to the signal generator.');
-                    
-                case PicoStatus.PICO_SIGGEN_OUTPUT_OVER_VOLTAGE
-                    
-                    error('setSigGenArbitrary: The combined peak to peak voltage and the analog offset voltage must be in the range 0 -&gt; +/- 2V');
-                   
-                case PicoStatus.PICO_WARNING_EXT_THRESHOLD_CONFLICT
-                    
-                    error('setSigGenArbitrary: Attempt to set different EXT input thresholds set for signal generator and oscilloscope trigger.');
-                    
-                case PicoStatus.PICO_SIGGEN_OFFSET_VOLTAGE
-                    
-                    error('setSigGenArbitrary: The analog offset voltage is out of range.');
-
-                case PicoStatus.PICO_SIGGEN_PK_TO_PK
-                    
-                    error('setSigGenArbitrary: The analog peak to peak voltage must be in the range 0 -&gt; +/- 2V.');
-                    
-                case PicoStatus.PICO_SIGGEN_WAVEFORM_SETUP_FAILED
-                    
-                    error('setSigGenArbitrary: Unable to setup signal generator waveform.');
-                    
-                otherwise     
-                    
-                    error('setSigGenArbitrary: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
-            end
-            
-        end
-        
-        clear offset_voltage
-        clear pk_to_pk
-        clear max_buffer_size
-        clear dac_frequency
-        clear arbitrary_waveform
-        clear start_delta_phase
-        clear stop_delta_phase
-        clear dwell_count
-        clear delta_phase_increment
-        clear start_frequency;
-        clear stop_frequency;
-                
-    else
-       
-        error('AWG functionality not supported by this device.');
-        
-    end</MCode>
-               </Code>
-               <Description>setSigGenArbitrary(obj, offsetVoltageMV, pkToPkMV, increment, dwellTime, arbitraryWaveform, sweepType, operation, indexMode, shots, sweeps, triggerType, triggerSource, extInThreshold) programs the signal generator to produce an arbitrary waveform.
-
-The startFrequency and stopFrequency properties must be set prior to calling this function.
-
-The offset voltage (offsetVoltageMV), and peak to peak voltage (pkToPkMV) parameters are defined in millivolts and converted to microvolts for the underlying driver. The sum of offsetVoltageMV and pkToPkMV cannot exceed 4000 millivolts.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-offsetVoltageMV - the offset voltage in millivolts 
-pkToPkMV - the peak to peak value for the waveform in millivolts.
-increment - the increase or decrease in frequency when operating in sweep mode.
-dwellTime - the time for which the sweep stays at each frequency, in seconds.
-arbitraryWaveform -  a buffer that holds the waveform pattern as a set of samples in the range -1 to +1. These values correspond to the maximum and minimum amplitude values of the waveform.
-sweepType - determines whether the startFrequency is swept up to the stopFrequency, or down to it, or repeatedly up and down.
-operation - configures the white noise/PRBS (pseudo-random binary sequence) generator.
-indexMode - specifies how the signal will be formed from the arbitrary waveform data.
-shots - the number of cycles of the waveform to be produced after a trigger event. If this is set to a non-zero value 
-	then sweeps must be set to zero.
-sweeps - the number of times to sweep the frequency after a trigger event, according to sweepType. If this is set to a non-zero value 
-		then shots must be set to zero.
-triggerType - the type of trigger that will be applied to the signal generator.
-triggerSource - the source that will trigger the signal generator.
-extInThresholdMV - used to set the trigger level for the external trigger (in millivolts).
-
-Output parameters:
-
-status - status code returned by the driver.
-dwell_time - the dwell time will be modified if the user specifies a dwell time corresponding to less than the minimum dwell count for the device (3).
-
-For further information on the ps5000aSetSigGenArbitrary function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes.
-
-
-
- </Description>
-            </Method>
-            <Method>
-               <Name>setSigGenArbitrarySimple</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function status = setSigGenArbitrarySimple(obj, offsetVoltageMV, pkToPkMV, arbitraryWaveform)
-% For group functions, OBJ is the group object. For
-% base device functions, OBJ is the device object.
-
-    % Only call function if device has an Arbitrary Waveform Generator
-    if (get(obj, 'sigGenType') == PicoConstants.SIG_GEN_AWG)
-
-        % Convert voltages to microvolts
-        offset_voltage = offsetVoltageMV * 1e3;
-        pk_to_pk = pkToPkMV * 1e3;
-        
-        max_buffer_size = get(obj, 'awgBufferSize');
-        dac_frequency = get(obj, 'dacFrequency');
-        
-        % Convert the waveform to the range for the driver
-        arbitrary_waveform = int16(arbitraryWaveform * double(intmax('int16')));
-
-        start_delta_phase = 0;
-        
-        single =  evalin('base', 'ps5000aEnuminfo.enPS5000AIndexMode.PS5000A_SINGLE');
-        
-        [status, start_delta_phase] = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
-                                  obj.unitHandle, ...
-                                  get(obj, 'startFrequency'), single, ...
-                                  length(arbitrary_waveform),start_delta_phase); 
-
-        % Constant frequency
-        stop_delta_phase = start_delta_phase;
-        
-        status = calllib('ps5000a', 'ps5000aSetSigGenArbitrary', ...
-                    get(obj, 'unitHandle'), offset_voltage, pk_to_pk, start_delta_phase, ...
-                    stop_delta_phase, 0, 0, arbitrary_waveform, ...
-                    length(arbitraryWaveform), 0, 0, 0, 0, 0, 0, 0, 0);
-         
-        % Output error message to user if status is not PICO_OK        
-        if (status ~= PicoStatus.PICO_OK)
-                    
-            switch(status)
-
-                case PicoStatus.PICO_SIG_GEN_PARAM
-                    
-                    error('setSigGenArbitrary: Incorrect parameter passed to the signal generator.');
-                    
-                case PicoStatus.PICO_SHOTS_SWEEPS_WARNING
-                    
-                    error('setSigGenArbitrary: Conflict between the shots and sweeps parameters sent to the signal generator.');
-                    
-                case PicoStatus.PICO_SIGGEN_OUTPUT_OVER_VOLTAGE
-                    
-                    error('setSigGenArbitrary: The combined peak to peak voltage and the analog offset voltage must be in the range 0 -&gt; +/- 2V');
-                   
-                case PicoStatus.PICO_WARNING_EXT_THRESHOLD_CONFLICT
-                    
-                    error('setSigGenArbitrary: Attempt to set different EXT input thresholds set for signal generator and oscilloscope trigger.');
-                    
-                case PicoStatus.PICO_SIGGEN_OFFSET_VOLTAGE
-                    
-                    error('setSigGenArbitrary: The analog offset voltage is out of range.');
-
-                case PicoStatus.PICO_SIGGEN_PK_TO_PK
-                    
-                    error('setSigGenArbitrary: The analog peak to peak voltage must be in the range 0 -&gt; +/- 2V.');
-                    
-                case PicoStatus.PICO_SIGGEN_WAVEFORM_SETUP_FAILED
-                    
-                    error('setSigGenArbitrary: Unable to setup signal generator waveform.');
-                    
-                otherwise     
-                    
-                    error('setSigGenArbitrary: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
-            end
-            
-        end
-                
-    else
-       
-        error('AWG functionality not supported by this device.');
-        
-    end
-
-
-</MCode>
-               </Code>
-               <Description>setSigGenArbitrary(obj, offsetVoltageMV, pkToPkMV, arbitraryWaveform) programs the signal generator to produce an arbitrary waveform at a constant frequency.
-
-The startFrequency and stopFrequency properties must be set prior to calling this function.
-
-The offset voltage (offsetVoltageMV), and peak to peak voltage (pkToPkMV) parameters are defined in millivolts and converted to microvolts for the underlying driver. The sum of offsetVoltageMV and pkToPkMV cannot exceed 4000 millivolts.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-offsetVoltageMV - the offset voltage in millivolts 
-pkToPkMV - the peak to peak value for the waveform in millivolts.
-arbitraryWaveform -  a buffer that holds the waveform pattern as a set of samples in the range -1 to +1. These values correspond to the maximum and minimum amplitude values of the waveform.
-
-Output parameters:
-
-status - status code returned by the driver.
-
-For further information on the ps5000aSetSigGenArbitrary function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
-               <Name>setSigGenBuiltIn</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function status = setSigGenBuiltIn(obj, offsetVoltageMV, pkToPkMV, waveType, increment, dwellTime, sweepType, operation, shots, sweeps, triggerType, triggerSource, extInThresholdMV)
-
-    sig_gen_type = get(obj, 'sigGenType');
-    
-    % Error checking
-    if (sig_gen_type == PicoConstants.SIG_GEN_AWG || ...
-            sig_gen_type == PicoConstants.SIG_GEN_FUNCT_GEN)
-        
-        % Convert millivolt values to microvolts  
-        offset_voltage = offsetVoltageMV * 1e3;
-        pk_to_pk = pkToPkMV * 1e3;
-        
-        % Convert External trigger threshold to ADC Counts
-        ext_in_threshold = mv2adc(extInThresholdMV, ...
-            PS5000aConstants.PS5000A_EXT_MAX_VOLTAGE * 1e3, ...
-            PS5000aConstants.PS5000A_EXT_MAX_VALUE);
-
-        status = calllib('ps5000a', 'ps5000aSetSigGenBuiltIn', get(obj, 'unitHandle'), ...
-                    offset_voltage, pk_to_pk, waveType, ...
-                    get(obj, 'startFrequency'), get(obj, 'stopFrequency'), ...
-                    increment, dwellTime, sweepType, operation, shots, sweeps, ...
-                    triggerType, triggerSource, ext_in_threshold);
-
-        % Output error message to user if status is not PICO_OK        
-        if (status ~= PicoStatus.PICO_OK)
-
-            switch(status)
-
-                case PicoStatus.PICO_SIG_GEN_PARAM
-
-                    error('setSigGenBuiltIn: One or more signal generator parameters are out of range.');
-
-                case PicoStatus.PICO_SHOTS_SWEEPS_WARNING
-
-                    error('setSigGenBuiltIn: Conflict between the shots and sweeps parameters sent to the signal generator.');
-
-                case PicoStatus.PICO_SIGGEN_OUTPUT_OVER_VOLTAGE
-
-                    error('setSigGenBuiltIn: The combined peak to peak voltage and the analog offset voltage must be in the range 0 -&gt; +/- 2V');
-
-                case PicoStatus.PICO_WARNING_EXT_THRESHOLD_CONFLICT
-
-                    error('setSigGenBuiltIn: External threshold conflict.');
-
-                case PicoStatus.PICO_SIGGEN_OFFSET_VOLTAGE
-
-                    error('setSigGenBuiltIn: The analog offset voltage is out of range.');
-
-                case PicoStatus.PICO_SIGGEN_PK_TO_PK
-
-                    error('setSigGenBuiltIn: The analog peak to peak voltage must be in the range 0 -&gt; +/- 2V.');
-
-                case PicoStatus.PICO_SIGGEN_WAVEFORM_SETUP_FAILED
-
-                    error('setSigGenBuiltIn: Unable to setup signal generator waveform.');
-
-                otherwise     
-
-                    error('setSigGenBuiltIn: Status code: %d. Please refer to the PicoStatus.m file.\n', dec2hex(status));
-            end
-
-        end
-        
-        clear offset_voltage;
-        clear pk_to_pk;
-        clear sig_gen_type;
-            
-    else
-        
-        error('setSigGenBuiltIn: Signal Generator functionality not supported by this device.');
-        
-    end</MCode>
-               </Code>
-               <Description>setSigGenBuiltIn(obj, offsetVoltageMV, pkToPkMV, waveType, increment, dwellTime, sweepType, operation, shots, sweeps, triggerType, triggerSource, extInThresholdMV) sets up the signal generator to produce a signal from a list of built-in waveforms.
-
-The startFrequency and stopFrequency properties must be set prior to calling this function.
-
-The offset voltage (offsetVoltageMV), and peak to peak voltage (pkToPkMV) parameters are defined in millivolts and converted to microvolts for the underlying driver. The sum of offsetVoltageMV and pkToPkMV cannot exceed 4000 millivolts.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-offsetVoltageMV - the voltage offset to be applied, in millivolts, to be applied to the signal.
-pkToPkMV - the peak-to-peak voltage, in millivolts, of the waveform signal.
-wavetype - the type of waveform to be generated by the oscilloscope. Use the following waveType enumerations:
-
-A &amp; B Variants:
-
-0 - SINE
-1 - SQUARE
-2 - TRIANGLE
-8 - DC VOLTAGE
-
-B Variants only:
-
-3 - RAMP UP
-4 - RAMP DOWN
-5 - SINC
-6 - GAUSSIAN
-7 - HALF SINE
-
-increment - the amount in hertz by which the frequency rises or falls every dwellTime seconds in sweep mode.
-dwellTime - the time in seconds between frequency changes in sweep mode.
-sweepType - determines whether the startFrequency is swept up to the stopFrequency, or down to it, or repeatedly up and down.
-operation - configures the white noise/PRBS (pseudo-random binary sequence) generator.
-shots - the number of cycles of the waveform to be produced after a trigger event. If this is set to a non-zero value 
-		then sweeps must be set to zero.
-sweeps - the number of times to sweep the frequency after a trigger event, according to sweepType. If this is set to a non-zero value then shots must be set to zero.
-triggerType - the type of trigger that will be applied to the signal generator.
-triggerSource - the source that will trigger the signal generator.
-extInThresholdMV - used to set the trigger level for the external trigger (in millivolts).
-
-Output parameters:
-
-status - status code returned by the driver.
-
-For further information on the underlying ps5000aSetSigGenBuiltIn function please refer to the PicoScope 5000 Series (A API) PC OscilloscopesProgrammer's Guide.
-
-</Description>
-            </Method>
-            <Method>
-               <Name>setSigGenBuiltInSimple</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function status = setSigGenBuiltInSimple(obj, offsetVoltageMV, pkToPkMV, waveType)
-% For group functions, OBJ is the group object. For
-% base device functions, OBJ is the device object.
- 
-    sig_gen_type = get(obj, 'sigGenType');
-    
-    % Error checking
-    if (sig_gen_type == PicoConstants.SIG_GEN_AWG || ...
-            sig_gen_type == PicoConstants.SIG_GEN_FUNCT_GEN)
-        
-        % Convert millivolt values to microvolts  
-        offset_voltage = offsetVoltageMV * 1e3;
-        pk_to_pk = pkToPkMV * 1e3;
-        
-        status = calllib('ps5000a', 'ps5000aSetSigGenBuiltIn', get(obj, 'unitHandle'), ...
-                    offset_voltage, pk_to_pk, waveType, ...
-                    get(obj, 'startFrequency'), get(obj, 'startFrequency'), ...
-                        0, 0, 0, 0, 0, 0, 0, 0, 0);
-                    
-        % Output error message to user if status is not PICO_OK        
-        if (status ~= PicoStatus.PICO_OK)
-
-            switch (status)
-
-                case PicoStatus.PICO_SIG_GEN_PARAM
-
-                    error('setSigGenBuiltInSimple: One or more signal generator parameters are out of range.');
-
-                case PicoStatus.PICO_SHOTS_SWEEPS_WARNING
-
-                    error('setSigGenBuiltInSimple: Conflict between the shots and sweeps parameters sent to the signal generator.');
-
-                case PicoStatus.PICO_SIGGEN_OUTPUT_OVER_VOLTAGE
-
-                    error('setSigGenBuiltInSimple: The combined peak to peak voltage and the analog offset voltage must be in the range 0 -&gt; +/- 2V');
-
-                case PicoStatus.PICO_WARNING_EXT_THRESHOLD_CONFLICT
-
-                    error('setSigGenBuiltInSimple: External threshold conflict.');
-
-                case PicoStatus.PICO_SIGGEN_OFFSET_VOLTAGE
-
-                    error('setSigGenBuiltInSimple: The analog offset voltage is out of range.');
-
-                case PicoStatus.PICO_SIGGEN_PK_TO_PK
-
-                    error('setSigGenBuiltInSimple: The analog peak to peak voltage must be in the range 0 -&gt; +/- 2V.');
-
-                case PicoStatus.PICO_SIGGEN_WAVEFORM_SETUP_FAILED
-
-                    error('setSigGenBuiltInSimple: Unable to setup signal generator waveform.');
-
-                otherwise     
-
-                    error('setSigGenBuiltInSimple: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
-            end
-
-        end  
-        
-        clear offset_voltage;
-        clear pk_to_pk;
-        clear sig_gen_type;
-    
-    else
-        
-        error('setSigGenBuiltInSimple: Signal Generator functionality not supported by this device.');
-        
-    end
-    </MCode>
-               </Code>
-               <Description>setSigGenBuiltInSimple(obj, offsetVoltageMV, pkToPkMV, waveType) sets up the signal generator to produce a signal of constant frequency from a list of built-in waveforms.
-
-The startFrequency property must be set prior to using this function.
-
-The offset voltage (offsetVoltageMV) and peak to peak voltage (pkToPkMV) parameters are defined in millivolts and converted to microvolts for the underlying driver. The sum of offsetVoltageMV and pkToPkMV cannot exceed 4000 millivolts.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-offsetVoltageMV - the voltage offset to be applied, in millivolts, to be applied to the signal.
-pkToPkMV - the peak-to-peak voltage, in millivolts, of the waveform signal.
-wavetype - the type of waveform to be generated by the oscilloscope. Use the following waveType enumerations:
-
-A &amp; B Variants:
-
-0 - SINE
-1 - SQUARE
-2 - TRIANGLE
-8 - DC VOLTAGE
-
-B Variants only:
-
-3 - RAMP UP
-4 - RAMP DOWN
-5 - SINC
-6 - GAUSSIAN
-7 - HALF SINE
-
-Output parameters:
-
-status - status code returned by the driver.
-
-For further information on the underlying ps5000aSetSigGenBuiltIn function please refer to the PicoScope 5000 Series (A API) PC OscilloscopesProgrammer's Guide.</Description>
-            </Method>
-            <Method>
-               <Name>setSigGenOff</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function status = setSigGenOff(obj)
-% For group functions, OBJ is the group object. For
-% base device functions, OBJ is the device object.
-
-    offset_voltage = 0;
-    pk_to_pk = 0;
-    wave_type_dc = evalin('base', 'ps5000aEnuminfo.enPS5000AWaveType.PS5000A_DC_VOLTAGE');
-    
-    status = calllib('ps5000a', 'ps5000aSetSigGenBuiltIn', get(obj, 'unitHandle'), ...
-                offset_voltage, pk_to_pk, wave_type_dc, 0, 0, ...
-                0, 0, 0, 0, 0, 0, 0, 0, 0);
-            
-    if (status ~= PicoStatus.PICO_OK)
-       
-        error('setSigGenOff: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
-        
-    end
-                    
-	clear offset_voltage;
-    clear pk_to_pk;
-    clear wave_type_dc;</MCode>
-               </Code>
-               <Description>setSigGenOff(obj) effectively turns off the signal generator by setting the output to a zero DC voltage.
-
-This function can be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-status - status code returned by the device.</Description>
             </Method>
          </MethodInfo>
       </Group>
@@ -6383,18 +5600,923 @@ status - status code returned by the device.</Description>
          </MethodInfo>
       </Group>
       <Group>
-         <Name>Signalgenerator</Name>
+         <Name>signalgenerator</Name>
          <Description>The Signalgenerator group contains a set of properties and functions related to the signal generator functionality of the device.</Description>
          <Command/>
          <Size>1</Size>
          <Mappings>
             <ChannelMap Command="Signalgenerator1" Index="1"/>
          </Mappings>
-         <PropertyInfo/>
-         <MethodInfo/>
+         <PropertyInfo>
+            <Property>
+               <Name>awgBufferSize</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    propertyValue = deviceObj.DriverData.awgBufferSize;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="49152.0" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>The size of the arbitrary waveform buffer on the device, in samples. Applies only to the 'B' and 'D' variants in the PicoScope 5000 Series range.
+
+</Description>
+            </Property>
+            <Property>
+               <Name>dacFrequency</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    propertyValue = deviceObj.DriverData.dacFrequency;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue>20000000</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>dacFrequency is the update frequency of the Arbitrary Waveform Generator.</Description>
+            </Property>
+            <Property>
+               <Name>offsetVoltage</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    propertyValue = deviceObj.DriverData.offsetVoltage;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    deviceObj.DriverData.offsetVoltage = propertyValue;</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="2000.0" Min="-2000.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>The voltage offset, in millivolts, to be applied to the waveform.
+
+The amplitude of the waveform should not exceed +/-2000 mV.</Description>
+            </Property>
+            <Property>
+               <Name>peakToPeakVoltage</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    propertyValue = deviceObj.DriverData.peakToPeakVoltage;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    deviceObj.DriverData.peakToPeakVoltage = propertyValue;</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="4000.0" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>2000</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>The peak-to-peak voltage, in millivolts, of the waveform signal.
+
+The amplitude of the waveform should not exceed +/-2000 mV.</Description>
+            </Property>
+            <Property>
+               <Name>sigGenType</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    propertyValue = deviceObj.DriverData.sigGenType;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Value>0.0</Value>
+                     <Value>1.0</Value>
+                     <Value>2.0</Value>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>The type of Signal Generator on the device:
+
+0 - None
+1 - Function Generator
+2 - Arbitrary Waveform Generator</Description>
+            </Property>
+            <Property>
+               <Name>startFrequency</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    propertyValue = deviceObj.DriverData.startFrequency;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    obj.DriverData.startFrequency = propertyValue;</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="2.0E7" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>1000</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>The frequency that the signal generator will initially produce (Hertz).</Description>
+            </Property>
+            <Property>
+               <Name>stopFrequency</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    propertyValue = deviceObj.DriverData.stopFrequency;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    obj.DriverData.stopFrequency = propertyValue;</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="2.0E7" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>The frequency at which the sweep reverses direction or returns to the initial frequency (Hertz).
+
+To output a signal with constant frequency, ensure that stopFrequency is equal to startFrequency.</Description>
+            </Property>
+         </PropertyInfo>
+         <MethodInfo>
+            <Method>
+               <Name>ps5000aSigGenSoftwareControl</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSigGenSoftwareControl(obj, state)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    status = calllib('ps5000a', 'ps5000aSigGenSoftwareControl', ...
+                deviceObj.DriverData.unitHandle, state);
+            
+	if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aSigGenSoftwareControl:- status code: %d. Please refer to the PicoStatus.m file.', status);
+        
+    end </MCode>
+               </Code>
+               <Description>ps5000aSigGenSoftwareControl(obj, state) causes a trigger event, or starts and stops gating. Use it as follows:
+
+1. Call ps5000aSetSigGenBuiltIn or ps5000aSetSigGenArbitrary to set up the signal generator, setting the triggerSource argument to PS5000A_SIGGEN_SOFT_TRIG. 
+
+2. (a) If you set the signal generator triggerType to edge triggering (enPS5000ASigGenTrigType.PS5000A_SIGGEN_RISING or
+enPS5000ASigGenTrigType.PS5000A_SIGGEN_FALLING), call ps5000aSigGenSoftwareControl once to trigger the signal generator.
+
+(b) If you set the signal generator triggerType to gated-low triggering
+(enPS5000ASigGenTrigType.PS5000A_SIGGEN_GATE_LOW), call ps5000aSigGenSoftwareControl with state = 0 to start the sweep and then again with state = 1 to stop it.
+
+(c) If you set the signal generator triggerType to gated-high triggering
+(enPS5000ASigGenTrigType.PS5000A_SIGGEN_GATE_HIGH), call ps5000aSigGenSoftwareControl with state = 1 to start the sweep and then again with state = 0 to stop it. 
+
+This function may be used with the Test and Measurement Tool.
+
+Input arguments:
+
+obj - the object representing the Signalgenerator group.
+state - specifies the new state of the gate signal. A change of state either starts or stops the sweep
+depending on the triggerType, as detailed above. Effective only when the signal generator triggerType
+is set to PS5000A_SIGGEN_GATE_HIGH or PS5000A_SIGGEN_GATE_LOW. Ignored for other trigger types. 
+
+0: set the gate signal low
+1: set the gate signal high
+
+Output arguments:
+
+status - status code returned by the driver.
+
+For further information on the ps5000aSigGenSoftwareControl please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+            <Method>
+               <Name>setSigGenArbitrary</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, dwellTime] = setSigGenArbitrary(obj, increment, dwellTime, arbitraryWaveform, sweepType, operation, indexMode, shots, sweeps, triggerType, triggerSource, extInThresholdMV)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    % Only call function if device has an Arbitrary Waveform Generator
+    if (deviceObj.DriverData.sigGenType == PicoConstants.SIG_GEN_AWG)
+
+        offsetVoltageUV = deviceObj.DriverData.offsetVoltage * 1e3;
+        peakToPeakVoltageUV = deviceObj.DriverData.peakToPealVoltage * 1e3;
+        
+        if (abs(offsetVoltageUV + peakToPeakVoltageUV) &gt; 4000000)
+            
+            error(['setSigGenArbitrary: The sum of offsetVoltage and ' ...
+                'peakToPeakVoltage cannot exceed +/-4000mV.']);
+            
+        end
+        
+        maxBufferSize = deviceObj.DriverData.awgBufferSize;
+        dacFrequency = deviceObj.DriverData.dacFrequency;
+        
+        % Convert the waveform to the required range for the driver
+        arbitrary_waveform = int16(arbitraryWaveform * double(intmax('int16')));
+        
+        % Find the values which need to be converted to the minimum value
+        minValues = find(arbitrary_waveform == (-1 * intmax('int16')));
+        arbitrary_waveform(minValues) = intmin('int16');
+        
+        startFrequency = deviceObj.DriverData.startFrequency;
+
+        % Convert start frequency to delta phase value
+        pStartDeltaPhase = libpointer('uint32Ptr', 0);
+
+        status = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
+                      deviceObj.DriverData.unitHandle, startFrequency, ...
+                      indexMode, length(arbitrary_waveform), pStartDeltaPhase); 
+                  
+       if (status ~= PicoStatus.PICO_OK)
+           
+            error(['setSigGenArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
+                '(start frequency) status code: %d. Please refer to the ' ...
+                'PicoStatus.m file.'], status);
+            
+        end
+        
+        startDeltaPhase = pStartDeltaPhase.Value;
+
+        stopDeltaPhase = 0;
+        dwellCount = 0;
+
+        % No need to calculate stop delta phase if start and stop frequencies
+        % are the same.
+        stopFrequency = deviceObj.DriverData.stopFrequency;
+
+        if (stopFrequency == startFrequency)
+
+            stopDeltaPhase = startDeltaPhase;
+
+        else
+
+            % Convert stop frequency to delta phase
+            pStopDeltaPhase = libpointer('uint32Ptr', 0);
+
+            status = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
+                        deviceObj.DriverData.unitHandle, stopFrequency, ...
+                        indexMode, length(arbitrary_waveform), pStopDeltaPhase);  
+
+            error(['setSigGenArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
+                '(stop frequency) status code: %d. Please refer to the ' ...
+                'PicoStatus.m file.'], status);
+
+            stopDeltaPhase = pStopDeltaPhase.Value;
+
+        end
+
+        % Convert increment frequency to delta phase value
+        pDeltaPhaseIncrement = libpointer('uint32Ptr', 0);
+        
+        status = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
+            deviceObj.DriverData.unitHandle, increment, indexMode, ... 
+            length(arbitraryWave), pDeltaPhaseIncrement);
+        
+        if (status ~= PicoStatus.PICO_OK)
+           
+            error(['setSigGenArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
+                '(increment freq.) status code: %d. Please refer to the ' ...
+                'PicoStatus.m file.'], status);
+            
+        end
+        
+        deltaPhaseIncrement = pDeltaPhaseIncrement.Value;
+        
+        dwellCount = round(dwellTime * dacFrequency); % Round to the nearest integer
+
+        if (dwellCount &lt; obj.DriverData.constants.MIN_DWELL_COUNT)
+
+            dwellCount = obj.DriverData.constants.MIN_DWELL_COUNT;
+
+        end
+        
+        % Return dwell time information to the user if it has been
+        % modified.
+        dwellTime = dwellCount / dacFrequency;
+        
+        % Convert extInThresholdMV to counts if device is not an MSO model
+        extInThreshold = 0;
+        
+        if (deviceObj.DriverData.digitalPorts &gt; 0)        
+            
+            extInThreshold = 0;
+            
+        else
+            
+            extInThreshold = round(((extInThresholdMV / 1000) / ...
+                deviceObj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE) ...
+                * deviceObj.DriverData.constants.P5000A_EXT_MAX_VALUE);
+            
+        end
+
+        status = calllib('ps5000a', 'ps5000aSetSigGenArbitrary', ...
+                    deviceObj.DriverData.unitHandle, offsetVoltageUV, peakToPeakVoltageUV, startDeltaPhase, ...
+                    stopDeltaPhase, deltaPhaseIncrement, dwellCount, arbitrary_waveform, ...
+                    length(arbitrary_waveform), sweepType, operation, indexMode, shots, ...
+                    sweeps, triggerType, triggerSource, extInThreshold);
+         
+        % Output error message to user if status is not PICO_OK        
+        if (status ~= PicoStatus.PICO_OK)
+                    
+            switch (status)
+
+                case PicoStatus.PICO_SIG_GEN_PARAM
+                    
+                    error('setSigGenArbitrary: Incorrect parameter passed to the signal generator.');
+                    
+                case PicoStatus.PICO_SHOTS_SWEEPS_WARNING
+                    
+                    error('setSigGenArbitrary: Conflict between the shots and sweeps parameters sent to the signal generator.');
+                    
+                case PicoStatus.PICO_SIGGEN_OUTPUT_OVER_VOLTAGE
+                    
+                    error('setSigGenArbitrary: The combined peak to peak voltage and the analog offset voltage must be in the range 0 -&gt; +/- 2V');
+                   
+                case PicoStatus.PICO_WARNING_EXT_THRESHOLD_CONFLICT
+                    
+                    error('setSigGenArbitrary: Attempt to set different EXT input thresholds set for signal generator and oscilloscope trigger.');
+                    
+                case PicoStatus.PICO_SIGGEN_OFFSET_VOLTAGE
+                    
+                    error('setSigGenArbitrary: The analog offset voltage is out of range.');
+
+                case PicoStatus.PICO_SIGGEN_PK_TO_PK
+                    
+                    error('setSigGenArbitrary: The analog peak to peak voltage must be in the range 0 -&gt; +/- 2V.');
+                    
+                case PicoStatus.PICO_SIGGEN_WAVEFORM_SETUP_FAILED
+                    
+                    error('setSigGenArbitrary: Unable to setup signal generator waveform.');
+                    
+                otherwise     
+                    
+                    error('setSigGenArbitrary: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
+            end
+            
+        end
+                
+    else
+       
+        error('AWG functionality not supported by this device.');
+        
+    end</MCode>
+               </Code>
+               <Description>setSigGenArbitrary(obj, offsetVoltageMV, pkToPkMV, increment, dwellTime, arbitraryWaveform, sweepType, operation, indexMode, shots, sweeps, triggerType, triggerSource, extInThresholdMV) programs the signal generator to produce an arbitrary waveform.
+
+The offsetVoltage, peakToPeakVoltage, startFrequency and stopFrequency properties must be set prior to calling this function.
+
+This function may be used with the Test and Measurement Tool.
+
+Input arguments:
+
+obj - the object representing the signalGenerator group.
+increment - the increase or decrease in frequency (in hertz) when operating in sweep mode.
+dwellTime - the time for which the sweep stays at each frequency, in seconds.
+arbitraryWaveform -  a buffer that holds the waveform pattern as a set of samples in the range -1 to +1. These values correspond to the maximum and minimum amplitude values of the waveform.
+sweepType - determines whether the startFrequency is swept up to the stopFrequency, or down to it, or repeatedly up and down.
+operation - configures the white noise/PRBS (pseudo-random binary sequence) generator.
+indexMode - specifies how the signal will be formed from the arbitrary waveform data.
+shots - the number of cycles of the waveform to be produced after a trigger event. If this is set to a non-zero value 
+	then sweeps must be set to zero.
+sweeps - the number of times to sweep the frequency after a trigger event, according to sweepType. If this is set to a non-zero value 
+		then shots must be set to zero.
+triggerType - the type of trigger that will be applied to the signal generator.
+triggerSource - the source that will trigger the signal generator.
+extInThresholdMV - used to set the trigger level for the external trigger (in millivolts).
+
+Output arguments:
+
+status - status code returned by the driver.
+dwellTime - the dwell time will be modified if the user specifies a dwell time corresponding to less than the minimum dwell count for the device (3).
+
+
+
+ </Description>
+            </Method>
+            <Method>
+               <Name>setSigGenArbitrarySimple</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = setSigGenArbitrarySimple(obj, arbitraryWaveform)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    % Only call function if device has an Arbitrary Waveform Generator
+    if (deviceObj.DriverData.sigGenType == PicoConstants.SIG_GEN_AWG)
+
+        offsetVoltageUV = deviceObj.DriverData.offsetVoltage * 1e3;
+        peakToPeakVoltageUV = deviceObj.DriverData.peakToPealVoltage * 1e3;
+        
+        if (abs(offsetVoltageUV + peakToPeakVoltageUV) &gt; 4000000)
+            
+            error(['setSigGenArbitrary: The sum of offsetVoltage and ' ...
+                'peakToPeakVoltage cannot exceed +/-4000mV.']);
+            
+        end
+        
+        maxBufferSize = deviceObj.DriverData.awgBufferSize;
+        dacFrequency = deviceObj.DriverData.dacFrequency;
+        
+        % Convert the waveform to the range for the driver
+        arbitrary_waveform = int16(arbitraryWaveform * double(intmax('int16')));
+        
+        % Find the values which need to be converted to the minimum value
+        minValues = find(arbitrary_waveform == (-1 * intmax('int16')));
+        arbitrary_waveform(minValues) = intmin('int16');
+
+        % Convert frequency to delta phase
+        pStartDeltaPhase = libpointer('uint32Ptr', 0);
+        indexMode = deviceObj.DriverData.enums.enPS5000AIndexMode.PS5000A_SINGLE;
+        
+        status = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
+                      deviceObj.DriverData.unitHandle, ...
+                      deviceObj.DriverData.startFrequency, single, ...
+                      length(arbitrary_waveform), pStartDeltaPhase); 
+
+        if (status ~= PicoStatus.PICO_OK)
+           
+            error(['setSigGenArbitrarySimple:- ps5000aSigGenFrequencyToPhase ' ...
+                '(frequency) status code: %d. Please refer to the ' ...
+                'PicoStatus.m file.'], status);
+            
+        end
+        
+        startDeltaPhase = pStartDeltaPhase.Value;
+
+        % Constant frequency
+        stopDeltaPhase = startDeltaPhase;
+        
+        status = calllib('ps5000a', 'ps5000aSetSigGenArbitrary', ...
+                    deviceObj.DriverData.unitHandle, offsetVoltageUV, peakToPeakVoltageUV, ...
+                    startDeltaPhase, stopDeltaPhase, 0, 0, arbitrary_waveform, ...
+                    length(arbitraryWaveform), 0, 0, 0, 0, 0, 0, 0, 0);
+         
+        % Output error message to user if status is not PICO_OK        
+        if (status ~= PicoStatus.PICO_OK)
+                    
+            switch(status)
+
+                case PicoStatus.PICO_SIG_GEN_PARAM
+                    
+                    error('setSigGenArbitrary: Incorrect parameter passed to the signal generator.');
+                    
+                case PicoStatus.PICO_SHOTS_SWEEPS_WARNING
+                    
+                    error('setSigGenArbitrary: Conflict between the shots and sweeps parameters sent to the signal generator.');
+                    
+                case PicoStatus.PICO_SIGGEN_OUTPUT_OVER_VOLTAGE
+                    
+                    error('setSigGenArbitrary: The combined peak to peak voltage and the analog offset voltage must be in the range 0 -&gt; +/- 2V');
+                   
+                case PicoStatus.PICO_WARNING_EXT_THRESHOLD_CONFLICT
+                    
+                    error('setSigGenArbitrary: Attempt to set different EXT input thresholds set for signal generator and oscilloscope trigger.');
+                    
+                case PicoStatus.PICO_SIGGEN_OFFSET_VOLTAGE
+                    
+                    error('setSigGenArbitrary: The analog offset voltage is out of range.');
+
+                case PicoStatus.PICO_SIGGEN_PK_TO_PK
+                    
+                    error('setSigGenArbitrary: The analog peak to peak voltage must be in the range 0 -&gt; +/- 2V.');
+                    
+                case PicoStatus.PICO_SIGGEN_WAVEFORM_SETUP_FAILED
+                    
+                    error('setSigGenArbitrary: Unable to setup signal generator waveform.');
+                    
+                otherwise     
+                    
+                    error('setSigGenArbitrary: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
+            end
+            
+        end
+                
+    else
+       
+        error('AWG functionality not supported by this device.');
+        
+    end
+
+
+</MCode>
+               </Code>
+               <Description>setSigGenArbitrary(obj, arbitraryWaveform) programs the signal generator to produce an arbitrary waveform at a constant frequency.
+
+The offsetVoltage, peakToPeakVoltage, startFrequency and stopFrequency properties must be set prior to calling this function.
+
+This function may be used with the Test and Measurement Tool.
+
+Input arguments:
+
+obj - the object representing the signalGenerator group.
+arbitraryWaveform -  a buffer that holds the waveform pattern as a set of samples in the range -1 to +1. These values correspond to the maximum and minimum amplitude values of the waveform.
+
+Output arguments:
+
+status - status code returned by the driver.
+
+For further information on the ps5000aSetSigGenArbitrary function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+            <Method>
+               <Name>setSigGenBuiltIn</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = setSigGenBuiltIn(obj, waveType, increment, dwellTime, sweepType, operation, shots, sweeps, triggerType, triggerSource, extInThresholdMV)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    sigGenType = deviceObj.DriverData.sigGenType;
+    
+    % Error checking
+    if (sigGenType == PicoConstants.SIG_GEN_AWG || ...
+            sigGenType == PicoConstants.SIG_GEN_FUNCT_GEN)
+        
+        % Convert millivolt values to microvolts  
+        offsetVoltageUV = deviceObj.DriverData.offsetVoltage * 1e3;
+        peakToPeakVoltageUV = deviceObj.DriverData.peakToPeakVoltage * 1e3;
+        
+        % Convert extInThresholdMV to counts if device is not an MSO model
+        extInThreshold = 0;
+        
+        if (deviceObj.DriverData.digitalPorts &gt; 0)        
+            
+            extInThreshold = 0;
+            
+        else
+            
+            extInThreshold = round(((extInThresholdMV / 1000) / ...
+                deviceObj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE) ...
+                * deviceObj.DriverData.constants.P5000A_EXT_MAX_VALUE);
+            
+        end
+
+        status = calllib('ps5000a', 'ps5000aSetSigGenBuiltIn', ...
+                    deviceObj.DriverData.unitHandle, ...
+                    offsetVoltageUV, peakToPeakVoltageUV, waveType, ...
+                    deviceObj.DriverData.startFrequency, deviceObj.DriverData.stopFrequency, ...
+                    increment, dwellTime, sweepType, operation, shots, sweeps, ...
+                    triggerType, triggerSource, extInThreshold);
+
+        % Output error message to user if status is not PICO_OK        
+        if (status ~= PicoStatus.PICO_OK)
+
+            switch (status)
+
+                case PicoStatus.PICO_SIG_GEN_PARAM
+
+                    error('setSigGenBuiltIn: One or more signal generator parameters are out of range.');
+
+                case PicoStatus.PICO_SHOTS_SWEEPS_WARNING
+
+                    error('setSigGenBuiltIn: Conflict between the shots and sweeps parameters sent to the signal generator.');
+
+                case PicoStatus.PICO_SIGGEN_OUTPUT_OVER_VOLTAGE
+
+                    error('setSigGenBuiltIn: The combined peak to peak voltage and the analog offset voltage must be in the range 0 -&gt; +/- 2V');
+
+                case PicoStatus.PICO_WARNING_EXT_THRESHOLD_CONFLICT
+
+                    error('setSigGenBuiltIn: External threshold conflict.');
+
+                case PicoStatus.PICO_SIGGEN_OFFSET_VOLTAGE
+
+                    error('setSigGenBuiltIn: The analog offset voltage is out of range.');
+
+                case PicoStatus.PICO_SIGGEN_PK_TO_PK
+
+                    error('setSigGenBuiltIn: The analog peak to peak voltage must be in the range 0 -&gt; +/- 2V.');
+
+                case PicoStatus.PICO_SIGGEN_WAVEFORM_SETUP_FAILED
+
+                    error('setSigGenBuiltIn: Unable to setup signal generator waveform.');
+
+                otherwise     
+
+                    error('setSigGenBuiltIn: Status code: %d. Please refer to the PicoStatus.m file.\n', dec2hex(status));
+            end
+
+        end
+                
+    else
+        
+        error('setSigGenBuiltIn: Signal Generator functionality not supported by this device.');
+        
+    end</MCode>
+               </Code>
+               <Description>setSigGenBuiltIn(obj, offsetVoltageMV, pkToPkMV, waveType, increment, dwellTime, sweepType, operation, shots, sweeps, triggerType, triggerSource, extInThresholdMV) sets up the signal generator to produce a signal from a list of built-in waveforms.
+
+The offsetVoltage, peakToPeakVoltage, startFrequency and stopFrequency properties must be set prior to calling this function.
+
+This function may be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the signalGenerator group.
+wavetype - the type of waveform to be generated by the oscilloscope. Use the following enPS5000AWaveType enumerations:
+
+A, B &amp; D Variants:
+
+0 - PS5000A_SINE
+1 - PS5000A_SQUARE
+2 - PS5000A_TRIANGLE
+8 - PS5000A_DC VOLTAGE
+
+B &amp; D Variants only:
+
+3 - PS5000A_RAMP UP
+4 - PS5000A_RAMP DOWN
+5 - PS5000A_SINC
+6 - PS5000A_GAUSSIAN
+7 - PS5000A_HALF SINE
+
+increment - the amount in hertz by which the frequency rises or falls every dwellTime seconds in sweep mode.
+dwellTime - the time in seconds between frequency changes in sweep mode.
+sweepType - determines whether the startFrequency is swept up to the stopFrequency, or down to it, or repeatedly up and down.
+operation - configures the white noise/PRBS (pseudo-random binary sequence) generator.
+shots - the number of cycles of the waveform to be produced after a trigger event. If this is set to a non-zero value 
+		then sweeps must be set to zero.
+sweeps - the number of times to sweep the frequency after a trigger event, according to sweepType. If this is set to a non-zero value then shots must be set to zero.
+triggerType - the type of trigger that will be applied to the signal generator.
+triggerSource - the source that will trigger the signal generator.
+extInThresholdMV - used to set the trigger level for the external trigger (in millivolts).
+
+Output arguments:
+
+status - status code returned by the driver.
+
+</Description>
+            </Method>
+            <Method>
+               <Name>setSigGenBuiltInSimple</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = setSigGenBuiltInSimple(obj, offsetVoltageMV, pkToPkMV, waveType)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+ 
+    deviceObj = get(obj, 'Parent');
+    sigGenType = deviceObj.DriverData.sigGenType;
+    
+    % Error checking
+    if (sigGenType == PicoConstants.SIG_GEN_AWG || ...
+            sigGenType == PicoConstants.SIG_GEN_FUNCT_GEN)
+        
+        % Convert millivolt values to microvolts  
+        offsetVoltageUV = deviceObj.DriverData.offsetVoltage * 1e3;
+        peakToPeakVoltageUV = deviceObj.DriverData.peakToPeakVoltage * 1e3;
+        
+        status = calllib('ps5000a', 'ps5000aSetSigGenBuiltIn', ...
+                    deviceObj.DriverData.unitHandle, ...
+                    offsetVoltageUV, peakToPeakVoltageUV, waveType, ...
+                    deviceObj.DriverData.startFrequency, deviceObj.DriverData.stopFrequency, ...
+                        0, 0, 0, 0, 0, 0, 0, 0, 0);
+                    
+        % Output error message to user if status is not PICO_OK        
+        if (status ~= PicoStatus.PICO_OK)
+
+            switch (status)
+
+                case PicoStatus.PICO_SIG_GEN_PARAM
+
+                    error('setSigGenBuiltInSimple: One or more signal generator parameters are out of range.');
+
+                case PicoStatus.PICO_SHOTS_SWEEPS_WARNING
+
+                    error('setSigGenBuiltInSimple: Conflict between the shots and sweeps parameters sent to the signal generator.');
+
+                case PicoStatus.PICO_SIGGEN_OUTPUT_OVER_VOLTAGE
+
+                    error('setSigGenBuiltInSimple: The combined peak to peak voltage and the analog offset voltage must be in the range 0 -&gt; +/- 2V');
+
+                case PicoStatus.PICO_WARNING_EXT_THRESHOLD_CONFLICT
+
+                    error('setSigGenBuiltInSimple: External threshold conflict.');
+
+                case PicoStatus.PICO_SIGGEN_OFFSET_VOLTAGE
+
+                    error('setSigGenBuiltInSimple: The analog offset voltage is out of range.');
+
+                case PicoStatus.PICO_SIGGEN_PK_TO_PK
+
+                    error('setSigGenBuiltInSimple: The analog peak to peak voltage must be in the range 0 -&gt; +/- 2V.');
+
+                case PicoStatus.PICO_SIGGEN_WAVEFORM_SETUP_FAILED
+
+                    error('setSigGenBuiltInSimple: Unable to setup signal generator waveform.');
+
+                otherwise     
+
+                    error('setSigGenBuiltInSimple: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
+            end
+
+        end  
+    
+    else
+        
+        error('setSigGenBuiltInSimple: Signal Generator functionality not supported by this device.');
+        
+    end
+    </MCode>
+               </Code>
+               <Description>setSigGenBuiltInSimple(obj, offsetVoltageMV, pkToPkMV, waveType) sets up the signal generator to produce a signal of constant frequency from a list of built-in waveforms.
+
+The offsetVoltage, peakToPeakVoltage, startFrequency and stopFrequency properties must be set prior to calling this function.
+
+This function may be used with the Test and Measurement Tool.
+
+Input arguments:
+
+obj - the object representing the signalGenerator group.
+wavetype - the type of waveform to be generated by the oscilloscope. Use the following enPS5000AWaveType enumerations:
+
+A, B &amp; D Variants:
+
+0 - PS5000A_SINE
+1 - PS5000A_SQUARE
+2 - PS5000A_TRIANGLE
+8 - PS5000A_DC VOLTAGE
+
+B &amp; D Variants only:
+
+3 - PS5000A_RAMP UP
+4 - PS5000A_RAMP DOWN
+5 - PS5000A_SINC
+6 - PS5000A_GAUSSIAN
+7 - PS5000A_HALF SINE
+
+Output arguments:
+
+status - status code returned by the driver.</Description>
+            </Method>
+            <Method>
+               <Name>setSigGenOff</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = setSigGenOff(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+ 
+    deviceObj = get(obj, 'Parent');
+    
+    offsetVoltage = 0;
+    pkToPk = 0;
+    
+    status = calllib('ps5000a', 'ps5000aSetSigGenBuiltIn', deviceObj.DriverData.unitHandle, ...
+                offsetVoltage, pkToPk, deviceObj.DriverData.enums.enPS5000AWaveType.PS5000A_DC_VOLTAGE, 0, 0, ...
+                0, 0, 0, 0, 0, 0, 0, 0, 0);
+            
+    if (status ~= PicoStatus.PICO_OK)
+       
+        error('setSigGenOff: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
+        
+    end</MCode>
+               </Code>
+               <Description>setSigGenOff(obj) effectively turns off the signal generator by setting the output to a zero DC voltage.
+
+This function can be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the signalGenerator group.
+
+Output parameters:
+
+status - status code returned by the device.</Description>
+            </Method>
+         </MethodInfo>
       </Group>
       <Group>
-         <Name>Streaming</Name>
+         <Name>streaming</Name>
          <Description>The Signalgenerator group contains a set of properties and functions related to the signal generator functionality of the device.</Description>
          <Command/>
          <Size>1</Size>
