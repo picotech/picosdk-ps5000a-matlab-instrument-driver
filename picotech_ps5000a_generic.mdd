@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.13.24</InstrumentVersion>
+   <InstrumentVersion>2.2.13.25</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -521,14 +521,21 @@
 
         end
 
-        % Set the max AWG Buffer Size if the device has an AWG
-        obj.DriverData.awgBufferSize = 0;
+		pMinArbitraryValue = libpointer('int16Ptr', 0);
+		pMaxArbitraryValue = libpointer('int16Ptr', 0);
+		pMinArbitraryBufferSize = libpointer('uint32Ptr', 0);
+		pMaxArbitraryBufferSize = libpointer('uint32Ptr', 0); 
+		
         
-        [~, ~,~, ~, obj.DriverData.awgBufferSize] = calllib('ps5000a', ...
-            'ps5000aSigGenArbitraryMinMaxValues', unitHandle, ...
-                0, 0, 0, obj.DriverData.awgBufferSize);
+        [status, ~, ~, ~, ~] = calllib('ps5000a', 'ps5000aSigGenArbitraryMinMaxValues', ...
+								unitHandle, pMinArbitraryValue, pMaxArbitraryValue, pMinArbitraryBufferSize, pMaxArbitraryBufferSize);
         
-            
+        % Set the max AWG Buffer Size if the device has an AWG    
+		obj.DriverData.awgBufferSize = pMaxArbitraryBufferSize.Value;
+		
+		obj.DriverData.minArbitraryWaveformValue = pMinArbitraryValue;
+		obj.DriverData.maxArbitraryWaveformValue = pMaxArbitraryValue;
+			
         if (obj.DriverData.awgBufferSize &gt; 0)
 
             obj.DriverData.sigGenType = PicoConstants.SIG_GEN_AWG;
@@ -5930,12 +5937,12 @@ For further information on the ps5000aSigGenSoftwareControl please refer to the 
         maxBufferSize = deviceObj.DriverData.awgBufferSize;
         dacFrequency = deviceObj.DriverData.dacFrequency;
         
-        % Convert the waveform to the required range for the driver
-        arbitrary_waveform = int16(arbitraryWaveform * double(intmax('int16')));
+        % Convert the waveform to the required range for the driver (-32768 to 32767)
+        arbitrary_waveform = int16(arbitraryWaveform * double(deviceObj.DriverData.maxArbitraryWaveformValue));
         
         % Find the values which need to be converted to the minimum value
-        minValues = find(arbitrary_waveform == (-1 * intmax('int16')));
-        arbitrary_waveform(minValues) = intmin('int16');
+        minValues = find(arbitrary_waveform == (-1 * deviceObj.DriverData.maxArbitraryWaveformValue));
+        arbitrary_waveform(minValues) = deviceObj.DriverData.minArbitraryWaveformValue;
         
         startFrequency = deviceObj.DriverData.startFrequency;
 
