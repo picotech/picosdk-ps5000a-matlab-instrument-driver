@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.13.26</InstrumentVersion>
+   <InstrumentVersion>2.2.13.27</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -6691,7 +6691,31 @@ status - status code returned by the device.</Description>
         
     end</MCode>
                </Code>
-               <Description/>
+               <Description>setSigGenArbitrary(obj, increment, dwellTime, arbitraryWaveformSize, sweepType, indexMode, shots, sweeps, triggerType, triggerSource, extInThresholdMV)  reprograms the arbitrary waveform generator. All values can be reprogrammed while the oscilloscope is waiting for a trigger.
+
+The startFrequency and stopFrequency properties must be set prior to calling this function.
+
+This function may be used with the Test and Measurement Tool.
+
+Input arguments:
+
+obj - the object representing the signalGenerator group.
+increment - the increase or decrease in frequency (in hertz) when operating in sweep mode.
+dwellTime - the time for which the sweep stays at each frequency, in seconds.
+arbitraryWaveformSize -  the length of the arbitrary waveform buffer, in samples.
+sweepType - determines whether the startFrequency is swept up to the stopFrequency, or down to it, or repeatedly up and down.
+indexMode - specifies how the signal will be formed from the arbitrary waveform data.
+shots - the number of cycles of the waveform to be produced after a trigger event. If this is set to a non-zero value 
+	then sweeps must be set to zero.
+sweeps - the number of times to sweep the frequency after a trigger event, according to sweepType. If this is set to a non-zero value then shots must be set to zero.
+triggerType - the type of trigger that will be applied to the signal generator.
+triggerSource - the source that will trigger the signal generator.
+extInThresholdMV - used to set the trigger level for the external trigger (in millivolts).
+
+Output arguments:
+
+status - status code returned by the driver.
+dwellTime - the dwell time will be modified if the user specifies a dwell time corresponding to less than the minimum dwell count for the device (3).</Description>
             </Method>
          </MethodInfo>
       </Group>
