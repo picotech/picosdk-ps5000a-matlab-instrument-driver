@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.13.27</InstrumentVersion>
+   <InstrumentVersion>2.2.13.28</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -5953,16 +5953,18 @@ For further information on the ps5000aSigGenSoftwareControl please refer to the 
                       deviceObj.DriverData.unitHandle, startFrequency, ...
                       indexMode, length(arbitrary_waveform), pStartDeltaPhase); 
                   
-       if (status ~= PicoStatus.PICO_OK)
+        if (status ~= PicoStatus.PICO_OK)
            
             error(['setSigGenArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
                 '(start frequency) status code: %d. Please refer to the ' ...
                 'PicoStatus.m file.'], status);
+          
+        else
+            
+            startDeltaPhase = pStartDeltaPhase.Value;
             
         end
         
-        startDeltaPhase = pStartDeltaPhase.Value;
-
         stopDeltaPhase = 0;
         dwellCount = 0;
 
@@ -5983,11 +5985,17 @@ For further information on the ps5000aSigGenSoftwareControl please refer to the 
                         deviceObj.DriverData.unitHandle, stopFrequency, ...
                         indexMode, length(arbitrary_waveform), pStopDeltaPhase);  
 
-            error(['setSigGenArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
-                '(stop frequency) status code: %d. Please refer to the ' ...
-                'PicoStatus.m file.'], status);
+            if (status ~= PicoStatus.PICO_OK)
+                
+                error(['setSigGenArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
+                    '(stop frequency) status code: %d. Please refer to the ' ...
+                    'PicoStatus.m file.'], status);
+                
+            else
 
-            stopDeltaPhase = pStopDeltaPhase.Value;
+                stopDeltaPhase = pStopDeltaPhase.Value;
+                
+            end
 
         end
 
@@ -6554,16 +6562,18 @@ status - status code returned by the device.</Description>
                       deviceObj.DriverData.unitHandle, startFrequency, ...
                       indexMode, arbitraryWaveformSize, pStartDeltaPhase); 
                   
-       if (status ~= PicoStatus.PICO_OK)
+        if (status ~= PicoStatus.PICO_OK)
            
             error(['setSigGenPropertiesArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
                 '(start frequency) status code: %d. Please refer to the ' ...
                 'PicoStatus.m file.'], status);
+          
+        else
+            
+            startDeltaPhase = pStartDeltaPhase.Value;
             
         end
         
-        startDeltaPhase = pStartDeltaPhase.Value;
-
         stopDeltaPhase = 0;
         dwellCount = 0;
 
@@ -6584,11 +6594,17 @@ status - status code returned by the device.</Description>
                         deviceObj.DriverData.unitHandle, stopFrequency, ...
                         indexMode, arbitraryWaveformSize, pStopDeltaPhase);  
 
-            error(['setSigGenPropertiesArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
-                '(stop frequency) status code: %d. Please refer to the ' ...
-                'PicoStatus.m file.'], status);
+            if (status ~= PicoStatus.PICO_OK)
+                
+                error(['setSigGenPropertiesArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
+                    '(stop frequency) status code: %d. Please refer to the ' ...
+                    'PicoStatus.m file.'], status);
+                
+            else
 
-            stopDeltaPhase = pStopDeltaPhase.Value;
+                stopDeltaPhase = pStopDeltaPhase.Value;
+                
+            end
 
         end
 
