@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.13.28</InstrumentVersion>
+   <InstrumentVersion>2.2.13.29</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -2323,173 +2323,6 @@ timeIntervalNanoSeconds: the time interval between readings at the selected time
 maxSamples: the maximum number of samples available. 
 
 For further information on the ps5000aGetTimebase2 function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
-               <Name>ps5000aGetTriggerTimeOffset</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, timeUpper, timeLower, timeUnits] = ps5000aGetTriggerTimeOffset(obj, segmentIndex)
-
-    timeUpper = 0;
-    timeLower = 0;
-    timeUnits = 0;
-    
-    [status, timeUpper, timeLower, timeUnits] = calllib('ps5000a', ...
-        'ps5000aGetTriggerTimeOffset', get(obj, 'unitHandle'), timeUpper, timeLower, ...
-        timeUnits, segmentIndex);
-    
-    if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aGetTriggerTimeOffset(obj, segmentIndex) gets the time, as two 4-byte values, at which the trigger occurred.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-segmentIndex - the number of the memory segment for which the information is required.
-
-Output parameters:
-
-status - status code returned by the driver.
-timeUpper - the upper 32 bits of the time at which the trigger point occurred.
-timeLower - the lower 32 bits of the time at which the trigger point occurred.
-timeUnits - the time units in which timeUpper and timeLower are measured (as an enumeration).
-
-For further information on the ps5000aGetTriggerTimeOffset function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
-               <Name>ps5000aGetTriggerTimeOffset64</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, time, timeUnits] = ps5000aGetTriggerTimeOffset64(obj, segmentIndex)
-
-    time = 0;
-    timeUnits = 0;
-
-    [status, timetimeUnits] = calllib('ps5000a', ...
-        'ps5000aGetTriggerTimeOffset64', get(obj, 'unithandle'), time, ...
-        timeUnits, segmentIndex);
-    
-    if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aGetTriggerTimeOffset64(obj, segmentIndex)  gets the time, as a single 64-bit value, at which the trigger occurred.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-segmentIndex -  the number of the memory segment for which the information is required.
-
-Output parameters:
-
-status - status code returned by the driver.
-time - the time at which the trigger point occurred.
-timeUnits - the time units in which time is measured (as an enumeration).
-
-For further information on the ps5000aGetTriggerTimeOffset64 function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
-
-</Description>
-            </Method>
-            <Method>
-               <Name>ps5000aGetValuesTriggerTimeOffsetBulk</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, timesUpper, timesLower, timeUnits] = ps5000aGetValuesTriggerTimeOffsetBulk(obj, fromSegmentIndex, toSegmentIndex)
-
-    % Define the length of the arrays to be used for capturing time
-    % information
-    times_array_size = (toSegmentIndex - fromSegmentIndex) + 1;
-    
-    timesUpper = zeros(times_array_size, 1);
-    timesLower = zeros(times_array_size, 1);
-    timeUnits = zeros(times_array_size, 1);
-
-    [status, timesUpper, timesLower, timeUnits] = ...
-        calllib('ps5000a', 'ps5000aGetValuesTriggerTimeOffsetBulk',
-        get(obj, 'unitHandle'), timesUpper, timesLower, timeUnits, ...
-        fromSegmentIndex, toSegmentIndex);
-    
-    if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aGetValuesTriggerTimeOffsetBulk(obj, fromSegmentIndex, toSegmentIndex) retrieves the time offsets, as lower and upper 32-bit values, for waveforms obtained in rapid block mode.
-
-If using a 64-bit version of MATLAB, please use ps5000aGetValuesTriggerTimeOffsetBulk64.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-fromSegmentIndex - the first segment for which the time offset is required.
-toSegmentIndex - the last segment for which the time offset is required.
-
-Output parameters:
-
-status - status code returned by the driver.
-timesUpper - an array of integers containing the most significant 32 bits of the time offset for each requested segment index.
-timesLower - an array of integers containing the least significant 32 bits of the time offset for each requested segment index.
-timeUnits - an array of integers representing the time unit for each time entry.
-
-For further information on the ps5000aGetValuesTriggerTimeOffsetBulk function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
-               <Name>ps5000aGetValuesTriggerTimeOffsetBulk64</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, times, timeUnits] = ps5000aGetValuesTriggerTimeOffsetBulk64(obj, fromSegmentIndex, toSegmentIndex)
-
-    % Define the length of the arrays to be used for capturing time
-    % information
-    times_array_size = (toSegmentIndex - fromSegmentIndex) + 1;
-    
-    times = zeros(times_array_size, 1);
-    timeUnits = zeros(times_array_size, 1);
-
-    [status, times, timeUnits] = calllib('ps5000a', ...
-        'ps5000aGetValuesTriggerTimeOffsetBulk64', get(obj, 'unitHandle'), ...
-        times, timeUnits, fromSegmentIndex, toSegmentIndex)</MCode>
-               </Code>
-               <Description>ps5000aGetValuesTriggerTimeOffsetBulk64(obj, fromSegmentIndex, toSegmentIndex) retrieves the 64-bit time offsets for waveforms captured in rapid block mode.
-
-If using a 32-bit version of MATLAB, please use ps5000aGetValuesTriggerTimeOffsetBulk instead.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-fromSegmentIndex - the first segment for which the time offset is required.
-toSegmentIndex - the last segment for which the time offset is required.
-
-Output parameters:
-
-status - status code returned by the driver.
-times - an array of integers holding the time offset for each requested segment index.
-timeUnits - an array of integers representing the time unit for each time entry.
-
-For further information on the ps5000aGetValuesTriggerTimeOffsetBulk64 function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
                <Name>ps5000aMaximumValue</Name>
@@ -6107,7 +5940,7 @@ This function may be used with the Test and Measurement Tool.
 
 Input arguments:
 
-obj - the object representing the signalGenerator group.
+obj - the object representing the Signalgenerator group.
 increment - the increase or decrease in frequency (in hertz) when operating in sweep mode.
 dwellTime - the time for which the sweep stays at each frequency, in seconds.
 arbitraryWaveform -  a buffer that holds the waveform pattern as a set of samples in the range -1 to +1. These values correspond to the maximum and minimum amplitude values of the waveform.
@@ -6250,7 +6083,7 @@ This function may be used with the Test and Measurement Tool.
 
 Input arguments:
 
-obj - the object representing the signalGenerator group.
+obj - the object representing the Signalgenerator group.
 arbitraryWaveform -  a buffer that holds the waveform pattern as a set of samples in the range -1 to +1. These values correspond to the maximum and minimum amplitude values of the waveform.
 
 Output arguments:
@@ -6360,7 +6193,7 @@ This function may be used with the Test and Measurement Tool.
 
 Input parameters:
 
-obj - the object representing the signalGenerator group.
+obj - the object representing the Signalgenerator group.
 wavetype - the type of waveform to be generated by the oscilloscope. Use the following enPS5000AWaveType enumerations:
 
 A, B &amp; D Variants:
@@ -6477,7 +6310,7 @@ This function may be used with the Test and Measurement Tool.
 
 Input arguments:
 
-obj - the object representing the signalGenerator group.
+obj - the object representing the Signalgenerator group.
 wavetype - the type of waveform to be generated by the oscilloscope. Use the following enPS5000AWaveType enumerations:
 
 A, B &amp; D Variants:
@@ -6530,7 +6363,7 @@ This function can be used with the Test and Measurement Tool.
 
 Input parameters:
 
-obj - the object representing the signalGenerator group.
+obj - the object representing the Signalgenerator group.
 
 Output parameters:
 
@@ -6715,7 +6548,7 @@ This function may be used with the Test and Measurement Tool.
 
 Input arguments:
 
-obj - the object representing the signalGenerator group.
+obj - the object representing the Signalgenerator group.
 increment - the increase or decrease in frequency (in hertz) when operating in sweep mode.
 dwellTime - the time for which the sweep stays at each frequency, in seconds.
 arbitraryWaveformSize -  the length of the arbitrary waveform buffer, in samples.
@@ -6829,7 +6662,7 @@ This function may be used with the Test and Measurement Tool.
 
 Input parameters:
 
-obj - the object representing the signalGenerator group.
+obj - the object representing the Signalgenerator group.
 increment - the amount in hertz by which the frequency rises or falls every dwellTime seconds in sweep mode.
 dwellTime - the time in seconds between frequency changes in sweep mode.
 sweepType - determines whether the startFrequency is swept up to the stopFrequency, or down to it, or repeatedly up and down.
@@ -6934,6 +6767,213 @@ This property will only be used with setSimpleTrigger().</Description>
             </Property>
          </PropertyInfo>
          <MethodInfo>
+            <Method>
+               <Name>ps5000aGetTriggerTimeOffset</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, timeUpper, timeLower, timeUnits] = ps5000aGetTriggerTimeOffset(obj, segmentIndex)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    pTimeUpper = libpointer('uint32Ptr', 0);
+    pTimeLower = libpointer('uint32Ptr', 0);
+    pTimeUnits = libpointer('enPS5000ATimeUnits', obj.DriverData.enums.enPS5000ATimeUnits.PS5000A_FS);
+    
+    [status, ~, ~, ~] = calllib('ps5000a', ...
+        'ps5000aGetTriggerTimeOffset', deviceObj.DriverData.unitHandle, ...
+        pTimeUpper, pTimeLower, pTimeUnits, segmentIndex);
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aGetTriggerTimeOffset:- status code: %d. Please refer to the PicoStatus.m file.', status); 
+        
+    else
+        
+        timeUpper = pTimeUpper.Value;
+        timeLower = pTimeLower.Value;
+        timeUnits = pTimeUnits.Value;
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aGetTriggerTimeOffset(obj, segmentIndex) gets the time, as two 4-byte values, at which the trigger occurred.
+
+A data capture must have been made prior to calling this function.
+
+This function may be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the Trigger group.
+segmentIndex - the number of the memory segment for which the information is required.
+
+Output parameters:
+
+status - status code returned by the driver.
+timeUpper - the upper 32 bits of the time at which the trigger point occurred.
+timeLower - the lower 32 bits of the time at which the trigger point occurred.
+timeUnits - the time units in which timeUpper and timeLower are measured (an enPS5000ATimeUnits enumeration).</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aGetTriggerTimeOffset64</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, time, timeUnits] = ps5000aGetTriggerTimeOffset64(obj, segmentIndex)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    pTime = libpointer('int64Ptr', 0);
+    pTimeUnits = libpointer('enPS5000ATimeUnits', obj.DriverData.enums.enPS5000ATimeUnits.PS5000A_FS);
+
+    [status, ~] = calllib('ps5000a', ...
+        'ps5000aGetTriggerTimeOffset64', deviceObj.DriverData.unithandle, pTime, ...
+        pTimeUnits, segmentIndex);
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aGetTriggerTimeOffset64:- status code: %d. Please refer to the PicoStatus.m file.', status); 
+        
+    else
+        
+        time = pTime.Value;
+        timeUnits = pTimeUnits.Value;
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aGetTriggerTimeOffset64(obj, segmentIndex)  gets the time, as a single 64-bit value, at which the trigger occurred.
+
+A data capture must have been made prior to calling this function.
+
+This function may be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the Trigger group.
+segmentIndex -  the number of the memory segment for which the information is required.
+
+Output parameters:
+
+status - status code returned by the driver.
+time - the time at which the trigger point occurred.
+timeUnits - the time units in which time is measured (an enPS5000ATimeUnits enumeration).
+
+</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aGetValuesTriggerTimeOffsetBulk</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, timesUpper, timesLower, timeUnits] = ps5000aGetValuesTriggerTimeOffsetBulk(obj, fromSegmentIndex, toSegmentIndex)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    % Define the length of the arrays to be used for capturing time
+    % information
+    timesArraySize = (toSegmentIndex - fromSegmentIndex) + 1;
+    
+    pTimesUpper = libpointer('uint32Ptr', zeros(timesArraySize, 1));
+    pTimesLower = libpointer('uint32Ptr', zeros(timesArraySize, 1));
+    pTimeUnits = libpointer('uint32Ptr', zeros(timesArraySize, 1));
+
+    [status, ~, ~, ~] = ...
+        calllib('ps5000a', 'ps5000aGetValuesTriggerTimeOffsetBulk', ...
+        deviceObj.DriverData.unitHandle, pTimesUpper, pTimesLower, pTimeUnits, ...
+        fromSegmentIndex, toSegmentIndex);
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aGetValuesTriggerTimeOffsetBulk:- status code: %d. Please refer to the PicoStatus.m file.', status); 
+        
+    else
+        
+        timesUpper = pTimesUpper.Value;
+        timesLower = pTimesLower.Value;
+        timeUnits = pTimeUnits.Value;
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aGetValuesTriggerTimeOffsetBulk(obj, fromSegmentIndex, toSegmentIndex) retrieves the time offsets, as lower and upper 32-bit values, for waveforms obtained in rapid block mode.
+
+A rapid block data capture must have been made prior to calling this function.
+
+This function may be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the Trigger group.
+fromSegmentIndex - the first segment for which the time offset is required.
+toSegmentIndex - the last segment for which the time offset is required.
+
+Output parameters:
+
+status - status code returned by the driver.
+timesUpper - an array of integers containing the most significant 32 bits of the time offset for each requested segment index.
+timesLower - an array of integers containing the least significant 32 bits of the time offset for each requested segment index.
+timeUnits - an array of integers representing the time unit for each time entry (an enPS5000ATimeUnits enumeration).</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aGetValuesTriggerTimeOffsetBulk64</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, times, timeUnits] = ps5000aGetValuesTriggerTimeOffsetBulk64(obj, fromSegmentIndex, toSegmentIndex)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    % Define the length of the arrays to be used for capturing time
+    % information
+    timesArraySize = (toSegmentIndex - fromSegmentIndex) + 1;
+    
+    pTimes = libpointer('int64Ptr', zeros(timesArraySize, 1));
+    pTimeUnits = libpointer('uint32Ptr', zeros(timesArraySize, 1));
+
+    [status, ~, ~] = calllib('ps5000a', ...
+        'ps5000aGetValuesTriggerTimeOffsetBulk64', deviceObj.DriverData.unitHandle, ...
+        pTimes, pTimeUnits, fromSegmentIndex, toSegmentIndex);
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aGetValuesTriggerTimeOffsetBulk64:- status code: %d. Please refer to the PicoStatus.m file.', status); 
+        
+    else
+        
+        times = pTimes.Value;
+        timeUnits = pTimeUnits.Value;
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aGetValuesTriggerTimeOffsetBulk64(obj, fromSegmentIndex, toSegmentIndex) retrieves the 64-bit time offsets for waveforms captured in rapid block mode.
+
+A rapid block data capture must have been made prior to calling this function.
+
+This function may be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the Trigger group.
+fromSegmentIndex - the first segment for which the time offset is required.
+toSegmentIndex - the last segment for which the time offset is required.
+
+Output parameters:
+
+status - status code returned by the driver.
+times - an array of integers holding the time offset for each requested segment index.
+timeUnits - an array of integers representing the time unit for each time entry (an enPS5000ATimeUnits enumeration).</Description>
+            </Method>
             <Method>
                <Name>ps5000aIsTriggerOrPulseWidthQualifierEnabled</Name>
                <Location>trigger</Location>
