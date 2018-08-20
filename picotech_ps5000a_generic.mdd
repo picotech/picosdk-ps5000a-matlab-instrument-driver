@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.13.29</InstrumentVersion>
+   <InstrumentVersion>2.2.14.30</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -841,46 +841,6 @@
          </Mappings>
          <PropertyInfo>
             <Property>
-               <Name>autoStop</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
-% Return a property value.
-%   This function is called to return the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    % If autoStop doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'autoStop') )
-        obj.UserData.autoStop = 0;
-    else
-        propertyValue = obj.UserData.autoStop;
-    end</GetMCode>
-                  <SetMCode>function set(obj, propertyName, propertyValue)
-% Set a property value.
-%   This function is called to set the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.autoStop = propertyValue;</SetMCode>
-               </Code>
-               <PermissibleType>
-                  <Type>Double</Type>
-                  <Constraint>enum</Constraint>
-                  <ConstraintValue>
-                     <Value>0.0</Value>
-                     <Value>1.0</Value>
-                  </ConstraintValue>
-               </PermissibleType>
-               <DefaultValue>1</DefaultValue>
-               <ReadOnly>never</ReadOnly>
-               <Description>A flag to specify if streaming data collection should stop when all of maxSamples have been taken.
-
-This flag should be set to 0 or 1.</Description>
-            </Property>
-            <Property>
                <Name>bandwidth</Name>
                <Location>parent</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -1487,40 +1447,6 @@ When used in Streaming mode, this is the maximum number of raw samples before th
                <DefaultValue>8.0</DefaultValue>
                <ReadOnly>never</ReadOnly>
                <Description>The resolution of the device, in bits.</Description>
-            </Property>
-            <Property>
-               <Name>streamingInterval</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
-% Return a property value.
-%   This function is called to return the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    % If streamingInterval doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'streamingInterval') )
-        obj.UserData.streamingInterval = [ ];
-    end
-    
-    propertyValue = obj.UserData.streamingInterval;</GetMCode>
-                  <SetMCode>function set(obj, propertyName, propertyValue)
-% Set a property value.
-%   This function is called to set the device or group object property
-%   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.streamingInterval = propertyValue;</SetMCode>
-               </Code>
-               <PermissibleType>
-                  <Type>Double</Type>
-                  <Constraint>none</Constraint>
-               </PermissibleType>
-               <DefaultValue>1</DefaultValue>
-               <ReadOnly>never</ReadOnly>
-               <Description>The requested time interval between samples (in seconds) when capturing data in streaming mode.</Description>
             </Property>
             <Property>
                <Name>timebase</Name>
@@ -6689,7 +6615,72 @@ status - status code returned by the driver.
          <Mappings>
             <ChannelMap Command="Streaming1" Index="1"/>
          </Mappings>
-         <PropertyInfo/>
+         <PropertyInfo>
+            <Property>
+               <Name>autoStop</Name>
+               <Location>streaming</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    propertyValue = obj.DriverData.autoStop;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    obj.DriverData.autoStop = propertyValue;</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Value>0.0</Value>
+                     <Value>1.0</Value>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>1</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>A flag to specify if streaming data collection should stop when the sum of pre-trigger and post-trigger samples have been taken.
+
+This flag should be set to 0 or 1.</Description>
+            </Property>
+            <Property>
+               <Name>streamingInterval</Name>
+               <Location>streaming</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    propertyValue = obj.DriverData.streamingInterval;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+    obj.DriverData.streamingInterval = propertyValue;</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue>1</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>The requested time interval between samples (in seconds) when capturing data in streaming mode.</Description>
+            </Property>
+         </PropertyInfo>
          <MethodInfo/>
       </Group>
       <Group>
