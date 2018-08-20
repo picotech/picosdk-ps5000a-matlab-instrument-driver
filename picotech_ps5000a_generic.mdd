@@ -6691,7 +6691,7 @@ status - status code returned by the device.</Description>
         
     end</MCode>
                </Code>
-               <Description>setSigGenArbitrary(obj, increment, dwellTime, arbitraryWaveformSize, sweepType, indexMode, shots, sweeps, triggerType, triggerSource, extInThresholdMV)  reprograms the arbitrary waveform generator. All values can be reprogrammed while the oscilloscope is waiting for a trigger.
+               <Description>setSigGenPropertiesArbitrary(obj, increment, dwellTime, arbitraryWaveformSize, sweepType, indexMode, shots, sweeps, triggerType, triggerSource, extInThresholdMV)  reprograms the arbitrary waveform generator. All values can be reprogrammed while the oscilloscope is waiting for a trigger.
 
 The startFrequency and stopFrequency properties must be set prior to calling this function.
 
@@ -6716,6 +6716,119 @@ Output arguments:
 
 status - status code returned by the driver.
 dwellTime - the dwell time will be modified if the user specifies a dwell time corresponding to less than the minimum dwell count for the device (3).</Description>
+            </Method>
+            <Method>
+               <Name>setSigGenPropertiesBuiltIn</Name>
+               <Location>signalgenerator</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = setSigGenPropertiesBuiltIn(obj, increment, dwellTime, sweepType, shots, sweeps, triggerType, triggerSource, extInThresholdMV)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    sigGenType = deviceObj.DriverData.sigGenType;
+    
+    % Error checking
+    if (sigGenType == PicoConstants.SIG_GEN_AWG || ...
+            sigGenType == PicoConstants.SIG_GEN_FUNCT_GEN)
+        
+        % Convert extInThresholdMV to counts if device is not an MSO model
+        extInThreshold = 0;
+        
+        if (deviceObj.DriverData.digitalPorts &gt; 0)        
+            
+            extInThreshold = 0;
+            
+        else
+            
+            extInThreshold = round(((extInThresholdMV / 1000) / ...
+                deviceObj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE) ...
+                * deviceObj.DriverData.constants.P5000A_EXT_MAX_VALUE);
+            
+        end
+
+        status = calllib('ps5000a', 'ps5000aSetSigGenPropertiesBuiltIn', ...
+                    deviceObj.DriverData.unitHandle, ...
+                    deviceObj.DriverData.startFrequency, deviceObj.DriverData.stopFrequency, ...
+                    increment, dwellTime, sweepType, shots, sweeps, ...
+                    triggerType, triggerSource, extInThreshold);
+
+        % Output error message to user if status is not PICO_OK        
+        if (status ~= PicoStatus.PICO_OK)
+
+            switch (status)
+
+                case PicoStatus.PICO_SIG_GEN_PARAM
+
+                    error('setSigGenPropertiesBuiltIn: One or more signal generator parameters are out of range.');
+
+                case PicoStatus.PICO_SHOTS_SWEEPS_WARNING
+
+                    error('setSigGenPropertiesBuiltIn: Conflict between the shots and sweeps parameters sent to the signal generator.');
+
+                case PicoStatus.PICO_SIGGEN_OUTPUT_OVER_VOLTAGE
+
+                    error('setSigGenPropertiesBuiltIn: The combined peak to peak voltage and the analog offset voltage must be in the range 0 -&gt; +/- 2V');
+
+                case PicoStatus.PICO_WARNING_EXT_THRESHOLD_CONFLICT
+
+                    error('setSigGenPropertiesBuiltIn: External threshold conflict.');
+
+                case PicoStatus.PICO_SIGGEN_OFFSET_VOLTAGE
+
+                    error('setSigGenPropertiesBuiltIn: The analog offset voltage is out of range.');
+
+                case PicoStatus.PICO_SIGGEN_PK_TO_PK
+
+                    error('setSigGenPropertiesBuiltIn: The analog peak to peak voltage must be in the range 0 -&gt; +/- 2V.');
+
+                case PicoStatus.PICO_SIGGEN_WAVEFORM_SETUP_FAILED
+
+                    error('setSigGenPropertiesBuiltIn: Unable to setup signal generator waveform.');
+
+                case PicoStatus.PICO_SIGGEN_INVALID_SWEEP_PARAMETERS
+                    
+                    error('setSigGenPropertiesBuiltIn: The sweeps or shots and trigger type are not valid when combined together.');
+                      
+                otherwise     
+
+                    error('setSigGenPropertiesBuiltIn: Status code: %d. Please refer to the PicoStatus.m file.\n', dec2hex(status));
+            end
+
+        end
+                
+    else
+        
+        error('setSigGenPropertiesBuiltIn: Signal Generator functionality not supported by this device.');
+        
+    end</MCode>
+               </Code>
+               <Description>setSigGenPropertiesBuiltIn(obj, increment, dwellTime, sweepType, shots, sweeps, triggerType, triggerSource, extInThresholdMV) sets up the signal generator to produce a signal from a list of built-in waveforms.
+
+The startFrequency and stopFrequency properties must be set prior to calling this function.
+
+This function may be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the signalGenerator group.
+increment - the amount in hertz by which the frequency rises or falls every dwellTime seconds in sweep mode.
+dwellTime - the time in seconds between frequency changes in sweep mode.
+sweepType - determines whether the startFrequency is swept up to the stopFrequency, or down to it, or repeatedly up and down.
+shots - the number of cycles of the waveform to be produced after a trigger event. If this is set to a non-zero value 
+              then sweeps must be set to zero.
+sweeps - the number of times to sweep the frequency after a trigger event, according to sweepType. If this is set to a non-zero value then shots must be set to zero.
+triggerType - the type of trigger that will be applied to the signal generator.
+triggerSource - the source that will trigger the signal generator.
+extInThresholdMV - used to set the trigger level for the external trigger (in millivolts).
+
+Output arguments:
+
+status - status code returned by the driver.
+
+</Description>
             </Method>
          </MethodInfo>
       </Group>
