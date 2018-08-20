@@ -149,7 +149,7 @@ set(sigGenGroupObj, 'peakToPeakVoltage', 2000.0);
 % the above method.
 
 awgBufferSize = get(sigGenGroupObj, 'awgBufferSize');
-x = [0:(2*pi)/(awgBufferSize - 1):2*pi];
+x = 0:(2*pi)/(awgBufferSize - 1):2*pi;
 y = normalise(sin(x) + sin(2*x));
 
 %% Arbitrary waveform generator - simple
