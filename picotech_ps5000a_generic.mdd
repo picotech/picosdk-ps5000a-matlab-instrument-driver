@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.14.30</InstrumentVersion>
+   <InstrumentVersion>2.2.14.31</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -1542,75 +1542,6 @@ When used in Streaming mode, this is the maximum number of raw samples before th
          </PropertyInfo>
          <MethodInfo>
             <Method>
-               <Name>autoStopped</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function autoStop = autoStopped(obj)
-
-    autoStop = calllib('ps5000aWrap', 'AutoStopped', get(obj, 'unitHandle'));</MCode>
-               </Code>
-               <Description>AutoStopped(obj) indicates if the device has stopped on collection of the number of samples specified in the call to the ps5000aRunStreaming function.
-
-The autoStop property must have been set to 1.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-autoStop - 0 if the device has not stopped, non-zero if streaming has auto-stopped.</Description>
-            </Method>
-            <Method>
-               <Name>availableData</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [numSamples, startIndex] = availableData(obj)
-
-    startIndex = 0; % Initialise variable to be used as a pointer
-
-    [numSamples, startIndex] = calllib('ps5000aWrap', 'AvailableData', ...
-                                get(obj, 'unitHandle'), startIndex);</MCode>
-               </Code>
-               <Description>AvailableData(obj) indicates the number of samples returned from the driver and shows the start index of the data in the buffer when collecting data in streaming mode.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-numSamples - 0, data is not yet available; Non-zero, the number of samples returned from the driver.
-startIndex - an index to the first valid sample in the buffer (when data is available).
-
-Note: the startIndex value is zero-based so should be incremented by 1 when used to retrieve data from the buffer.
-</Description>
-            </Method>
-            <Method>
-               <Name>clearTriggerReady</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function triggerCleared = clearTriggerReady(obj)
-
-    triggerCleared = calllib('ps5000aWrap', 'ClearTriggerReady');</MCode>
-               </Code>
-               <Description>ClearTriggerReady(obj) clears the triggered and triggeredAt flags in relation to streaming mode capture.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-1 - Call successfully completed.</Description>
-            </Method>
-            <Method>
                <Name>deviceReset</Name>
                <Location>parent</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -1625,35 +1556,6 @@ Output parameters:
         'devicereset is not supported by this Instrument Driver - please use the resetDevice function instead.');</MCode>
                </Code>
                <Description>The devicereset function is not supported by this Instrument Driver. Please use the resetDevice function instead.</Description>
-            </Method>
-            <Method>
-               <Name>getStreamingLatestValues</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function status = getStreamingLatestValues(obj)
-
-    status = calllib('ps5000aWrap', 'GetStreamingLatestValues', ...
-                get(obj, 'unitHandle'));
-            
-    if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>GetStreamingLatestValues(obj) facilitates communication with the underlying driver to return the next block of values to your application when capturing data in streaming mode.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-status - status code returned by the driver.
-
-For further information on the underlying ps5000aGetStreamingLatestValues function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
                <Name>getUnitInfo</Name>
@@ -1715,57 +1617,6 @@ status - an array containing the status codes returned by the driver on each cal
 unitInfoValues - a set of text providing information on the device connected to.
 
 For further information on the underlying ps5000aGetUnitInfo function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
-               <Name>isReady</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function ready = isReady(obj)
-% For group functions, OBJ is the group object. For
-% base device functions, OBJ is the device object.
-
-    ready = calllib('ps5000aWrap', 'IsReady', get(obj, 'unitHandle'));</MCode>
-               </Code>
-               <Description>IsReady(obj) is used to poll the driver to verify that data is ready to be received. Use ps5000aRunStreaming function must have been called prior to calling this function.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-ready - 0, if data is not yet available; non-zero if data is ready to be collected.
-
-</Description>
-            </Method>
-            <Method>
-               <Name>isTriggerReady</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [triggered, triggeredAt] = isTriggerReady(obj)
-
-    triggeredAt = 0; % Initialise value to zero for pointer.
-
-    [triggered, triggeredAt] = calllib('ps5000aWrap', 'IsTriggerReady', ...
-        get(obj, 'unitHandle'), triggeredAt);</MCode>
-               </Code>
-               <Description>IsTriggerReady(obj) indicates whether a trigger has occurred when collecting data in streaming mode, and the location of the trigger point.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-triggered - 0, if the device has not triggered; Non-zero, if the device has been triggered.
-triggeredAt - the zero-based index of the sample in the buffer where the trigger occurred.
-
-
-</Description>
             </Method>
             <Method>
                <Name>ps5000aChangePowerSource</Name>
@@ -2377,38 +2228,6 @@ For further information on the ps5000aMinimumValue function please refer to the 
 </Description>
             </Method>
             <Method>
-               <Name>ps5000aNoOfStreamingValues</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, noOfValues] = ps5000aNoOfStreamingValues(obj)
-
-    noOfValues = 0; % Initialise value for use as pointer.
-
-    [status, noOfValues] = calllib('ps5000a', 'ps5000aNoOfStreamingValues', ...
-        get(obj, 'unitHandle'), noOfValues);
-    
-    if (status ~= PicoStatus.PICO_OK)
-           
-        % TBD - Error handling 
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aNoOfStreamingValues(obj) returns the number of samples available after data collection in streaming mode. Call this function after calling ps5000aStop.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-status - status code returned by the driver.
-noOfValues - the number of samples.
-
-For further information on the ps5000aNoOfStreamingValues function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
                <Name>ps5000aPingUnit</Name>
                <Location>parent</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -2437,188 +2256,6 @@ Output parameters:
 status - status code returned by the driver.
 
 For further information on the ps5000aPingUnit function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
-               <Name>ps5000aRunStreaming</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function [status, sampleInterval, sampleIntervalTimeUnitsStr] = ps5000aRunStreaming(obj, downSampleRatio, downSampleRatioMode, overviewBufferSize)
-
-    % Calculate sampleInterval and sampleIntervalTimeUnits according to
-    % streamingInterval property set. Property is defined in seconds.
-
-    streamingInterval = get(obj, 'streamingInterval'); 
-    
-    femtosecondsEnum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_FS');
-    picosecondsEnum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_PS');
-    nanosecondsEnum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_NS');
-    microsecondsEnum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_US');
-    millisecondsEnum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_MS');
-    secondsEnum = evalin('base', 'ps5000aEnuminfo.enPS5000ATimeUnits.PS5000A_S');
-    
-    sampleIntervalTimeUnits = secondsEnum;
-    
-    if (streamingInterval &lt; 1e-12) % Femtoseconds (unlikely with USB 2.0)
-        
-        sampleInterval = streamingInterval * 1e15;
-        sampleIntervalTimeUnits = femtosecondsEnum;
-        
-    elseif (streamingInterval &gt;= 1e-12 &amp;&amp; streamingInterval &lt; 1e-9) % Picoseconds
-        
-        if (mod(streamingInterval, 1e-12) &gt; 0)
-           
-            sampleInterval = streamingInterval * 1e15;
-            sampleIntervalTimeUnits = femtosecondsEnum;
-            
-        else
-            
-            sampleInterval = streamingInterval * 1e12;
-            sampleIntervalTimeUnits = picosecondsEnum;
-            
-        end
-        
-    elseif (streamingInterval &gt;= 1e-9 &amp;&amp; streamingInterval &lt; 1e-6) % Nanoseconds
-        
-        if (mod(streamingInterval, 1e-9) &gt; 0)
-           
-            sampleInterval = streamingInterval * 1e12;
-            sampleIntervalTimeUnits = picosecondsEnum;
-            
-        else
-        
-            sampleInterval = streamingInterval * 1e9;
-            sampleIntervalTimeUnits = nanosecondsEnum;
-            
-        end
-        
-    elseif (streamingInterval &gt;= 1e-6 &amp;&amp; streamingInterval &lt; 1e-3) % Microseconds
-        
-        if (mod(streamingInterval, 1e-6) &gt; 0)
-            
-            sampleInterval = streamingInterval * 1e9;
-            sampleIntervalTimeUnits = nanosecondsEnum;
-            
-        else
-           
-            sampleInterval = streamingInterval * 1e6;
-            sampleIntervalTimeUnits = microsecondsEnum;
-            
-        end
-        
-    elseif (streamingInterval &gt;= 1e-3 &amp;&amp; streamingInterval &lt; 1) % Milliseconds
-        
-        if (mod(streamingInterval, 1e-3) &gt; 0)
-            
-            sampleInterval = streamingInterval * 1e6;
-            sampleIntervalTimeUnits = microsecondsEnum;
-            
-        else
-           
-            sampleInterval = streamingInterval * 1e3;
-            sampleIntervalTimeUnits = millisecondsEnum;
-            
-        end
-            
-    else 
-        
-        % Already defined seconds
-        
-        if (mod(streamingInterval, 1) &gt; 0)
-           
-           sampleInterval = streamingInterval * 1e3;
-           sampleIntervalTimeUnits = millisecondsEnum;
-           
-       end
-        
-    end
-            
-    [status, sampleInterval] = calllib('ps5000a', 'ps5000aRunStreaming', ...
-        get(obj, 'unitHandle'), sampleInterval, sampleIntervalTimeUnits, ...
-        get(obj, 'numPreTriggerSamples'), get(obj, 'numPostTriggerSamples'), ...
-        get(obj, 'autoStop'), downSampleRatio, downSampleRatioMode, overviewBufferSize);
-    
-    if (status == PicoStatus.PICO_OK)
-        
-        switch(sampleIntervalTimeUnits)
-       
-            case femtosecondsEnum
-
-                sampleIntervalTimeUnitsStr = 'fs';
-                
-            case picosecondsEnum
-
-                sampleIntervalTimeUnitsStr = 'ps';
-
-            case nanosecondsEnum
-
-                sampleIntervalTimeUnitsStr = 'ns';
-
-            case microsecondsEnum
-
-                sampleIntervalTimeUnitsStr = 'us';
-
-            case millisecondsEnum
-
-                sampleIntervalTimeUnitsStr = 'ms';
-
-            case secondsEnum
-
-                sampleIntervalTimeUnitsStr = 's';
-            
-            otherwise
-                
-                % Do nothing
-        
-        end
-        
-        if (obj.DriverData.displayOutput == PicoConstants.TRUE)
-            
-            fprintf('ps5000aRunStreaming:- Sample interval %d %s\n', sampleInterval, ...
-                sampleIntervalTimeUnitsStr);
-            
-        end
-        
-        clear streaming_interval;
-        clear femtoseconds_enum;
-        clear picoseconds_enum;
-        clear nanoseconds_enum;
-        clear microseconds_enum;
-        clear milliseconds_enum;
-        clear seconds_enum;
-        
-    % Check for Power connection
-    elseif (status == PicoStatus.PICO_POWER_SUPPLY_CONNECTED || ...
-                status == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED || ...
-                status == PicoStatus.PICO_POWER_SUPPLY_UNDERVOLTAGE)
-    
-        status = invoke(obj, 'ps5000aChangePowerSource', status)
-        
-    else
-        
-        error('ps5000aRunStreaming: Error code %d\n', status);
-        
-    end</MCode>
-               </Code>
-               <Description>ps5000aRunStreaming(obj, sampleInterval, sampleIntervalTimeUnits, maxPreTriggerSamples, maxPostTriggerSamples, autoStop, downSampleRatio, downSampleRatioMode, overviewBufferSize) function tells the oscilloscope to start collecting data in streaming mode. Use the wrapper function GetStreamingLatestValues to obtain the values. 
-
-Input parameters:
-
-obj - the object representing the device.
-downSampleRatio - the downsampling factor that will be applied to the raw data.
-downSampleRatioMode -  which downsampling mode to use (an enumeration from the PS5000A_RATIO_MODE range).
-overviewBufferSize - the size of the overview buffers (temporary buffers used for storing the data before returning it to the application).
-
-Output parameters:
-
-status - status code returned by the driver.
-sampleInterval - the actual time interval used.
-sampleIntervalTimeUnitsStr - a string representing the time unit for the sampling interval.
-
-For further information on the ps5000aRunStreaming function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
-
-</Description>
             </Method>
             <Method>
                <Name>ps5000aSetBandwidthFilter</Name>
@@ -3259,44 +2896,6 @@ This includes the folliowing:
 </Description>
             </Method>
             <Method>
-               <Name>setAppAndDriverBuffers</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function status = setAppAndDriverBuffers(obj, channel, appBuffer, driverBuffer, bufferLength)
-% For group functions, OBJ is the group object. For
-% base device functions, OBJ is the device object.
-
-    status = calllib('ps5000aWrap', 'setAppAndDriverBuffers', ...
-        get(obj, 'unitHandle'), channel, appBuffer, driverBuffer, bufferLength);
-    
-    if (status ~= 0)
-       
-        error('setAppAndDriverBuffers: unable to set buffers in wrapper dll');
-        
-    end</MCode>
-               </Code>
-               <Description>setAppAndDriverBuffers(obj, channel, appBuffer, driverBuffer, bufferLength) set the application and corresponding driver buffer in the wrapper dll.
-
-This function is required to allow the driver to copy the data into the application buffer being used in MATLAB when acquiring data from the PicoScope in 
-streaming mode without aggregation.
-
-Input parameters:
-
-obj - the object representing the device.
-channel - the channel to which the buffer corresponds (an enumeration from the PS5000A_CHANNEL range).
-appBuffer - a libpointer to a 1-D array representing the application buffer.
-driverBuffer - the libpointer passed to the driver in the ps5000aSetDataBuffer function call.
-bufferLength - the length of the arrays (must be equal)
-
-Output parameters:
-
-status - status code returned by the wrapper:
-
-0, if successful; -1, otherwise</Description>
-            </Method>
-            <Method>
                <Name>setChannelDefaults</Name>
                <Location>parent</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -3424,47 +3023,6 @@ Analogue Channel:
 Enabled: True
 Coupling: DC
 Voltage Range: 5V</Description>
-            </Method>
-            <Method>
-               <Name>setMaxMinAppAndDriverBuffers</Name>
-               <Location>parent</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function status = setMaxMinAppAndDriverBuffers(obj, channel, appMaxBuffer, appMinBuffer, driverMaxBuffer, driverMinBuffer, bufferLength)
-% For group functions, OBJ is the group object. For
-% base device functions, OBJ is the device object.
-
-    status = calllib('ps5000aWrap', 'setMaxMinAppAndDriverBuffers', ...
-        get(obj, 'unitHandle'), channel, appMaxBuffer, appMinBuffer, ...
-        driverMaxBuffer, driverMinBuffer, bufferLength);
-    
-    if (status ~= 0)
-       
-        error('setAppAndDriverBuffers: unable to set buffers in wrapper dll');
-        
-    end</MCode>
-               </Code>
-               <Description>setAppAndDriverBuffers(obj, channel, appMaxBuffer, appMinBuffer, driverMaxBuffer, driverMinBuffer, bufferLength) set the maximum and minimum application and corresponding driver buffers in the wrapper dll.
-
-This function is required to allow the driver to copy the data into the maximum and minimum application buffers being used in MATLAB when acquiring data from the PicoScope in 
-streaming mode with aggregation.
-
-Input parameters:
-
-obj - the object representing the device.
-channel - the channel to which the buffer corresponds (an enumeration from the PS5000A_CHANNEL range).
-appMaxBuffer - a libpointer to a 1-D array representing the application buffer.
-appMinBuffer - a libpointer to a 1-D array representing the application buffer.
-driverMaxBuffer - the libpointer passed to the driver for the maximum aggregated data values  in the ps5000aSetDataBuffers function call.
-driverMinBuffer - the libpointer passed to the driver for the minimum aggregated data values in the ps5000aSetDataBuffers function call.
-bufferLength - the length of the arrays (must be equal)
-
-Output parameters:
-
-status - status code returned by the wrapper:
-
-0, if successful; -1, otherwise</Description>
             </Method>
          </MethodInfo>
       </Group>
@@ -6681,7 +6239,474 @@ This flag should be set to 0 or 1.</Description>
                <Description>The requested time interval between samples (in seconds) when capturing data in streaming mode.</Description>
             </Property>
          </PropertyInfo>
-         <MethodInfo/>
+         <MethodInfo>
+            <Method>
+               <Name>autoStopped</Name>
+               <Location>streaming</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function autoStop = autoStopped(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    autoStop = calllib('ps5000aWrap', 'AutoStopped', deviceObj.DriverData.unitHandle);</MCode>
+               </Code>
+               <Description>AutoStopped(obj) indicates if the device has stopped on collection of the number of samples specified in the call to the ps5000aRunStreaming function.
+
+The autoStop property must have been set to 1.
+
+Input arguments:
+
+obj - the object representing the Streaming group object.
+
+Output arguments:
+
+autoStop - 0 if the device has not stopped, non-zero if streaming has auto-stopped.</Description>
+            </Method>
+            <Method>
+               <Name>availableData</Name>
+               <Location>streaming</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [numSamples, startIndex] = availableData(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    pStartIndex = libpointer('uint32Ptr', 0);
+
+    [numSamples, ~] = calllib('ps5000aWrap', 'AvailableData', ...
+                                deviceObj.DriverData.unitHandle, pStartIndex);
+                            
+    startIndex = pStartIndex.Value;</MCode>
+               </Code>
+               <Description>AvailableData(obj) indicates the number of samples returned from the driver and shows the start index of the data in the buffer when collecting data in streaming mode.
+
+Input arguments:
+
+obj - the object representing the Streaming group object.
+
+Output arguments:
+
+numSamples - 0, data is not yet available; Non-zero, the number of samples returned from the driver.
+startIndex - an index to the first valid sample in the buffer (when data is available).
+
+Note: the startIndex value is zero-based so should be incremented by 1 when used to retrieve data from the arrays defined in your MATLAB scripts.
+</Description>
+            </Method>
+            <Method>
+               <Name>clearTriggerReady</Name>
+               <Location>streaming</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function triggerCleared = clearTriggerReady(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    triggerCleared = calllib('ps5000aWrap', 'ClearTriggerReady', deviceObj.DriverData.unitHandle);</MCode>
+               </Code>
+               <Description>ClearTriggerReady(obj) clears the triggered and triggeredAt flags in relation to streaming mode capture.
+
+Input arguments:
+
+obj - the object representing the Streaming group object.
+
+Output arguments:
+
+1 - Call successfully completed.</Description>
+            </Method>
+            <Method>
+               <Name>getStreamingLatestValues</Name>
+               <Location>streaming</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = getStreamingLatestValues(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    status = calllib('ps5000aWrap', 'GetStreamingLatestValues', ...
+                deviceObj.DriverData.unitHandle);
+            
+    if (status ~= PicoStatus.PICO_OK &amp;&amp; status ~= PicoStatus.PICO_BUSY)
+           
+        error('getStreamingLatestValues: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
+        
+    end</MCode>
+               </Code>
+               <Description>GetStreamingLatestValues(obj) facilitates communication with the underlying driver to return the next block of values to your application when capturing data in streaming mode.
+
+Input arguments:
+
+obj - the object representing the Streaming group object.
+
+Output arguments:
+
+status - status code returned by the driver.</Description>
+            </Method>
+            <Method>
+               <Name>isReady</Name>
+               <Location>streaming</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function ready = isReady(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    ready = calllib('ps5000aWrap', 'IsReady', deviceObj.DriverData.unitHandle);</MCode>
+               </Code>
+               <Description>IsReady(obj) is used to poll the driver to verify that data is ready to be received. Use ps5000aRunStreaming function must have been called prior to calling this function.
+
+Input arguments:
+
+obj - the object representing the Streaming group object.
+
+Output arguments:
+
+ready - 0, if data is not yet available; non-zero if data is ready to be collected.
+
+</Description>
+            </Method>
+            <Method>
+               <Name>isTriggerReady</Name>
+               <Location>streaming</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [triggered, triggeredAt] = isTriggerReady(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    pTriggeredAt = libpointer('uint32Ptr', 0);
+
+    [triggered, ~] = calllib('ps5000aWrap', 'IsTriggerReady', ...
+        deviceObj.DriverData.unitHandle, pTriggeredAt);
+    
+    triggeredAt = pTriggeredAt.Value;</MCode>
+               </Code>
+               <Description>IsTriggerReady(obj) indicates whether a trigger has occurred when collecting data in streaming mode, and the location of the trigger point.
+
+Input arguments:
+
+obj - the object representing the Streaming group object.
+
+Output arguments:
+
+triggered - 0, if the device has not triggered; Non-zero, if the device has been triggered.
+triggeredAt - the zero-based index of the sample in the buffer where the trigger occurred.
+
+
+</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aNoOfStreamingValues</Name>
+               <Location>streaming</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, noOfValues] = ps5000aNoOfStreamingValues(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    pNoOfValues = libpointer('uint32Ptr', 0);
+
+    [status, noOfValues] = calllib('ps5000a', 'ps5000aNoOfStreamingValues', ...
+        deviceObj.DriverData.unitHandle, pNoOfValues);
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aNoOfStreamingValues: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
+        
+    end
+    
+    noOfValues = pNoOfValues.Value;</MCode>
+               </Code>
+               <Description>ps5000aNoOfStreamingValues(obj) returns the number of samples available after data collection in streaming mode. Call this function after calling ps5000aStop.
+
+Input arguments:
+
+obj - the object representing the Streaming group object.
+
+Output arguments:
+
+status - status code returned by the driver.
+noOfValues - the number of samples.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aRunStreaming</Name>
+               <Location>streaming</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, sampleInterval, sampleIntervalTimeUnitsStr] = ps5000aRunStreaming(obj, downSampleRatio, downSampleRatioMode, overviewBufferSize)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+
+    % Calculate sampleInterval and sampleIntervalTimeUnits according to
+    % streamingInterval property set. Property is defined in seconds.
+
+    streamingInterval = deviceObj.DriverData.streamingInterval; 
+    
+    femtosecondsEnum    = deviceObj.DriverData.enums.enPS5000ATimeUnits.PS5000A_FS;
+    picosecondsEnum     = deviceObj.DriverData.enums.enPS5000ATimeUnits.PS5000A_PS;
+    nanosecondsEnum     = deviceObj.DriverData.enums.enPS5000ATimeUnits.PS5000A_NS;
+    microsecondsEnum    = deviceObj.DriverData.enums.enPS5000ATimeUnits.PS5000A_US;
+    millisecondsEnum    = deviceObj.DriverData.enums.enPS5000ATimeUnits.PS5000A_MS;
+    secondsEnum         = deviceObj.DriverData.enums.enPS5000ATimeUnits.PS5000A_S;
+    
+    sampleIntervalTimeUnits = secondsEnum;
+    
+    % Match the specified interval to the correct time units
+    % If an interval with component less than the minimum value for the time unit 
+    % is specified e.g 1.3e-3, that will be converted to 1300 microseconds.
+    
+    if (streamingInterval &lt; 1e-12) % Femtoseconds (unlikely with USB 2.0)
+        
+        sampleInterval = streamingInterval * 1e15;
+        sampleIntervalTimeUnits = femtosecondsEnum;
+        
+    elseif (streamingInterval &gt;= 1e-12 &amp;&amp; streamingInterval &lt; 1e-9) % Picoseconds
+        
+        if (mod(streamingInterval, 1e-12) &gt; 0)
+           
+            sampleInterval = streamingInterval * 1e15;
+            sampleIntervalTimeUnits = femtosecondsEnum;
+            
+        else
+            
+            sampleInterval = streamingInterval * 1e12;
+            sampleIntervalTimeUnits = picosecondsEnum;
+            
+        end
+        
+    elseif (streamingInterval &gt;= 1e-9 &amp;&amp; streamingInterval &lt; 1e-6) % Nanoseconds
+        
+        if (mod(streamingInterval, 1e-9) &gt; 0)
+           
+            sampleInterval = streamingInterval * 1e12;
+            sampleIntervalTimeUnits = picosecondsEnum;
+            
+        else
+        
+            sampleInterval = streamingInterval * 1e9;
+            sampleIntervalTimeUnits = nanosecondsEnum;
+            
+        end
+        
+    elseif (streamingInterval &gt;= 1e-6 &amp;&amp; streamingInterval &lt; 1e-3) % Microseconds
+        
+        if (mod(streamingInterval, 1e-6) &gt; 0)
+            
+            sampleInterval = streamingInterval * 1e9;
+            sampleIntervalTimeUnits = nanosecondsEnum;
+            
+        else
+           
+            sampleInterval = streamingInterval * 1e6;
+            sampleIntervalTimeUnits = microsecondsEnum;
+            
+        end
+        
+    elseif (streamingInterval &gt;= 1e-3 &amp;&amp; streamingInterval &lt; 1) % Milliseconds
+        
+        if (mod(streamingInterval, 1e-3) &gt; 0)
+            
+            sampleInterval = streamingInterval * 1e6;
+            sampleIntervalTimeUnits = microsecondsEnum;
+            
+        else
+           
+            sampleInterval = streamingInterval * 1e3;
+            sampleIntervalTimeUnits = millisecondsEnum;
+            
+        end
+            
+    else 
+        
+        % Already defined seconds
+        
+        if (mod(streamingInterval, 1) &gt; 0)
+           
+           sampleInterval = streamingInterval * 1e3;
+           sampleIntervalTimeUnits = millisecondsEnum;
+           
+       end
+        
+    end
+            
+    [status, sampleInterval] = calllib('ps5000a', 'ps5000aRunStreaming', ...
+        deviceObj.DriverData.unitHandle, sampleInterval, sampleIntervalTimeUnits, ...
+        deviceObj.DriverData.numPreTriggerSamples, deviceObj.DriverData.numPostTriggerSamples, ...
+        deviceObj.DriverData.autoStop, downSampleRatio, downSampleRatioMode, overviewBufferSize);
+    
+    if (status == PicoStatus.PICO_OK)
+        
+        switch(sampleIntervalTimeUnits)
+       
+            case femtosecondsEnum
+
+                sampleIntervalTimeUnitsStr = 'fs';
+                
+            case picosecondsEnum
+
+                sampleIntervalTimeUnitsStr = 'ps';
+
+            case nanosecondsEnum
+
+                sampleIntervalTimeUnitsStr = 'ns';
+
+            case microsecondsEnum
+
+                sampleIntervalTimeUnitsStr = 'us';
+
+            case millisecondsEnum
+
+                sampleIntervalTimeUnitsStr = 'ms';
+
+            case secondsEnum
+
+                sampleIntervalTimeUnitsStr = 's';
+            
+            otherwise
+                
+                % Do nothing
+        
+        end
+        
+        if (deviceObj.DriverData.displayOutput == PicoConstants.TRUE)
+            
+            fprintf('ps5000aRunStreaming:- Sample interval %d %s\n', sampleInterval, ...
+                sampleIntervalTimeUnitsStr);
+            
+        end
+        
+    % Check for Power connection
+    elseif (status == PicoStatus.PICO_POWER_SUPPLY_CONNECTED || ...
+                status == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED || ...
+                status == PicoStatus.PICO_POWER_SUPPLY_UNDERVOLTAGE)
+    
+        status = invoke(deviceObj, 'ps5000aChangePowerSource', status)
+        
+    else
+        
+        error('ps5000aRunStreaming: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aRunStreaming(obj, downSampleRatio, downSampleRatioMode, overviewBufferSize) tells the oscilloscope to start collecting data in streaming mode. Use thefunction getStreamingLatestValues to obtain the values. 
+
+Input arguments:
+
+obj - the object representing the Streaming group object.
+downSampleRatio - the downsampling factor that will be applied to the raw data.
+downSampleRatioMode -  which downsampling mode to use (an enumeration from the enPS5000ARatioMode range).
+overviewBufferSize - the size of the overview buffers (temporary buffers used for storing the data before returning it to the application).
+
+Output arguments:
+
+status - status code returned by the driver.
+sampleInterval - the actual time interval used.
+sampleIntervalTimeUnitsStr - a string representing the time unit for the sampling interval.
+
+</Description>
+            </Method>
+            <Method>
+               <Name>setAppAndDriverBuffers</Name>
+               <Location>streaming</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = setAppAndDriverBuffers(obj, channel, appBuffer, driverBuffer, bufferLength)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+
+    status = calllib('ps5000aWrap', 'setAppAndDriverBuffers', ...
+        deviceObj.DriverData.unitHandle, channel, appBuffer, driverBuffer, bufferLength);
+    
+    if (status ~= PicoStatus.PICO_OK)
+       
+        error('setAppAndDriverBuffers: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
+        
+    end</MCode>
+               </Code>
+               <Description>setAppAndDriverBuffers(obj, channel, appBuffer, driverBuffer, bufferLength) set the application and corresponding driver buffer in the wrapper shared library.
+
+This function is required to allow the driver to copy the data into the application buffer being used in MATLAB when acquiring data from the PicoScope in streaming mode without aggregation.
+
+Input arguments:
+
+obj - the object representing the Streaming group object.
+channel - the channel or digital port to which the buffers correspond (an enumeration from the enPS5000AChannel range).
+appBuffer - a libpointer to a 1-D array representing the application buffer.
+driverBuffer - the libpointer passed to the driver in the ps5000aSetDataBuffer function call.
+bufferLength - the length of the arrays (must be equal)
+
+Output arguments:
+
+status - status code returned by the wrapper.</Description>
+            </Method>
+            <Method>
+               <Name>setMaxMinAppAndDriverBuffers</Name>
+               <Location>streaming</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = setMaxMinAppAndDriverBuffers(obj, channel, appMaxBuffer, appMinBuffer, driverMaxBuffer, driverMinBuffer, bufferLength)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+
+    status = calllib('ps5000aWrap', 'setMaxMinAppAndDriverBuffers', ...
+        deviceObj.DriverData.unitHandle, channel, appMaxBuffer, appMinBuffer, ...
+        driverMaxBuffer, driverMinBuffer, bufferLength);
+    
+    if (status ~= PicoStatus.PICO_OK)
+       
+        error('setMaxMinAppAndDriverBuffers: Status code: %d. Please refer to the PicoStatus.m file.\n', status);
+        
+    end</MCode>
+               </Code>
+               <Description>setAppAndDriverBuffers(obj, channel, appMaxBuffer, appMinBuffer, driverMaxBuffer, driverMinBuffer, bufferLength) set the maximum and minimum application and corresponding driver buffers in the wrapper shared library.
+
+This function is required to allow the driver to copy the data into the maximum and minimum application buffers being used in MATLAB when acquiring data from the PicoScope in  streaming mode with aggregation.
+
+Input arguments:
+
+obj - the object representing the Streaming group object.
+ the channel or digital port to which the buffers correspond (an enumeration from the enPS5000AChannel range).
+appMaxBuffer - a libpointer to a 1-D array representing the application buffer for maximum values.
+appMinBuffer - a libpointer to a 1-D array representing the application buffer for minimum values.
+driverMaxBuffer - the libpointer passed to the driver for the maximum aggregated data values  in the ps5000aSetDataBuffers() function call.
+driverMinBuffer - the libpointer passed to the driver for the minimum aggregated data values in the ps5000aSetDataBuffers() function call.
+bufferLength - the length of the arrays (must be equal)
+
+Output arguments:
+
+status - status code returned by the wrapper.</Description>
+            </Method>
+         </MethodInfo>
       </Group>
       <Group>
          <Name>trigger</Name>
