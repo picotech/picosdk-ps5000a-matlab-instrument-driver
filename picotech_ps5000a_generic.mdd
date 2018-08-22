@@ -5295,29 +5295,35 @@ For further information on the ps5000aSigGenSoftwareControl please refer to the 
             end
 
         end
-
+        
         % Convert increment frequency to delta phase value
-        pDeltaPhaseIncrement = libpointer('uint32Ptr', 0);
+        deltaPhaseIncrement = 0;
         
-        status = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
-            deviceObj.DriverData.unitHandle, increment, indexMode, ... 
-            length(arbitrary_waveform), pDeltaPhaseIncrement);
-        
-        if (status ~= PicoStatus.PICO_OK)
-           
-            error(['setSigGenArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
-                '(increment freq.) status code: %d. Please refer to the ' ...
-                'PicoStatus.m file.'], status);
+        if (increment &gt; 0)
+            
+            pDeltaPhaseIncrement = libpointer('uint32Ptr', 0);
+
+            status = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
+                deviceObj.DriverData.unitHandle, increment, indexMode, ... 
+                length(arbitrary_waveform), pDeltaPhaseIncrement);
+
+            if (status ~= PicoStatus.PICO_OK)
+
+                error(['setSigGenArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
+                    '(increment freq.) status code: %d. Please refer to the ' ...
+                    'PicoStatus.m file.'], status);
+
+            end
+
+            deltaPhaseIncrement = pDeltaPhaseIncrement.Value;
             
         end
         
-        deltaPhaseIncrement = pDeltaPhaseIncrement.Value;
-        
         dwellCount = round(dwellTime * dacFrequency); % Round to the nearest integer
 
-        if (dwellCount &lt; obj.DriverData.constants.MIN_DWELL_COUNT)
+        if (dwellCount &lt; deviceObj.DriverData.constants.MIN_DWELL_COUNT)
 
-            dwellCount = obj.DriverData.constants.MIN_DWELL_COUNT;
+            dwellCount = deviceObj.DriverData.constants.MIN_DWELL_COUNT;
 
         end
         
@@ -5906,27 +5912,33 @@ status - status code returned by the device.</Description>
         end
 
         % Convert increment frequency to delta phase value
-        pDeltaPhaseIncrement = libpointer('uint32Ptr', 0);
+        deltaPhaseIncrement = 0;
         
-        status = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
-            deviceObj.DriverData.unitHandle, increment, indexMode, ... 
-            arbitraryWaveformSize, pDeltaPhaseIncrement);
-        
-        if (status ~= PicoStatus.PICO_OK)
-           
-            error(['setSigGenPropertiesArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
-                '(increment freq.) status code: %d. Please refer to the ' ...
-                'PicoStatus.m file.'], status);
+        if (increment &gt; 0)
+            
+            pDeltaPhaseIncrement = libpointer('uint32Ptr', 0);
+
+            status = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
+                deviceObj.DriverData.unitHandle, increment, indexMode, ... 
+                arbitraryWaveformSize, pDeltaPhaseIncrement);
+
+            if (status ~= PicoStatus.PICO_OK)
+
+                error(['setSigGenPropertiesArbitrary:- ps5000aSigGenFrequencyToPhase ' ...
+                    '(increment freq.) status code: %d. Please refer to the ' ...
+                    'PicoStatus.m file.'], status);
+
+            end
+
+            deltaPhaseIncrement = pDeltaPhaseIncrement.Value;
             
         end
         
-        deltaPhaseIncrement = pDeltaPhaseIncrement.Value;
-        
         dwellCount = round(dwellTime * dacFrequency); % Round to the nearest integer
 
-        if (dwellCount &lt; obj.DriverData.constants.MIN_DWELL_COUNT)
+        if (dwellCount &lt; deviceObj.DriverData.constants.MIN_DWELL_COUNT)
 
-            dwellCount = obj.DriverData.constants.MIN_DWELL_COUNT;
+            dwellCount = deviceObj.DriverData.constants.MIN_DWELL_COUNT;
 
         end
         
