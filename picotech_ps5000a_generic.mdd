@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.14.31</InstrumentVersion>
+   <InstrumentVersion>2.2.14.32</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -377,8 +377,7 @@
         % Display object information
         obj
         
-        unitHandle = obj.UserData.unitHandle;
-        set(obj, 'unitHandle', obj.UserData.unitHandle);
+        unitHandle = obj.DriverData.unitHandle;
 
         infoLine = blanks(40);
         reqSize = length(infoLine);
@@ -533,9 +532,14 @@
         % Set the max AWG Buffer Size if the device has an AWG    
 		obj.DriverData.awgBufferSize = pMaxArbitraryBufferSize.Value;
 		
-		obj.DriverData.minArbitraryWaveformValue = pMinArbitraryValue;
-		obj.DriverData.maxArbitraryWaveformValue = pMaxArbitraryValue;
+		obj.DriverData.minArbitraryWaveformValue = pMinArbitraryValue.Value;
+		obj.DriverData.maxArbitraryWaveformValue = pMaxArbitraryValue.Value;
 			
+        obj.DriverData
+        
+        % Set default
+        obj.DriverData.sigGenType = PicoConstants.SIG_GEN_AWG;
+        
         if (obj.DriverData.awgBufferSize &gt; 0)
 
             obj.DriverData.sigGenType = PicoConstants.SIG_GEN_AWG;
@@ -549,7 +553,6 @@
         % DAC frequency
         obj.DriverData.dacFrequency = PicoConstants.AWG_DAC_FREQUENCY_200MHZ;
         
-        obj.UserData.sigGenType = obj.DriverData.sigGenType;
         obj.UserData.awgBufferSize = obj.DriverData.awgBufferSize;
         obj.UserData.dacFrequency = obj.DriverData.dacFrequency;
                         % 
@@ -558,8 +561,6 @@
         set(obj, 'digitalPorts', obj.DriverData.digitalPortCount);
         set(obj, 'firstRange', obj.UserData.firstRange);
         set(obj, 'lastRange', obj.UserData.lastRange);
-        set(obj, 'sigGenType', obj.UserData.sigGenType);
-        set(obj, 'awgBufferSize', obj.UserData.awgBufferSize);
         set(obj, 'hasHardwareEts', obj.UserData.hasHardwareEts);
         set(obj, 'bufferMemory', obj.UserData.bufferMemory);
         set(obj, 'maxSamplingRate', obj.UserData.maxSamplingRate);
@@ -2806,13 +2807,6 @@ For further information on the ps5000aStop function please refer to the PicoScop
     obj.DriverData.numPreTriggerSamples = 0;
     obj.DriverData.numPostTriggerSamples = 10000;
     
-    % TBD
-    obj.UserData.numPreTriggerSamples = obj.DriverData.numPreTriggerSamples;
-    set(obj, 'numPreTriggerSamples', obj.UserData.numPreTriggerSamples);
-    
-    obj.UserData.numPostTriggerSamples = obj.DriverData.numPostTriggerSamples;
-    set(obj, 'numPostTriggerSamples', obj.UserData.numPostTriggerSamples);
-    
     totalSamples = obj.DriverData.numPreTriggerSamples + obj.DriverData.numPostTriggerSamples;
     
     % Timebase
@@ -2838,12 +2832,6 @@ For further information on the ps5000aStop function please refer to the PicoScop
     obj.DriverData.streamingInterval = 1e-6; % 1us -&gt; 1MS/s
     obj.DriverData.autoStop = PicoConstants.TRUE;
     
-    obj.UserData.streamingInterval = obj.DriverData.streamingInterval;
-    obj.UserData.autoStop = obj.DriverData.autoStop;
-    
-    set(obj, 'streamingInterval', obj.UserData.streamingInterval);
-    set(obj, 'autoStop', obj.UserData.autoStop);
-    
     fprintf(' Streaming interval: %1.2d s\n', obj.DriverData.streamingInterval);
     fprintf('Streaming auto stop: %d\n', obj.DriverData.autoStop);
     
@@ -2859,14 +2847,8 @@ For further information on the ps5000aStop function please refer to the PicoScop
         obj.DriverData.offsetVoltage = 0;
         obj.DriverData.peakToPeakVoltage = 2000;
         
-        obj.UserData.startFrequency = obj.DriverData.startFrequency;
-        set(obj, 'startFrequency', obj.UserData.startFrequency);
-        
-        obj.UserData.stopFrequency = obj.DriverData.stopFrequency;
-        set(obj, 'stopFrequency', obj.UserData.stopFrequency);
-        
-        fprintf('Start frequency: %d Hz\n', obj.UserData.startFrequency);
-        fprintf(' Stop frequency: %d Hz\n', obj.UserData.stopFrequency);
+     	fprintf('Start frequency: %d Hz\n', obj.DriverData.startFrequency);
+        fprintf(' Stop frequency: %d Hz\n', obj.DriverData.stopFrequency);
         
     end</MCode>
                </Code>
