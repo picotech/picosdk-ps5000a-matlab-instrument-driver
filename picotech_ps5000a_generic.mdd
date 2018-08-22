@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.14.36</InstrumentVersion>
+   <InstrumentVersion>2.2.14.37</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -5469,9 +5469,9 @@ dwellTime - the dwell time will be modified if the user specifies a dwell time c
         
         status = calllib('ps5000a', 'ps5000aSigGenFrequencyToPhase', ...
                       deviceObj.DriverData.unitHandle, ...
-                      deviceObj.DriverData.startFrequency, single, ...
+                      deviceObj.DriverData.startFrequency, indexMode, ...
                       length(arbitrary_waveform), pStartDeltaPhase); 
-
+        
         if (status ~= PicoStatus.PICO_OK)
            
             error(['setSigGenArbitrarySimple:- ps5000aSigGenFrequencyToPhase ' ...
@@ -5489,7 +5489,7 @@ dwellTime - the dwell time will be modified if the user specifies a dwell time c
                     deviceObj.DriverData.unitHandle, offsetVoltageUV, peakToPeakVoltageUV, ...
                     startDeltaPhase, stopDeltaPhase, 0, 0, arbitrary_waveform, ...
                     length(arbitraryWaveform), 0, 0, 0, 0, 0, 0, 0, 0);
-         
+        
         % Output error message to user if status is not PICO_OK        
         if (status ~= PicoStatus.PICO_OK)
                     
