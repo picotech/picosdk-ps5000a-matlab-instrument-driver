@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.14.35</InstrumentVersion>
+   <InstrumentVersion>2.2.14.36</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -5456,8 +5456,8 @@ dwellTime - the dwell time will be modified if the user specifies a dwell time c
         maxBufferSize = deviceObj.DriverData.awgBufferSize;
         dacFrequency = deviceObj.DriverData.dacFrequency;
         
-        % Convert the waveform to the range for the driver
-        arbitrary_waveform = int16(arbitraryWaveform * double(intmax('int16')));
+        % Convert the waveform to the required range for the driver (-32768 to 32767)
+        arbitrary_waveform = int16(arbitraryWaveform * double(deviceObj.DriverData.maxArbitraryWaveformValue));
         
         % Find the values which need to be converted to the minimum value
         minValues = find(arbitrary_waveform == (-1 * deviceObj.DriverData.maxArbitraryWaveformValue));
