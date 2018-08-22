@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.14.34</InstrumentVersion>
+   <InstrumentVersion>2.2.14.35</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -5460,8 +5460,8 @@ dwellTime - the dwell time will be modified if the user specifies a dwell time c
         arbitrary_waveform = int16(arbitraryWaveform * double(intmax('int16')));
         
         % Find the values which need to be converted to the minimum value
-        minValues = find(arbitrary_waveform == (-1 * intmax('int16')));
-        arbitrary_waveform(minValues) = intmin('int16');
+        minValues = find(arbitrary_waveform == (-1 * deviceObj.DriverData.maxArbitraryWaveformValue));
+        arbitrary_waveform(minValues) = deviceObj.DriverData.minArbitraryWaveformValue;
 
         % Convert frequency to delta phase
         pStartDeltaPhase = libpointer('uint32Ptr', 0);
