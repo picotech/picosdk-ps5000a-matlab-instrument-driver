@@ -39,10 +39,9 @@
 % setup the signal generator should be called prior to the start of data
 % collection.
 
-%% Clear command window and workspace and close any figures
+%% Clear command window and close any figures
 
 clc;
-clear;
 close all;
 
 %% Load configuration information
@@ -85,7 +84,7 @@ connect(ps5000aDeviceObj);
 % Signal Generator properties and functions are located in the Instrument
 % Driver's Signalgenerator group.
 
-sigGenGroupObj = get(ps2000aDeviceObj, 'Signalgenerator');
+sigGenGroupObj = get(ps5000aDeviceObj, 'Signalgenerator');
 sigGenGroupObj = sigGenGroupObj(1);
 
 %% Function generator - simple
@@ -95,7 +94,7 @@ sigGenGroupObj = sigGenGroupObj(1);
 
 % waveType : 0 (ps5000aEnuminfo.enPS5000AWaveType.PS5000A_SINE)
 
-[status.setSigGenBuiltInSimple] = invoke(ps5000aDeviceObj, 'setSigGenBuiltInSimple', 0);
+[status.setSigGenBuiltInSimple] = invoke(sigGenGroupObj, 'setSigGenBuiltInSimple', 0);
 
 %% Function generator - sweep frequency
 % Output a square wave, 2400 mVpp, 500 mV offset, and sweep continuously
@@ -120,8 +119,8 @@ triggerSource 		= ps5000aEnuminfo.enPS5000ASigGenTrigSource.PS5000A_SIGGEN_NONE;
 extInThresholdMv 	= 0;
 
 % Execute device object function(s).
-[status.setSigGenBuiltIn] = invoke(sigGenGroupObj, 'setSigGenBuiltIn', offsetMv, pkToPkMv, waveType, increment, ...
-								dwellTime, sweepType, operation, shots, sweeps, triggerType, triggerSource, extInThresholdMv);
+[status.setSigGenBuiltIn] = invoke(sigGenGroupObj, 'setSigGenBuiltIn', waveType, increment, dwellTime, ...
+                                sweepType, operation, shots, sweeps, triggerType, triggerSource, extInThresholdMv);
 
 %% Turn off signal generator
 % Sets the output to 0 V DC.
@@ -157,7 +156,7 @@ y = normalise(sin(x) + sin(2*x));
 
 % Arb. Waveform : y (defined above)
 
-[status.setSigGenArbitrarySimple] = invoke(ps5000aDeviceObj, 'setSigGenArbitrarySimple', y);
+[status.setSigGenArbitrarySimple] = invoke(sigGenGroupObj, 'setSigGenArbitrarySimple', y);
 
 %% Turn off signal generator
 % Sets the output to 0 V DC.
@@ -174,7 +173,7 @@ y = normalise(sin(x) + sin(2*x));
 offsetMv 			= 0;
 pkToPkMv 			= 2000;
 increment 			= 0; % Hz
-dwellTime 			= 1; % seconds
+dwellTime 			= 0; % seconds
 sweepType 			= ps5000aEnuminfo.enPS5000ASweepType.PS5000A_UP;
 operation 			= ps5000aEnuminfo.enPS5000AExtraOperations.PS5000A_ES_OFF;
 indexMode 			= ps5000aEnuminfo.enPS5000AIndexMode.PS5000A_SINGLE;
