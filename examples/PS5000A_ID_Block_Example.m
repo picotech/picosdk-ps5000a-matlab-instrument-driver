@@ -36,10 +36,9 @@
 % * Channel A: 4 Vpp, 1 kHz sine wave
 % * Channel B: 2 Vpp, 1 kHz ramp up wave
 
-%% Clear command window, workspace and close any figures
+%% Clear command window and close any figures
 
 clc;
-clear;
 close all;
 
 %% Load configuration information

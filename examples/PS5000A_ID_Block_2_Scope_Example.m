@@ -36,10 +36,9 @@
 % * Scope 1:- Channel A: 4 Vpp, 1 kHz sine wave
 % * Scope 2:- Channel A: 4 Vpp, 1 kHz square wave
 
-%% Clear command window, workspace and close any figures
+%% Clear command window and close any figures
 
 clc;
-clear;
 close all;
 
 %% Load configuration information

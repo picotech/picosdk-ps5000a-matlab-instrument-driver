@@ -35,10 +35,9 @@
 %
 % * Channel A: 4 Vpp, 10 kHz
 
-%% Clear command window, workspace and close any figures
+%% Clear command window and close any figures
 
 clc;
-clear;
 close all;
 
 %% Load configuration information
