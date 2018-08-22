@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.14.32</InstrumentVersion>
+   <InstrumentVersion>2.2.14.33</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -534,8 +534,6 @@
 		
 		obj.DriverData.minArbitraryWaveformValue = pMinArbitraryValue.Value;
 		obj.DriverData.maxArbitraryWaveformValue = pMaxArbitraryValue.Value;
-			
-        obj.DriverData
         
         % Set default
         obj.DriverData.sigGenType = PicoConstants.SIG_GEN_AWG;
@@ -5105,7 +5103,7 @@ The amplitude of the waveform should not exceed +/-2000 mV.</Description>
 %   the property is a base device property, OBJ is the device object.
 
     deviceObj = get(obj, 'Parent');
-    obj.DriverData.startFrequency = propertyValue;</SetMCode>
+    deviceObj.DriverData.startFrequency = propertyValue;</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -5139,7 +5137,7 @@ The amplitude of the waveform should not exceed +/-2000 mV.</Description>
 %   the property is a base device property, OBJ is the device object.
 
     deviceObj = get(obj, 'Parent');
-    obj.DriverData.stopFrequency = propertyValue;</SetMCode>
+    deviceObj.DriverData.stopFrequency = propertyValue;</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -5700,7 +5698,7 @@ status - status code returned by the driver.
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
-                  <MCode>function status = setSigGenBuiltInSimple(obj, offsetVoltageMV, pkToPkMV, waveType)
+                  <MCode>function status = setSigGenBuiltInSimple(obj, waveType)
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
  
