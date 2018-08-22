@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.14.33</InstrumentVersion>
+   <InstrumentVersion>2.2.14.34</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -5222,7 +5222,7 @@ For further information on the ps5000aSigGenSoftwareControl please refer to the 
     if (deviceObj.DriverData.sigGenType == PicoConstants.SIG_GEN_AWG)
 
         offsetVoltageUV = deviceObj.DriverData.offsetVoltage * 1e3;
-        peakToPeakVoltageUV = deviceObj.DriverData.peakToPealVoltage * 1e3;
+        peakToPeakVoltageUV = deviceObj.DriverData.peakToPeakVoltage * 1e3;
         
         if (abs(offsetVoltageUV + peakToPeakVoltageUV) &gt; 4000000)
             
@@ -5328,7 +5328,7 @@ For further information on the ps5000aSigGenSoftwareControl please refer to the 
         % Convert extInThresholdMV to counts if device is not an MSO model
         extInThreshold = 0;
         
-        if (deviceObj.DriverData.digitalPorts &gt; 0)        
+        if (deviceObj.DriverData.digitalPortCount &gt; 0)        
             
             extInThreshold = 0;
             
@@ -5336,7 +5336,7 @@ For further information on the ps5000aSigGenSoftwareControl please refer to the 
             
             extInThreshold = round(((extInThresholdMV / 1000) / ...
                 deviceObj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE) ...
-                * deviceObj.DriverData.constants.P5000A_EXT_MAX_VALUE);
+                * deviceObj.DriverData.constants.PS5000A_EXT_MAX_VALUE);
             
         end
 
@@ -5444,7 +5444,7 @@ dwellTime - the dwell time will be modified if the user specifies a dwell time c
     if (deviceObj.DriverData.sigGenType == PicoConstants.SIG_GEN_AWG)
 
         offsetVoltageUV = deviceObj.DriverData.offsetVoltage * 1e3;
-        peakToPeakVoltageUV = deviceObj.DriverData.peakToPealVoltage * 1e3;
+        peakToPeakVoltageUV = deviceObj.DriverData.peakToPeakVoltage * 1e3;
         
         if (abs(offsetVoltageUV + peakToPeakVoltageUV) &gt; 4000000)
             
@@ -5580,7 +5580,7 @@ For further information on the ps5000aSetSigGenArbitrary function please refer t
         % Convert extInThresholdMV to counts if device is not an MSO model
         extInThreshold = 0;
         
-        if (deviceObj.DriverData.digitalPorts &gt; 0)        
+        if (deviceObj.DriverData.digitalPortCount &gt; 0)        
             
             extInThreshold = 0;
             
@@ -5588,7 +5588,7 @@ For further information on the ps5000aSetSigGenArbitrary function please refer t
             
             extInThreshold = round(((extInThresholdMV / 1000) / ...
                 deviceObj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE) ...
-                * deviceObj.DriverData.constants.P5000A_EXT_MAX_VALUE);
+                * deviceObj.DriverData.constants.PS5000A_EXT_MAX_VALUE);
             
         end
 
@@ -5937,7 +5937,7 @@ status - status code returned by the device.</Description>
         % Convert extInThresholdMV to counts if device is not an MSO model
         extInThreshold = 0;
         
-        if (deviceObj.DriverData.digitalPorts &gt; 0)        
+        if (deviceObj.DriverData.digitalPortCount &gt; 0)        
             
             extInThreshold = 0;
             
@@ -5945,7 +5945,7 @@ status - status code returned by the device.</Description>
             
             extInThreshold = round(((extInThresholdMV / 1000) / ...
                 deviceObj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE) ...
-                * deviceObj.DriverData.constants.P5000A_EXT_MAX_VALUE);
+                * deviceObj.DriverData.constants.PS5000A_EXT_MAX_VALUE);
             
         end
 
@@ -6050,7 +6050,7 @@ dwellTime - the dwell time will be modified if the user specifies a dwell time c
         % Convert extInThresholdMV to counts if device is not an MSO model
         extInThreshold = 0;
         
-        if (deviceObj.DriverData.digitalPorts &gt; 0)        
+        if (deviceObj.DriverData.digitalPortCount &gt; 0)        
             
             extInThreshold = 0;
             
@@ -6058,7 +6058,7 @@ dwellTime - the dwell time will be modified if the user specifies a dwell time c
             
             extInThreshold = round(((extInThresholdMV / 1000) / ...
                 deviceObj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE) ...
-                * deviceObj.DriverData.constants.P5000A_EXT_MAX_VALUE);
+                * deviceObj.DriverData.constants.PS5000A_EXT_MAX_VALUE);
             
         end
 
