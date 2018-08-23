@@ -33,8 +33,8 @@
 %% Suggested input test signal
 % This example was published using the following test signal:
 %
-% * Channel A:
-% * Channel B:
+% * Channel A: 4 Vpp Swept sine wave (Start: 10 kHz, Stop: 100 kHz, Sweep type: Up, Increment Time: 1 ms, Increment type: Linear, Mode: Continous)
+% * Channel B: 2 Vpp Swept square wave (Start: 10 kHz, Stop: 50 kHz, Sweep type: Up, Increment: 5 kHz, Increment Time: 1 ms)
 
 %% Clear command window and close any figures
 
@@ -114,7 +114,7 @@ end
 [status.setDeviceResolution, resolution] = invoke(ps5000aDeviceObj, 'ps5000aSetDeviceResolution', 12);
 
 %% Set memory segments
-% Configure the number of memory segments and query |ps2000aMemorySegments()|
+% Configure the number of memory segments and query |ps5000aMemorySegments()|
 % to find the maximum number of samples for each segment.
 
 % nSegments : 64
@@ -261,6 +261,7 @@ title('Channel A');
 xlabel('Time (ns)');
 ylabel('Voltage (mV)');
 grid on;
+movegui(figure1, 'west');
 
 % Channel B
 figure2  = figure('Name','PicoScope 5000 Series (A API) Example - Rapid Block Mode Capture', ...
@@ -271,6 +272,7 @@ title('Channel B - Rapid Block Capture');
 xlabel('Time (ns)');
 ylabel('Voltage (mV)')
 grid on;
+movegui(figure2, 'east');
 
 %% Stop the device
 
