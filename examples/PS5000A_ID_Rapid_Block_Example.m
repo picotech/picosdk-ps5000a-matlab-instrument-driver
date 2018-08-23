@@ -30,7 +30,7 @@
 %
 % *Copyright:* © 2013-2017 Pico Technology Ltd. See LICENSE file for terms.
 
-%% Suggested input test signal
+%% Suggested input test signals
 % This example was published using the following test signal:
 %
 % * Channel A: 4 Vpp Swept sine wave (Start: 10 kHz, Stop: 100 kHz, Sweep type: Up, Increment Time: 1 ms, Increment type: Linear, Mode: Continous)
@@ -240,7 +240,7 @@ downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_
 
 %% Obtain the number of captures
 
-[status.GetNoOfCaptures, numCaptures] = invoke(rapidBlockGroupObj, 'ps5000aGetNoOfCaptures');
+[status.getNoOfCaptures, numCaptures] = invoke(rapidBlockGroupObj, 'ps5000aGetNoOfCaptures');
 
 %% Process data
 % Plot data values.
