@@ -76,7 +76,7 @@ ps5000aDeviceObj = icdevice('picotech_ps5000a_generic', '');
 % Connect device object to hardware.
 connect(ps5000aDeviceObj);
 
-%% SET CHANNELS
+%% Set channels
 % Default driver settings applied to channels are listed below - use the
 % Instrument Driver's |ps5000aSetChannel()| function to turn channels on or
 % off and set voltage ranges, coupling, as well as analog offset.
