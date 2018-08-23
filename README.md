@@ -58,14 +58,6 @@ Drivers are available for the following platforms. Refer to the subsections belo
 
 * Follow the instructions from our [Linux Software & Drivers for Oscilloscopes and Data Loggers page](https://www.picotech.com/downloads/linux) to install the required `libps5000a` and `libpswrappers` driver packages.
 
-### Programmer's Guides
-
-You can download the [Programmer's Guide](https://www.picotech.com/download/manuals/PicoScope5000SeriesAApiMatlabInstrumentDriverGuide.pdf) providing a description of the functions provided by this Instrument Driver.
-
-**Notes:**
-
-The example files have been renamed - please refer to the scripts in the examples directory for further information.
-
 ## Obtaining support
 
 Please visit our [Support page](https://www.picotech.com/tech-support) to contact us directly or visit our [Test and Measurement Forum](https://www.picotech.com/support/forum71.html) to post questions.
@@ -75,6 +67,10 @@ Please leave a comment and rating for this submission on our [MATLAB Central Fil
 ## Contributing
 
 Contributions to examples are welcome. Please refer to our [guidelines for contributing](.github/CONTRIBUTING.md) for further information.
+
+## Versioning
+
+For the versions available, and release notes, please refer to the [Releases](https://github.com/picotech/picosdk-ps5000a-matlab-instrument-driver/releases) page.
 
 ## Copyright and licensing
 
