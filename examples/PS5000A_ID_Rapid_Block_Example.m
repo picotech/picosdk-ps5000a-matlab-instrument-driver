@@ -22,9 +22,9 @@
 %    PS5000A_ID_Rapid_Block_Example;
 %
 % *Description:*
-%     Demonstrates how to call functions in order to capture rapid block
-%     data from a PicoScope 5000 Series Oscilloscope using the underlying
-%     'A' API library functions.
+%     Demonstrates how to call functions in order to capture a series of
+%     waveforms using rapid block mode on a PicoScope 5000 Series
+%     Oscilloscope using the underlying 'A' API library functions.
 %   
 % *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
 %
