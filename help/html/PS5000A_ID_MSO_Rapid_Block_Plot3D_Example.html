@@ -351,6 +351,8 @@ getRapidBlockData: Data succesfully retrieved.
 </pre><h2 id="14">Process data</h2><p>Plot data values in 3D showing history.</p><p>Calculate the time period over which samples were taken for each waveform. Use the <tt>timeIntNs</tt> output from the <tt>ps5000aGetTimebase2()</tt> function or calculate the sampling interval using the main Programmer's Guide. Take into account the downsampling ratio used.</p><pre class="codeinput">timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
 </pre><p><b>Analog data</b></p><pre class="codeinput"><span class="comment">% Channel A</span>
 
+scrsz = get(groot,<span class="string">'ScreenSize'</span>);
+
 analogFigure = figure(<span class="string">'Name'</span>,<span class="string">'PicoScope 5000 Series (A API) Example - MSO Rapid Block Mode Capture'</span>, <span class="keyword">...</span>
     <span class="string">'NumberTitle'</span>, <span class="string">'off'</span>, <span class="string">'Position'</span>, [scrsz(3)/2 + 1 scrsz(4)/4 scrsz(3)/2 scrsz(4)/2]);
 
@@ -708,6 +710,8 @@ timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSampl
 % *Analog data*
 
 % Channel A
+
+scrsz = get(groot,'ScreenSize');
 
 analogFigure = figure('Name','PicoScope 5000 Series (A API) Example - MSO Rapid Block Mode Capture', ...
     'NumberTitle', 'off', 'Position', [scrsz(3)/2 + 1 scrsz(4)/4 scrsz(3)/2 scrsz(4)/2]);

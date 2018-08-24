@@ -280,6 +280,8 @@ timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSampl
 
 % Channel A
 
+scrsz = get(groot,'ScreenSize');
+
 analogFigure = figure('Name','PicoScope 5000 Series (A API) Example - MSO Rapid Block Mode Capture', ...
     'NumberTitle', 'off', 'Position', [scrsz(3)/2 + 1 scrsz(4)/4 scrsz(3)/2 scrsz(4)/2]);
 
