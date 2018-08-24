@@ -23,7 +23,7 @@
 %
 % *Description:*
 %     Demonstrates how to set properties and call functions in order
-%     to capture data in streaming mode from a PicoScope 2000 Series
+%     to capture data in streaming mode from a PicoScope 5000 Series
 %     Oscilloscope using the underlying 'A' API library functions.
 %
 % *Note:* Not all device functions used in this example are compatible with
