@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.14.38</InstrumentVersion>
+   <InstrumentVersion>2.2.14.39</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -21,9 +21,9 @@
 % You may copy and distribute this file as long as it remains unmodified. 
 % SB
     
-    fprintf('\nCopyright © 2013-2018 Pico Technology Ltd. All rights reserved.\n');
-    fprintf('\n');
     fprintf('PicoScope 5000 Series (A API) MATLAB Instrument Driver\n');
+    fprintf('\n');
+    fprintf('\nCopyright © 2013-2018 Pico Technology Ltd. All rights reserved.\n');
     fprintf('\n');
 
     % Load libraries
