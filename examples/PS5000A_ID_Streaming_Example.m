@@ -504,7 +504,7 @@ fprintf('\n');
 
 [status.stop] = invoke(ps5000aDeviceObj, 'ps5000aStop');
 
-%% Find the number of samples.
+%% Find the number of samples
 % This is the number of samples held in the shared library itself. The
 % actual number of samples collected when using a trigger is likely to be
 % greater.
