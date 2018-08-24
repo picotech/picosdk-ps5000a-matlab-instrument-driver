@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>PicoScope 5000 Series (A API) Mixed Signal Instrument Driver Oscilloscope Streaming Data Capture Example</h1><!--introduction--><p>This is an example of an instrument control session using a device object. The instrument control session comprises all the steps you are likely to take when communicating with your instrument.</p><p>These steps are:</p><div><ol><li>Create a device object</li><li>Connect to the instrument</li><li>Configure properties</li><li>Invoke functions</li><li>Disconnect from the instrument</li></ol></div><p>To run the instrument control session, type the name of the file, PS5000A_ID_MSO_Streaming_Example, at the MATLAB command prompt.</p><p>The file, PS5000A_ID_MSO_STREAMING_EXAMPLE.M must be on your MATLAB PATH. For additional information on setting your MATLAB PATH, type 'help addpath' at the MATLAB command prompt.</p><p><b>Example:</b>     PS5000A_ID_MSO_Streaming_Example;</p><p><b>Description:</b>     Demonstrates how to set properties and call functions in order     to capture data in streaming mode from a PicoScope 5000 Series Mixed     Signal Oscilloscope using the underlying 'A' API library functions.</p><p><b>Note:</b> Not all device functions used in this example are compatible with the Test and Measurement Tool.</p><p><b>See also:</b> <a href="matlab:doc('icdevice')"><tt>icdevice</tt></a> | <a href="matlab:doc('instrument/invoke')"><tt>invoke</tt></a></p><p><b>Copyright:</b> &copy; 2018 Pico Technology Ltd. See LICENSE file for terms.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Suggested input test signals</a></li><li><a href="#2">Clear command window and close any figures</a></li><li><a href="#3">Load configuration information</a></li><li><a href="#4">Parameter definitions</a></li><li><a href="#5">Device connection</a></li><li><a href="#6">Display unit information</a></li><li><a href="#7">Set analog channels and digital ports</a></li><li><a href="#9">Change resolution</a></li><li><a href="#10">Set simple trigger</a></li><li><a href="#11">Set data buffers</a></li><li><a href="#12">Start streaming and collect data</a></li><li><a href="#17">Stop the device</a></li><li><a href="#18">Find the number of samples.</a></li><li><a href="#19">Process data</a></li><li><a href="#22">Disconnect device</a></li></ul></div><h2 id="1">Suggested input test signals</h2><p>This example was published using the following test signals:</p><div><ul><li>Channel A: 3 Vpp, 1 Hz sine wave</li><li>Channel B: 2 Vpp, 4 Hz square wave</li><li>PORT0    : 10 Hz bit counter signal from test device (applied to all channels).</li></ul></div><h2 id="2">Clear command window and close any figures</h2><pre class="codeinput">clc;
+  </style></head><body><div class="content"><h1>PicoScope 5000 Series (A API) Mixed Signal Instrument Driver Oscilloscope Streaming Data Capture Example</h1><!--introduction--><p>This is an example of an instrument control session using a device object. The instrument control session comprises all the steps you are likely to take when communicating with your instrument.</p><p>These steps are:</p><div><ol><li>Create a device object</li><li>Connect to the instrument</li><li>Configure properties</li><li>Invoke functions</li><li>Disconnect from the instrument</li></ol></div><p>To run the instrument control session, type the name of the file, PS5000A_ID_MSO_Streaming_Example, at the MATLAB command prompt.</p><p>The file, PS5000A_ID_MSO_STREAMING_EXAMPLE.M must be on your MATLAB PATH. For additional information on setting your MATLAB PATH, type 'help addpath' at the MATLAB command prompt.</p><p><b>Example:</b>     PS5000A_ID_MSO_Streaming_Example;</p><p><b>Description:</b>     Demonstrates how to set properties and call functions in order     to capture data in streaming mode from a PicoScope 5000 Series Mixed     Signal Oscilloscope using the underlying 'A' API library functions.</p><p><b>Note:</b> Not all device functions used in this example are compatible with the Test and Measurement Tool.</p><p><b>See also:</b> <a href="matlab:doc('icdevice')"><tt>icdevice</tt></a> | <a href="matlab:doc('instrument/invoke')"><tt>invoke</tt></a></p><p><b>Copyright:</b> &copy; 2018 Pico Technology Ltd. See LICENSE file for terms.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Suggested input test signals</a></li><li><a href="#2">Clear command window and close any figures</a></li><li><a href="#3">Load configuration information</a></li><li><a href="#4">Parameter definitions</a></li><li><a href="#5">Device connection</a></li><li><a href="#6">Display unit information</a></li><li><a href="#7">Set analog channels and digital ports</a></li><li><a href="#9">Change resolution</a></li><li><a href="#10">Set simple trigger</a></li><li><a href="#11">Set data buffers</a></li><li><a href="#12">Start streaming and collect data</a></li><li><a href="#17">Stop the device</a></li><li><a href="#18">Find the number of samples</a></li><li><a href="#19">Process data</a></li><li><a href="#22">Disconnect device</a></li></ul></div><h2 id="1">Suggested input test signals</h2><p>This example was published using the following test signals:</p><div><ul><li>Channel A: 3 Vpp, 1 Hz sine wave</li><li>Channel B: 2 Vpp, 4 Hz square wave</li><li>PORT0    : 10 Hz bit counter signal from test device (applied to all channels).</li></ul></div><h2 id="2">Clear command window and close any figures</h2><pre class="codeinput">clc;
 close <span class="string">all</span>;
 </pre><h2 id="3">Load configuration information</h2><pre class="codeinput">PS5000aConfig;
 </pre><h2 id="4">Parameter definitions</h2><p>Define any parameters that might be required throughout the script.</p><pre class="codeinput">channelA = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
@@ -458,11 +458,11 @@ setappdata(gcf, <span class="string">'run'</span>, flag);
     ylabel(digitalAxes, <span class="string">'Level (Counts)'</span>);
 
 <span class="keyword">end</span>
-</pre><pre class="codeoutput">Live streaming data collection with second plot on completion.
+</pre><pre class="codeoutput">Streaming data plot on completion.
 ps5000aRunStreaming:- Sample interval 1 us
 Streaming data...
 Click the STOP button to stop capture or wait for auto stop if enabled.
-</pre><img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_01.png" alt=""> <img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_02.png" alt=""> <p>Collect samples as long as the <tt>hasAutoStopOccurred</tt> flag has not been set or the call to <tt>getStreamingLatestValues()</tt> does not return an error code (check for STOP button push inside loop).</p><pre class="codeinput"><span class="keyword">while</span>(hasAutoStopOccurred == PicoConstants.FALSE &amp;&amp; status.getStreamingLatestValuesStatus == PicoStatus.PICO_OK)
+</pre><img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_01.png" alt=""> <p>Collect samples as long as the <tt>hasAutoStopOccurred</tt> flag has not been set or the call to <tt>getStreamingLatestValues()</tt> does not return an error code (check for STOP button push inside loop).</p><pre class="codeinput"><span class="keyword">while</span>(hasAutoStopOccurred == PicoConstants.FALSE &amp;&amp; status.getStreamingLatestValuesStatus == PicoStatus.PICO_OK)
 
     ready = PicoConstants.FALSE;
 
@@ -612,10 +612,10 @@ Collected 31732 samples, startIndex: 68268 total: 100000.
 Collected 37034 samples, startIndex: 0 total: 137034.
 Collected 62966 samples, startIndex: 37034 total: 200000.
 Collected 73068 samples, startIndex: 0 total: 273068.
+Triggered - index in buffer: 8873
 Collected 26932 samples, startIndex: 73068 total: 300000.
 Collected 41834 samples, startIndex: 0 total: 341834.
 Collected 58166 samples, startIndex: 41834 total: 400000.
-Triggered - index in buffer: 70647
 Collected 77868 samples, startIndex: 0 total: 477868.
 Collected 22132 samples, startIndex: 77868 total: 500000.
 Collected 46634 samples, startIndex: 0 total: 546634.
@@ -712,17 +712,13 @@ Collected 52234 samples, startIndex: 0 total: 5052234.
 Collected 47766 samples, startIndex: 52234 total: 5100000.
 Collected 88268 samples, startIndex: 0 total: 5188268.
 Collected 11732 samples, startIndex: 88268 total: 5200000.
-Collected 57034 samples, startIndex: 0 total: 5257034.
-Collected 42966 samples, startIndex: 57034 total: 5300000.
-Collected 93068 samples, startIndex: 0 total: 5393068.
-Collected 6932 samples, startIndex: 93068 total: 5400000.
-Collected 70646 samples, startIndex: 0 total: 5470646.
+Collected 81940 samples, startIndex: 0 total: 5281940.
 AutoStop: TRUE - exiting data collection loop.
-Triggered at overall index: 470647
+Triggered at overall index: 281941
 
 
-</pre><img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_03.png" alt=""> <h2 id="17">Stop the device</h2><p>This function should be called regardless of whether the autoStop property is enabled or not.</p><pre class="codeinput">[status.stop] = invoke(ps5000aDeviceObj, <span class="string">'ps5000aStop'</span>);
-</pre><h2 id="18">Find the number of samples.</h2><p>This is the number of samples held in the shared library itself. The actual number of samples collected when using a trigger is likely to be greater.</p><pre class="codeinput">[status.noOfStreamingValues, numStreamingValues] = invoke(streamingGroupObj, <span class="string">'ps5000aNoOfStreamingValues'</span>);
+</pre><h2 id="17">Stop the device</h2><p>This function should be called regardless of whether the autoStop property is enabled or not.</p><pre class="codeinput">[status.stop] = invoke(ps5000aDeviceObj, <span class="string">'ps5000aStop'</span>);
+</pre><h2 id="18">Find the number of samples</h2><p>This is the number of samples held in the shared library itself. The actual number of samples collected when using a trigger is likely to be greater.</p><pre class="codeinput">[status.noOfStreamingValues, numStreamingValues] = invoke(streamingGroupObj, <span class="string">'ps5000aNoOfStreamingValues'</span>);
 
 fprintf(<span class="string">'Number of samples available after data collection: %u\n'</span>, numStreamingValues);
 </pre><pre class="codeoutput">Number of samples available after data collection: 5000000
@@ -779,7 +775,7 @@ grid(analogFinalAxes, <span class="string">'on'</span>);
 legend(analogFinalAxes, <span class="string">'Channel A'</span>, <span class="string">'Channel B'</span>);
 
 hold(analogFinalAxes, <span class="string">'off'</span>);
-</pre><img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_04.png" alt=""> <p><b>Digital data</b></p><pre class="codeinput">digitalFinalFigure = figure(<span class="string">'Name'</span>,<span class="string">'PicoScope 5000 Series (A API) Example - MSO Streaming Mode Capture'</span>, <span class="keyword">...</span>
+</pre><img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_02.png" alt=""> <p><b>Digital data</b></p><pre class="codeinput">digitalFinalFigure = figure(<span class="string">'Name'</span>,<span class="string">'PicoScope 5000 Series (A API) Example - MSO Streaming Mode Capture'</span>, <span class="keyword">...</span>
     <span class="string">'NumberTitle'</span>, <span class="string">'off'</span>, <span class="string">'Position'</span>, [scrsz(3)/2 + 1 scrsz(4)/4 scrsz(3)/2 scrsz(4)/2]);
 
 movegui(digitalFinalFigure, <span class="string">'east'</span>);
@@ -814,7 +810,7 @@ digiPlotColours = [<span class="string">'m'</span>, <span class="string">'b'</sp
 
 <span class="keyword">end</span>
 </pre><pre class="codeoutput">Converting digital integer data to binary...
-</pre><img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_05.png" alt=""> <h2 id="22">Disconnect device</h2><p>Disconnect device object from hardware.</p><pre class="codeinput">disconnect(ps5000aDeviceObj);
+</pre><img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_03.png" alt=""> <h2 id="22">Disconnect device</h2><p>Disconnect device object from hardware.</p><pre class="codeinput">disconnect(ps5000aDeviceObj);
 delete(ps5000aDeviceObj);
 </pre><pre class="codeoutput">Connection to PicoScope 5444DMSO with serial number FY971/0003 closed successfully.
 Libraries unloaded successfully.
@@ -1373,7 +1369,7 @@ fprintf('\n');
 
 [status.stop] = invoke(ps5000aDeviceObj, 'ps5000aStop');
 
-%% Find the number of samples.
+%% Find the number of samples
 % This is the number of samples held in the shared library itself. The
 % actual number of samples collected when using a trigger is likely to be
 % greater.
