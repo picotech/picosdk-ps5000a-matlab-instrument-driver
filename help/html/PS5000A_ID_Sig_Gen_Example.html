@@ -1,0 +1,499 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>PicoScope 5000 Series (A API) Instrument Driver Oscilloscope Signal Generator Example</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-24"><meta name="DC.source" content="PS5000A_ID_Sig_Gen_Example.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>PicoScope 5000 Series (A API) Instrument Driver Oscilloscope Signal Generator Example</h1><!--introduction--><p>Code for communicating with an instrument in order to control the signal generator.</p><p>This is a modified version of the machine generated representation of an instrument control session using a device object. The instrument control session comprises all the steps you are likely to take when communicating with your instrument. These steps are:</p><div><ol><li>Create a device object</li><li>Connect to the instrument</li><li>Configure properties</li><li>Invoke functions</li><li>Disconnect from the instrument</li></ol></div><p>To run the instrument control session, type the name of the file, PS5000A_ID_Sig_Gen_Example, at the MATLAB command prompt.</p><p>The file, PS5000A_ID_SIG_GEN_EXAMPLE.M must be on your MATLAB PATH. For additional information on setting your MATLAB PATH, type 'help addpath' at the MATLAB command prompt.</p><p><b>Example:</b>   PS5000A_ID_Sig_Gen_Example;</p><p><b>Description:</b>     Demonstrates how to set properties and call functions in order to     control the signal generator output of a PicoScope 5000 Series     Oscilloscope/Mixed Signal Oscilloscope using the 'A' API library     functions.</p><p><b>See also:</b> <a href="matlab:doc('icdevice')"><tt>icdevice</tt></a> | <a href="matlab:doc('instrument/invoke')"><tt>invoke</tt></a></p><p><b>Copyright:</b> &copy; 2013-2018 Pico Technology Ltd. See LICENSE file for terms.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Test setup</a></li><li><a href="#2">Clear command window and close any figures</a></li><li><a href="#3">Load configuration information</a></li><li><a href="#4">Device connection</a></li><li><a href="#5">Obtain Signalgenerator group object</a></li><li><a href="#6">Function generator - simple</a></li><li><a href="#8">Function generator - sweep frequency</a></li><li><a href="#11">Turn off signal generator</a></li><li><a href="#13">Arbitrary waveform generator - set parameters</a></li><li><a href="#15">Arbitrary waveform generator - simple</a></li><li><a href="#17">Turn off signal generator</a></li><li><a href="#18">Arbitrary waveform generator - output shots</a></li><li><a href="#20">Turn off signal generator</a></li><li><a href="#21">Disconnect device</a></li></ul></div><h2 id="1">Test setup</h2><p>For this example the 'Gen' connector of the oscilloscope was connected to channel A on another PicoScope oscilloscope running the PicoScope 6 software application. Images, where shown, depict output, or part of the output in the PicoScope 6 display.</p><p><b>Note:</b> The various signal generator functions called in this script may be combined with the functions used in the various data acquisition examples in order to output a signal and acquire data. The functions to setup the signal generator should be called prior to the start of data collection.</p><h2 id="2">Clear command window and close any figures</h2><pre class="codeinput">clc;
+close <span class="string">all</span>;
+</pre><h2 id="3">Load configuration information</h2><pre class="codeinput">PS5000aConfig;
+</pre><h2 id="4">Device connection</h2><pre class="codeinput"><span class="comment">% Check if an Instrument session using the device object |ps5000aDeviceObj|</span>
+<span class="comment">% is still open, and if so, disconnect if the User chooses 'Yes' when prompted.</span>
+<span class="keyword">if</span> (exist(<span class="string">'ps5000aDeviceObj'</span>, <span class="string">'var'</span>) &amp;&amp; ps5000aDeviceObj.isvalid &amp;&amp; strcmp(ps5000aDeviceObj.status, <span class="string">'open'</span>))
+
+    openDevice = questionDialog([<span class="string">'Device object ps5000aDeviceObj has an open connection. '</span> <span class="keyword">...</span>
+        <span class="string">'Do you wish to close the connection and continue?'</span>], <span class="keyword">...</span>
+        <span class="string">'Device Object Connection Open'</span>);
+
+    <span class="keyword">if</span> (openDevice == PicoConstants.TRUE)
+
+        <span class="comment">% Close connection to device.</span>
+        disconnect(ps5000aDeviceObj);
+        delete(ps5000aDeviceObj);
+
+    <span class="keyword">else</span>
+
+        <span class="comment">% Exit script if User selects 'No'.</span>
+        <span class="keyword">return</span>;
+
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="comment">% Create a device object.</span>
+<span class="comment">% The serial number can be specified as a second input parameter.</span>
+ps5000aDeviceObj = icdevice(<span class="string">'picotech_ps5000a_generic.mdd'</span>);
+
+<span class="comment">% Connect device object to hardware.</span>
+connect(ps5000aDeviceObj);
+</pre><pre class="codeoutput">
+Copyright &copy; 2013-2018 Pico Technology Ltd. All rights reserved.
+
+PicoScope 5000 Series (A API) MATLAB Instrument Driver
+
+Number of units found: 1
+
+Serial number(s): FY984/0005
+
+Opening PicoScope 5000 Series (A API) device...
+
+   Instrument Device Object Using Driver : picotech_ps5000a_generic.mdd
+ 
+   Instrument Information
+      Type:               Oscilloscope
+      Manufacturer:       Pico Technology Ltd.
+      Model:              PicoScope 5000A, 5000B and 5000D Series
+ 
+   Driver Information
+      DriverType:         MATLAB generic
+      DriverName:         picotech_ps5000a_generic.mdd
+      DriverVersion:      2.2.14.38
+ 
+   Communication State
+      Status:             open
+
+Default Channel Setup:-
+-----------------------
+
+Channel A:-
+	Enabled: True
+	Coupling: DC
+	Range: 5 V
+	Analog offset: 0.0 V
+
+Channel B:-
+	Enabled: True
+	Coupling: DC
+	Range: 5 V
+	Analog offset: 0.0 V
+
+Channel C:-
+	Enabled: True
+	Coupling: DC
+	Range: 5 V
+	Analog offset: 0.0 V
+
+Channel D:-
+	Enabled: True
+	Coupling: DC
+	Range: 5 V
+	Analog offset: 0.0 V
+
+Turning off Equivalent Time Sampling...
+Equivalent Time Sampling turned off.
+
+Turning off trigger...
+Trigger turned off.
+
+Default Block mode parameters:-
+
+               Timebase index : 65
+                 Time Interval: 504 ns
+ Number of pre-trigger samples: 0
+Number of post-trigger samples: 10000
+       Total number of samples: 10000
+
+Default Streaming mode parameters:-
+
+ Streaming interval: 1.00e-06 s
+Streaming auto stop: 1
+
+Default Signal generator parameters:-
+
+Start frequency: 1000 Hz
+ Stop frequency: 1000 Hz
+
+Connected to PicoScope 5000 Series (A API) device:-
+
+          Instrument Model: 5444D
+       Batch/Serial Number: FY984/0005
+               USB Version: 3.0
+           Analog Channels: 4
+                Resolution: 8 bits
+                 Bandwidth: 200 MHz
+             Buffer Memory: 512 MS
+     Maximum Sampling Rate: 1 GS/s
+     Signal Generator Type: Arbitrary Waveform Generator
+5 V Power Supply connected: True
+
+</pre><h2 id="5">Obtain Signalgenerator group object</h2><p>Signal Generator properties and functions are located in the Instrument Driver's Signalgenerator group.</p><pre class="codeinput">sigGenGroupObj = get(ps5000aDeviceObj, <span class="string">'Signalgenerator'</span>);
+sigGenGroupObj = sigGenGroupObj(1);
+</pre><h2 id="6">Function generator - simple</h2><p>Output a sine wave, 2000 mVpp, 0 mV offset, 1000 Hz (uses preset values for offset, peak to peak voltage and frequency from the Signalgenerator groups's properties).</p><pre class="codeinput"><span class="comment">% waveType : 0 (ps5000aEnuminfo.enPS5000AWaveType.PS5000A_SINE)</span>
+
+[status.setSigGenBuiltInSimple] = invoke(sigGenGroupObj, <span class="string">'setSigGenBuiltInSimple'</span>, 0);
+</pre><p><img vspace="5" hspace="5" src="../images/ps5000a_sine_wave_1kHz.PNG" alt=""> </p><h2 id="8">Function generator - sweep frequency</h2><p>Output a square wave, 2400 mVpp, 500 mV offset, and sweep continuously from 500 Hz to 50 Hz in steps of 50 Hz.</p><pre class="codeinput"><span class="comment">% Configure property value(s).</span>
+
+set(sigGenGroupObj, <span class="string">'startFrequency'</span>, 50.0);
+set(sigGenGroupObj, <span class="string">'stopFrequency'</span>, 500.0);
+set(sigGenGroupObj, <span class="string">'offsetVoltage'</span>, 500.0);
+set(sigGenGroupObj, <span class="string">'peakToPeakVoltage'</span>, 2400.0);
+
+waveType 			= ps5000aEnuminfo.enPS5000AWaveType.PS5000A_SQUARE;
+increment 			= 50.0; <span class="comment">% Hz</span>
+dwellTime 			= 1;    <span class="comment">% seconds</span>
+sweepType 			= ps5000aEnuminfo.enPS5000ASweepType.PS5000A_DOWN;
+operation 			= ps5000aEnuminfo.enPS5000AExtraOperations.PS5000A_ES_OFF;
+shots 				= 0;
+sweeps 				= 0;
+triggerType 		= ps5000aEnuminfo.enPS5000ASigGenTrigType.PS5000A_SIGGEN_RISING;
+triggerSource 		= ps5000aEnuminfo.enPS5000ASigGenTrigSource.PS5000A_SIGGEN_NONE;
+extInThresholdMv 	= 0;
+
+<span class="comment">% Execute device object function(s).</span>
+[status.setSigGenBuiltIn] = invoke(sigGenGroupObj, <span class="string">'setSigGenBuiltIn'</span>, waveType, increment, dwellTime, <span class="keyword">...</span>
+                                sweepType, operation, shots, sweeps, triggerType, triggerSource, extInThresholdMv);
+</pre><p><img vspace="5" hspace="5" src="../images/ps5000a_square_wave_sweep_500Hz.PNG" alt=""> </p><p><img vspace="5" hspace="5" src="../images/ps5000a_square_wave_sweep_250Hz.PNG" alt=""> </p><h2 id="11">Turn off signal generator</h2><p>Sets the output to 0 V DC.</p><pre class="codeinput">[status.setSigGenOff] = invoke(sigGenGroupObj, <span class="string">'setSigGenOff'</span>);
+</pre><p><img vspace="5" hspace="5" src="../images/ps5000a_sig_gen_off.PNG" alt=""> </p><h2 id="13">Arbitrary waveform generator - set parameters</h2><p>Set parameters (2000 mVpp, 0 mV offset, 1000 Hz frequency) and define an arbitrary waveform.</p><pre class="codeinput"><span class="comment">% Configure property value(s).</span>
+set(sigGenGroupObj, <span class="string">'startFrequency'</span>, 1000);
+set(sigGenGroupObj, <span class="string">'stopFrequency'</span>, 1000);
+set(sigGenGroupObj, <span class="string">'offsetVoltage'</span>, 0.0);
+set(sigGenGroupObj, <span class="string">'peakToPeakVoltage'</span>, 2000.0);
+</pre><p>Define an Arbitrary Waveform - values must be in the range -1 to +1. Arbitrary waveforms can also be read in from text and csv files using <a href="matlab:doc('dlmread')"><tt>dlmread</tt></a> and <a href="matlab:doc('csvread')"><tt>csvread</tt></a> respectively or use the <tt>importAWGFile</tt> function from the <a href="https://uk.mathworks.com/matlabcentral/fileexchange/53681-picoscope-support-toolbox">PicoScope Support Toolbox</a>.</p><p>Any AWG files created using the PicoScope 6 application can be read using the above method.</p><pre class="codeinput">awgBufferSize = get(sigGenGroupObj, <span class="string">'awgBufferSize'</span>);
+x = 0:(2*pi)/(awgBufferSize - 1):2*pi;
+y = normalise(sin(x) + sin(2*x));
+</pre><h2 id="15">Arbitrary waveform generator - simple</h2><p>Output an arbitrary waveform with constant frequency (defined above).</p><pre class="codeinput"><span class="comment">% Arb. Waveform : y (defined above)</span>
+
+[status.setSigGenArbitrarySimple] = invoke(sigGenGroupObj, <span class="string">'setSigGenArbitrarySimple'</span>, y);
+</pre><p><img vspace="5" hspace="5" src="../images/ps5000a_arbitrary_waveform.PNG" alt=""> </p><h2 id="17">Turn off signal generator</h2><p>Sets the output to 0 V DC.</p><pre class="codeinput">[status.setSigGenOff] = invoke(sigGenGroupObj, <span class="string">'setSigGenOff'</span>);
+</pre><h2 id="18">Arbitrary waveform generator - output shots</h2><p>Output 2 cycles of an arbitrary waveform using a software trigger.</p><p>Note that the signal generator will output the value coresponding to the first sample in the arbitrary waveform until the trigger event occurs.</p><pre class="codeinput"><span class="comment">% Set parameters</span>
+offsetMv 			= 0;
+pkToPkMv 			= 2000;
+increment 			= 0; <span class="comment">% Hz</span>
+dwellTime 			= 0; <span class="comment">% seconds</span>
+sweepType 			= ps5000aEnuminfo.enPS5000ASweepType.PS5000A_UP;
+operation 			= ps5000aEnuminfo.enPS5000AExtraOperations.PS5000A_ES_OFF;
+indexMode 			= ps5000aEnuminfo.enPS5000AIndexMode.PS5000A_SINGLE;
+shots 				= 2;
+sweeps 				= 0;
+triggerType 		= ps5000aEnuminfo.enPS5000ASigGenTrigType.PS5000A_SIGGEN_RISING;
+triggerSource 		= ps5000aEnuminfo.enPS5000ASigGenTrigSource.PS5000A_SIGGEN_SOFT_TRIG;
+extInThresholdMv 	= 0;
+
+[status.setSigGenArbitrary] = invoke(sigGenGroupObj, <span class="string">'setSigGenArbitrary'</span>, increment, dwellTime, y, sweepType, <span class="keyword">...</span>
+										operation, indexMode, shots, sweeps, triggerType, triggerSource, extInThresholdMv);
+
+<span class="comment">% Trigger the AWG</span>
+
+<span class="comment">% State : 1 (a non-zero value will trigger the output)</span>
+[status.sigGenSoftwareControl] = invoke(sigGenGroupObj, <span class="string">'ps5000aSigGenSoftwareControl'</span>, 1);
+</pre><p><img vspace="5" hspace="5" src="../images/ps5000a_arbitrary_waveform_shots.PNG" alt=""> </p><h2 id="20">Turn off signal generator</h2><p>Sets the output to 0 V DC.</p><pre class="codeinput">[status.setSigGenOff] = invoke(sigGenGroupObj, <span class="string">'setSigGenOff'</span>);
+</pre><h2 id="21">Disconnect device</h2><p>Disconnect device object from hardware.</p><pre class="codeinput">disconnect(ps5000aDeviceObj);
+delete(ps5000aDeviceObj);
+</pre><pre class="codeoutput">Connection to PicoScope 5444D with serial number FY984/0005 closed successfully.
+Libraries unloaded successfully.
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% PicoScope 5000 Series (A API) Instrument Driver Oscilloscope Signal Generator Example
+% Code for communicating with an instrument in order to control the
+% signal generator.
+%  
+% This is a modified version of the machine generated representation of 
+% an instrument control session using a device object. The instrument 
+% control session comprises all the steps you are likely to take when 
+% communicating with your instrument. These steps are:
+%       
+% # Create a device object   
+% # Connect to the instrument 
+% # Configure properties 
+% # Invoke functions 
+% # Disconnect from the instrument 
+%  
+% To run the instrument control session, type the name of the file,
+% PS5000A_ID_Sig_Gen_Example, at the MATLAB command prompt.
+% 
+% The file, PS5000A_ID_SIG_GEN_EXAMPLE.M must be on your MATLAB PATH. For additional information
+% on setting your MATLAB PATH, type 'help addpath' at the MATLAB command
+% prompt.
+%
+% *Example:*
+%   PS5000A_ID_Sig_Gen_Example;
+%
+% *Description:*
+%     Demonstrates how to set properties and call functions in order to
+%     control the signal generator output of a PicoScope 5000 Series
+%     Oscilloscope/Mixed Signal Oscilloscope using the 'A' API library
+%     functions.
+%
+% *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
+%
+% *Copyright:* © 2013-2018 Pico Technology Ltd. See LICENSE file for terms.
+
+%% Test setup
+% For this example the 'Gen' connector of the oscilloscope was connected to
+% channel A on another PicoScope oscilloscope running the PicoScope 6
+% software application. Images, where shown, depict output, or part of the
+% output in the PicoScope 6 display.
+%
+% *Note:* The various signal generator functions called in this script may
+% be combined with the functions used in the various data acquisition
+% examples in order to output a signal and acquire data. The functions to
+% setup the signal generator should be called prior to the start of data
+% collection.
+
+%% Clear command window and close any figures
+
+clc;
+close all;
+
+%% Load configuration information
+
+PS5000aConfig;
+
+%% Device connection
+
+% Check if an Instrument session using the device object |ps5000aDeviceObj|
+% is still open, and if so, disconnect if the User chooses 'Yes' when prompted.
+if (exist('ps5000aDeviceObj', 'var') && ps5000aDeviceObj.isvalid && strcmp(ps5000aDeviceObj.status, 'open'))
+    
+    openDevice = questionDialog(['Device object ps5000aDeviceObj has an open connection. ' ...
+        'Do you wish to close the connection and continue?'], ...
+        'Device Object Connection Open');
+    
+    if (openDevice == PicoConstants.TRUE)
+        
+        % Close connection to device.
+        disconnect(ps5000aDeviceObj);
+        delete(ps5000aDeviceObj);
+        
+    else
+
+        % Exit script if User selects 'No'.
+        return;
+        
+    end
+    
+end
+
+% Create a device object. 
+% The serial number can be specified as a second input parameter.
+ps5000aDeviceObj = icdevice('picotech_ps5000a_generic.mdd');
+
+% Connect device object to hardware.
+connect(ps5000aDeviceObj);
+
+%% Obtain Signalgenerator group object
+% Signal Generator properties and functions are located in the Instrument
+% Driver's Signalgenerator group.
+
+sigGenGroupObj = get(ps5000aDeviceObj, 'Signalgenerator');
+sigGenGroupObj = sigGenGroupObj(1);
+
+%% Function generator - simple
+% Output a sine wave, 2000 mVpp, 0 mV offset, 1000 Hz (uses preset values
+% for offset, peak to peak voltage and frequency from the Signalgenerator
+% groups's properties).
+
+% waveType : 0 (ps5000aEnuminfo.enPS5000AWaveType.PS5000A_SINE)
+
+[status.setSigGenBuiltInSimple] = invoke(sigGenGroupObj, 'setSigGenBuiltInSimple', 0);
+
+%%
+% 
+% <<../images/ps5000a_sine_wave_1kHz.PNG>>
+% 
+
+%% Function generator - sweep frequency
+% Output a square wave, 2400 mVpp, 500 mV offset, and sweep continuously
+% from 500 Hz to 50 Hz in steps of 50 Hz.
+
+% Configure property value(s).
+
+set(sigGenGroupObj, 'startFrequency', 50.0);
+set(sigGenGroupObj, 'stopFrequency', 500.0);
+set(sigGenGroupObj, 'offsetVoltage', 500.0);
+set(sigGenGroupObj, 'peakToPeakVoltage', 2400.0);
+
+waveType 			= ps5000aEnuminfo.enPS5000AWaveType.PS5000A_SQUARE;
+increment 			= 50.0; % Hz
+dwellTime 			= 1;    % seconds
+sweepType 			= ps5000aEnuminfo.enPS5000ASweepType.PS5000A_DOWN;
+operation 			= ps5000aEnuminfo.enPS5000AExtraOperations.PS5000A_ES_OFF;
+shots 				= 0;
+sweeps 				= 0;
+triggerType 		= ps5000aEnuminfo.enPS5000ASigGenTrigType.PS5000A_SIGGEN_RISING;
+triggerSource 		= ps5000aEnuminfo.enPS5000ASigGenTrigSource.PS5000A_SIGGEN_NONE;
+extInThresholdMv 	= 0;
+
+% Execute device object function(s).
+[status.setSigGenBuiltIn] = invoke(sigGenGroupObj, 'setSigGenBuiltIn', waveType, increment, dwellTime, ...
+                                sweepType, operation, shots, sweeps, triggerType, triggerSource, extInThresholdMv);
+                            
+%%
+% 
+% <<../images/ps5000a_square_wave_sweep_500Hz.PNG>>
+% 
+
+%%
+% 
+% <<../images/ps5000a_square_wave_sweep_250Hz.PNG>>
+% 
+
+%% Turn off signal generator
+% Sets the output to 0 V DC.
+
+[status.setSigGenOff] = invoke(sigGenGroupObj, 'setSigGenOff');
+
+%%
+% 
+% <<../images/ps5000a_sig_gen_off.PNG>>
+% 
+
+%% Arbitrary waveform generator - set parameters
+% Set parameters (2000 mVpp, 0 mV offset, 1000 Hz frequency) and define an
+% arbitrary waveform.
+
+% Configure property value(s).
+set(sigGenGroupObj, 'startFrequency', 1000);
+set(sigGenGroupObj, 'stopFrequency', 1000);
+set(sigGenGroupObj, 'offsetVoltage', 0.0);
+set(sigGenGroupObj, 'peakToPeakVoltage', 2000.0);
+
+%% 
+% Define an Arbitrary Waveform - values must be in the range -1 to +1.
+% Arbitrary waveforms can also be read in from text and csv files using
+% <matlab:doc('dlmread') |dlmread|> and <matlab:doc('csvread') |csvread|>
+% respectively or use the |importAWGFile| function from the <https://uk.mathworks.com/matlabcentral/fileexchange/53681-picoscope-support-toolbox PicoScope
+% Support Toolbox>.
+%
+% Any AWG files created using the PicoScope 6 application can be read using
+% the above method.
+
+awgBufferSize = get(sigGenGroupObj, 'awgBufferSize');
+x = 0:(2*pi)/(awgBufferSize - 1):2*pi;
+y = normalise(sin(x) + sin(2*x));
+
+%% Arbitrary waveform generator - simple
+% Output an arbitrary waveform with constant frequency (defined above).
+
+% Arb. Waveform : y (defined above)
+
+[status.setSigGenArbitrarySimple] = invoke(sigGenGroupObj, 'setSigGenArbitrarySimple', y);
+
+%%
+% 
+% <<../images/ps5000a_arbitrary_waveform.PNG>>
+% 
+
+%% Turn off signal generator
+% Sets the output to 0 V DC.
+
+[status.setSigGenOff] = invoke(sigGenGroupObj, 'setSigGenOff');
+
+%% Arbitrary waveform generator - output shots
+% Output 2 cycles of an arbitrary waveform using a software trigger.
+%
+% Note that the signal generator will output the value coresponding to the
+% first sample in the arbitrary waveform until the trigger event occurs.
+
+% Set parameters
+offsetMv 			= 0;
+pkToPkMv 			= 2000;
+increment 			= 0; % Hz
+dwellTime 			= 0; % seconds
+sweepType 			= ps5000aEnuminfo.enPS5000ASweepType.PS5000A_UP;
+operation 			= ps5000aEnuminfo.enPS5000AExtraOperations.PS5000A_ES_OFF;
+indexMode 			= ps5000aEnuminfo.enPS5000AIndexMode.PS5000A_SINGLE;
+shots 				= 2;
+sweeps 				= 0;
+triggerType 		= ps5000aEnuminfo.enPS5000ASigGenTrigType.PS5000A_SIGGEN_RISING;
+triggerSource 		= ps5000aEnuminfo.enPS5000ASigGenTrigSource.PS5000A_SIGGEN_SOFT_TRIG;
+extInThresholdMv 	= 0;
+
+[status.setSigGenArbitrary] = invoke(sigGenGroupObj, 'setSigGenArbitrary', increment, dwellTime, y, sweepType, ...
+										operation, indexMode, shots, sweeps, triggerType, triggerSource, extInThresholdMv);
+
+% Trigger the AWG
+
+% State : 1 (a non-zero value will trigger the output)
+[status.sigGenSoftwareControl] = invoke(sigGenGroupObj, 'ps5000aSigGenSoftwareControl', 1);
+
+%%
+% 
+% <<../images/ps5000a_arbitrary_waveform_shots.PNG>>
+% 
+
+%% Turn off signal generator
+% Sets the output to 0 V DC.
+
+[status.setSigGenOff] = invoke(sigGenGroupObj, 'setSigGenOff');
+
+%% Disconnect device
+% Disconnect device object from hardware.
+
+disconnect(ps5000aDeviceObj);
+delete(ps5000aDeviceObj);
+
+##### SOURCE END #####
+--></body></html>

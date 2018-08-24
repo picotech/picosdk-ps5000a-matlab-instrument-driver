@@ -31,7 +31,13 @@
 %
 % *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
 %
-% *Copyright:* Â© 2013-2018 Pico Technology Ltd. See LICENSE file for terms.
+% *Copyright:* © 2013-2018 Pico Technology Ltd. See LICENSE file for terms.
+
+%% Test setup
+% For this example the 'Gen' connector of the oscilloscope was connected to
+% channel A on another PicoScope oscilloscope running the PicoScope 6
+% software application. Images, where shown, depict output, or part of the
+% output in the PicoScope 6 display.
 %
 % *Note:* The various signal generator functions called in this script may
 % be combined with the functions used in the various data acquisition
@@ -96,6 +102,11 @@ sigGenGroupObj = sigGenGroupObj(1);
 
 [status.setSigGenBuiltInSimple] = invoke(sigGenGroupObj, 'setSigGenBuiltInSimple', 0);
 
+%%
+% 
+% <<../images/ps5000a_sine_wave_1kHz.PNG>>
+% 
+
 %% Function generator - sweep frequency
 % Output a square wave, 2400 mVpp, 500 mV offset, and sweep continuously
 % from 500 Hz to 50 Hz in steps of 50 Hz.
@@ -121,11 +132,26 @@ extInThresholdMv 	= 0;
 % Execute device object function(s).
 [status.setSigGenBuiltIn] = invoke(sigGenGroupObj, 'setSigGenBuiltIn', waveType, increment, dwellTime, ...
                                 sweepType, operation, shots, sweeps, triggerType, triggerSource, extInThresholdMv);
+                            
+%%
+% 
+% <<../images/ps5000a_square_wave_sweep_500Hz.PNG>>
+% 
+
+%%
+% 
+% <<../images/ps5000a_square_wave_sweep_250Hz.PNG>>
+% 
 
 %% Turn off signal generator
 % Sets the output to 0 V DC.
 
 [status.setSigGenOff] = invoke(sigGenGroupObj, 'setSigGenOff');
+
+%%
+% 
+% <<../images/ps5000a_sig_gen_off.PNG>>
+% 
 
 %% Arbitrary waveform generator - set parameters
 % Set parameters (2000 mVpp, 0 mV offset, 1000 Hz frequency) and define an
@@ -157,6 +183,11 @@ y = normalise(sin(x) + sin(2*x));
 % Arb. Waveform : y (defined above)
 
 [status.setSigGenArbitrarySimple] = invoke(sigGenGroupObj, 'setSigGenArbitrarySimple', y);
+
+%%
+% 
+% <<../images/ps5000a_arbitrary_waveform.PNG>>
+% 
 
 %% Turn off signal generator
 % Sets the output to 0 V DC.
@@ -190,6 +221,11 @@ extInThresholdMv 	= 0;
 
 % State : 1 (a non-zero value will trigger the output)
 [status.sigGenSoftwareControl] = invoke(sigGenGroupObj, 'ps5000aSigGenSoftwareControl', 1);
+
+%%
+% 
+% <<../images/ps5000a_arbitrary_waveform_shots.PNG>>
+% 
 
 %% Turn off signal generator
 % Sets the output to 0 V DC.
