@@ -1,0 +1,1490 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>PicoScope 5000 Series (A API) Mixed Signal Instrument Driver Oscilloscope Streaming Data Capture Example</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-24"><meta name="DC.source" content="PS5000A_ID_MSO_Streaming_Example.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>PicoScope 5000 Series (A API) Mixed Signal Instrument Driver Oscilloscope Streaming Data Capture Example</h1><!--introduction--><p>This is an example of an instrument control session using a device object. The instrument control session comprises all the steps you are likely to take when communicating with your instrument.</p><p>These steps are:</p><div><ol><li>Create a device object</li><li>Connect to the instrument</li><li>Configure properties</li><li>Invoke functions</li><li>Disconnect from the instrument</li></ol></div><p>To run the instrument control session, type the name of the file, PS5000A_ID_MSO_Streaming_Example, at the MATLAB command prompt.</p><p>The file, PS5000A_ID_MSO_STREAMING_EXAMPLE.M must be on your MATLAB PATH. For additional information on setting your MATLAB PATH, type 'help addpath' at the MATLAB command prompt.</p><p><b>Example:</b>     PS5000A_ID_MSO_Streaming_Example;</p><p><b>Description:</b>     Demonstrates how to set properties and call functions in order     to capture data in streaming mode from a PicoScope 5000 Series Mixed     Signal Oscilloscope using the underlying 'A' API library functions.</p><p><b>Note:</b> Not all device functions used in this example are compatible with the Test and Measurement Tool.</p><p><b>See also:</b> <a href="matlab:doc('icdevice')"><tt>icdevice</tt></a> | <a href="matlab:doc('instrument/invoke')"><tt>invoke</tt></a></p><p><b>Copyright:</b> &copy; 2018 Pico Technology Ltd. See LICENSE file for terms.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Suggested input test signals</a></li><li><a href="#2">Clear command window and close any figures</a></li><li><a href="#3">Load configuration information</a></li><li><a href="#4">Parameter definitions</a></li><li><a href="#5">Device connection</a></li><li><a href="#6">Display unit information</a></li><li><a href="#7">Set analog channels and digital ports</a></li><li><a href="#9">Change resolution</a></li><li><a href="#10">Set simple trigger</a></li><li><a href="#11">Set data buffers</a></li><li><a href="#12">Start streaming and collect data</a></li><li><a href="#17">Stop the device</a></li><li><a href="#18">Find the number of samples.</a></li><li><a href="#19">Process data</a></li><li><a href="#22">Disconnect device</a></li></ul></div><h2 id="1">Suggested input test signals</h2><p>This example was published using the following test signals:</p><div><ul><li>Channel A: 3 Vpp, 1 Hz sine wave</li><li>Channel B: 2 Vpp, 4 Hz square wave</li><li>PORT0    : 10 Hz bit counter signal from test device (applied to all channels).</li></ul></div><h2 id="2">Clear command window and close any figures</h2><pre class="codeinput">clc;
+close <span class="string">all</span>;
+</pre><h2 id="3">Load configuration information</h2><pre class="codeinput">PS5000aConfig;
+</pre><h2 id="4">Parameter definitions</h2><p>Define any parameters that might be required throughout the script.</p><pre class="codeinput">channelA = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
+channelB = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_B;
+dPort0   = ps5000aEnuminfo.enPS5000AChannel.PS5000A_DIGITAL_PORT0;
+dPort1   = ps5000aEnuminfo.enPS5000AChannel.PS5000A_DIGITAL_PORT1;
+</pre><h2 id="5">Device connection</h2><pre class="codeinput"><span class="comment">% Check if an Instrument session using the device object |ps5000aDeviceObj|</span>
+<span class="comment">% is still open, and if so, disconnect if the User chooses 'Yes' when prompted.</span>
+<span class="keyword">if</span> (exist(<span class="string">'ps5000aDeviceObj'</span>, <span class="string">'var'</span>) &amp;&amp; ps5000aDeviceObj.isvalid &amp;&amp; strcmp(ps5000aDeviceObj.status, <span class="string">'open'</span>))
+
+    openDevice = questionDialog([<span class="string">'Device object ps5000aDeviceObj has an open connection. '</span> <span class="keyword">...</span>
+        <span class="string">'Do you wish to close the connection and continue?'</span>], <span class="keyword">...</span>
+        <span class="string">'Device Object Connection Open'</span>);
+
+    <span class="keyword">if</span> (openDevice == PicoConstants.TRUE)
+
+        <span class="comment">% Close connection to device.</span>
+        disconnect(ps5000aDeviceObj);
+        delete(ps5000aDeviceObj);
+
+    <span class="keyword">else</span>
+
+        <span class="comment">% Exit script if User selects 'No'.</span>
+        <span class="keyword">return</span>;
+
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="comment">% Create a device object.</span>
+ps5000aDeviceObj = icdevice(<span class="string">'picotech_ps5000a_generic'</span>, <span class="string">''</span>);
+
+<span class="comment">% Connect device object to hardware.</span>
+connect(ps5000aDeviceObj);
+</pre><pre class="codeoutput">PicoScope 5000 Series (A API) MATLAB Instrument Driver
+
+
+Copyright &copy; 2013-2018 Pico Technology Ltd. All rights reserved.
+
+Number of units found: 1
+
+Serial number(s): FY971/0003
+
+Opening PicoScope 5000 Series (A API) device...
+
+   Instrument Device Object Using Driver : picotech_ps5000a_generic.mdd
+ 
+   Instrument Information
+      Type:               Oscilloscope
+      Manufacturer:       Pico Technology Ltd.
+      Model:              PicoScope 5000A, 5000B and 5000D Series
+ 
+   Driver Information
+      DriverType:         MATLAB generic
+      DriverName:         picotech_ps5000a_generic.mdd
+      DriverVersion:      2.2.14.39
+ 
+   Communication State
+      Status:             open
+
+Default Channel Setup:-
+-----------------------
+
+Channel A:-
+	Enabled: True
+	Coupling: DC
+	Range: 5 V
+	Analog offset: 0.0 V
+
+Channel B:-
+	Enabled: True
+	Coupling: DC
+	Range: 5 V
+	Analog offset: 0.0 V
+
+Channel C:-
+	Enabled: True
+	Coupling: DC
+	Range: 5 V
+	Analog offset: 0.0 V
+
+Channel D:-
+	Enabled: True
+	Coupling: DC
+	Range: 5 V
+	Analog offset: 0.0 V
+
+Default Digital Port Setup:-
+----------------------------
+
+PORT0:-
+	Enabled: True
+	Logic Level: +1.5 V
+
+PORT1:-
+	Enabled: True
+	Logic Level: +1.5 V
+
+Turning off Equivalent Time Sampling...
+Equivalent Time Sampling turned off.
+
+Turning off trigger...
+Trigger turned off.
+
+Default Block mode parameters:-
+
+               Timebase index : 65
+                 Time Interval: 504 ns
+ Number of pre-trigger samples: 0
+Number of post-trigger samples: 10000
+       Total number of samples: 10000
+
+Default Streaming mode parameters:-
+
+ Streaming interval: 1.00e-06 s
+Streaming auto stop: 1
+
+Default Signal generator parameters:-
+
+Start frequency: 1000 Hz
+ Stop frequency: 1000 Hz
+
+Connected to PicoScope 5000 Series (A API) device:-
+
+          Instrument Model: 5444DMSO
+       Batch/Serial Number: FY971/0003
+               USB Version: 3.0
+           Analog Channels: 4
+          Digital Channels: 16
+                Resolution: 8 bits
+                 Bandwidth: 200 MHz
+             Buffer Memory: 512 MS
+     Maximum Sampling Rate: 1 GS/s
+     Signal Generator Type: Arbitrary Waveform Generator
+5 V Power Supply connected: True
+
+</pre><h2 id="6">Display unit information</h2><pre class="codeinput">[status.getUnitInfo, unitInfo] = invoke(ps5000aDeviceObj, <span class="string">'getUnitInfo'</span>);
+disp(unitInfo);
+</pre><pre class="codeoutput">    'Driver version: 2.1.0.687'
+    'USB version: 3.0'
+    'Hardware version: 1'
+    'Variant: 5444DMSO'
+    'Batch &amp; Serial: FY971/0003'
+    'Cal. Date: 23May18'
+    'Kernel version: 1.2'
+    'Digital HW version: 1'
+    'Analogue HW version: 1'
+
+</pre><h2 id="7">Set analog channels and digital ports</h2><p>All channels are enabled by default - if the device is a 4-channel scope, switch off channels C and D so device can be set to 15-bit resolution.</p><pre class="codeinput"><span class="comment">% Channel A</span>
+channelSettings(1).enabled = PicoConstants.TRUE;
+channelSettings(1).coupling = ps5000aEnuminfo.enPS5000ACoupling.PS5000A_DC;
+channelSettings(1).range = ps5000aEnuminfo.enPS5000ARange.PS5000A_2V;
+channelSettings(1).analogueOffset = 0.0;
+
+channelARangeMv = PicoConstants.SCOPE_INPUT_RANGES(channelSettings(1).range + 1);
+
+<span class="comment">% Channel B</span>
+channelSettings(2).enabled = PicoConstants.TRUE;
+channelSettings(2).coupling = ps5000aEnuminfo.enPS5000ACoupling.PS5000A_DC;
+channelSettings(2).range = ps5000aEnuminfo.enPS5000ARange.PS5000A_2V;
+channelSettings(2).analogueOffset = 0.0;
+
+<span class="comment">% Variables that will be required later</span>
+channelBRangeMv = PicoConstants.SCOPE_INPUT_RANGES(channelSettings(2).range + 1);
+
+<span class="keyword">if</span> (ps5000aDeviceObj.channelCount == PicoConstants.QUAD_SCOPE)
+
+    <span class="comment">% Channel C</span>
+    channelSettings(3).enabled = PicoConstants.FALSE;
+    channelSettings(3).coupling = ps5000aEnuminfo.enPS5000ACoupling.PS5000A_DC;
+    channelSettings(3).range = ps5000aEnuminfo.enPS5000ARange.PS5000A_2V;
+    channelSettings(3).analogueOffset = 0.0;
+
+    <span class="comment">% Channel D</span>
+    channelSettings(4).enabled = PicoConstants.FALSE;
+    channelSettings(4).coupling = ps5000aEnuminfo.enPS5000ACoupling.PS5000A_DC;
+    channelSettings(4).range = ps5000aEnuminfo.enPS5000ARange.PS5000A_2V;
+    channelSettings(4).analogueOffset = 0.0;
+
+<span class="keyword">end</span>
+
+<span class="comment">% Keep the status values returned from the driver.</span>
+numChannels = get(ps5000aDeviceObj, <span class="string">'channelCount'</span>);
+status.setChannelStatus = zeros(numChannels, 1);
+
+[status.currentPowerSource] = invoke(ps5000aDeviceObj, <span class="string">'ps5000aCurrentPowerSource'</span>);
+
+<span class="comment">% Check if the power supply is connected - channels C and D will not be</span>
+<span class="comment">% enabled on a 4-channel oscilloscope if it is only USB powered.</span>
+<span class="keyword">if</span> (status.currentPowerSource == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED)
+
+    numChannels = PicoConstants.DUAL_SCOPE;
+
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> ch = 1:numChannels
+
+    status.setChannelStatus(ch) = invoke(ps5000aDeviceObj, <span class="string">'ps5000aSetChannel'</span>, <span class="keyword">...</span>
+        (ch - 1), channelSettings(ch).enabled, <span class="keyword">...</span>
+        channelSettings(ch).coupling, channelSettings(ch).range, <span class="keyword">...</span>
+        channelSettings(ch).analogueOffset);
+
+<span class="keyword">end</span>
+</pre><p>Use the <tt>ps5000aSetDigitalPort()</tt> function to enable/disable digital ports and set the logic level threshold. This function is located in the Instrument Driver's Digital Group. Enabling a digital port will enable all channels on that port, while setting the enabled parameter to 0 will turn off all digital channels on that port.</p><pre class="codeinput">digitalObj = get(ps5000aDeviceObj, <span class="string">'Digital'</span>);
+
+<span class="comment">% Digital Port  : 128 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_DIGITAL_PORT0)</span>
+<span class="comment">% Enabled       : 1 (On - PicoConstants.TRUE)</span>
+<span class="comment">% Logic Level   : 1.5 V</span>
+
+status.setDPort0 = invoke(digitalObj, <span class="string">'ps5000aSetDigitalPort'</span>, dPort0, 1, 1.5);
+
+<span class="comment">% Digital Port  : 129 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_DIGITAL_PORT1)</span>
+<span class="comment">% Enabled       : 0 (Off - PicoConstants.FALSE)</span>
+<span class="comment">% Logic Level   : 0 V</span>
+
+status.setDPort1 = invoke(digitalObj, <span class="string">'ps5000aSetDigitalPort'</span>, dPort1, 0, 0);
+</pre><h2 id="9">Change resolution</h2><p>The maximum resolution will depend on the number of channels enabled.</p><pre class="codeinput"><span class="comment">% Set resolution to 15 bits as 2 channels will be enabled.</span>
+[status.setResolution, resolution] = invoke(ps5000aDeviceObj, <span class="string">'ps5000aSetDeviceResolution'</span>, 15);
+
+<span class="comment">% Obtain the maximum Analog Digital Converter (ADC) count value from the</span>
+<span class="comment">% driver - this is used for scaling values returned from the driver when</span>
+<span class="comment">% data is collected. This value may change depending on the resolution</span>
+<span class="comment">% selected.</span>
+maxADCCount = get(ps5000aDeviceObj, <span class="string">'maxADCValue'</span>);
+</pre><pre class="codeoutput">ps5000aSetDeviceResolution: Device resolution set to 15 bits.
+
+</pre><h2 id="10">Set simple trigger</h2><p>Set a trigger on channel A, with an auto timeout - the default value for delay is used. The device will wait for a rising edge through the specified threshold unless the timeout occurs first.</p><pre class="codeinput"><span class="comment">% Trigger properties and functions are located in the Instrument</span>
+<span class="comment">% Driver's Trigger group.</span>
+
+triggerGroupObj = get(ps5000aDeviceObj, <span class="string">'Trigger'</span>);
+triggerGroupObj = triggerGroupObj(1);
+
+<span class="comment">% Set the |autoTriggerMs| property in order to automatically trigger the</span>
+<span class="comment">% oscilloscope after 1 second if a trigger event has not occurred. Set to 0</span>
+<span class="comment">% to wait indefinitely for a trigger event.</span>
+
+set(triggerGroupObj, <span class="string">'autoTriggerMs'</span>, 1000);
+
+<span class="comment">% Channel     : 0 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A)</span>
+<span class="comment">% Threshold   : 500 mV</span>
+<span class="comment">% Direction   : 2 (ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING)</span>
+
+[status.setSimpleTrigger] = invoke(triggerGroupObj, <span class="string">'setSimpleTrigger'</span>, 0, 500, 2);
+</pre><h2 id="11">Set data buffers</h2><p>Data buffers for channels A and B as well as Digital PORT0 - buffers should be set with the driver, and these MUST be passed with application buffers to the wrapper driver. This will ensure that data is correctly copied from the driver buffers for later processing.</p><pre class="codeinput">overviewBufferSize  = 100000; <span class="comment">% Size of the buffer to collect data from buffer.</span>
+segmentIndex        = 0;
+ratioMode           = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_NONE;
+
+<span class="comment">% Buffers to be passed to the driver</span>
+pDriverBufferChA    = libpointer(<span class="string">'int16Ptr'</span>, zeros(overviewBufferSize, 1, <span class="string">'int16'</span>));
+pDriverBufferChB    = libpointer(<span class="string">'int16Ptr'</span>, zeros(overviewBufferSize, 1, <span class="string">'int16'</span>));
+pDriverBufferDPort0 = libpointer(<span class="string">'int16Ptr'</span>, zeros(overviewBufferSize, 1, <span class="string">'int16'</span>));
+
+<span class="comment">% Call the functions to register the buffers</span>
+status.setDataBufferChA = invoke(ps5000aDeviceObj, <span class="string">'ps5000aSetDataBuffer'</span>, <span class="keyword">...</span>
+    channelA, pDriverBufferChA, overviewBufferSize, segmentIndex, ratioMode);
+
+status.setDataBufferChB = invoke(ps5000aDeviceObj, <span class="string">'ps5000aSetDataBuffer'</span>, <span class="keyword">...</span>
+    channelB, pDriverBufferChB, overviewBufferSize, segmentIndex, ratioMode);
+
+status.setDataBufferPortD0 = invoke(ps5000aDeviceObj, <span class="string">'ps5000aSetDataBuffer'</span>, <span class="keyword">...</span>
+    dPort0, pDriverBufferDPort0, overviewBufferSize, segmentIndex, ratioMode);
+
+<span class="comment">% Application Buffers - these are for copying from the driver into.</span>
+pAppBufferChA       = libpointer(<span class="string">'int16Ptr'</span>, zeros(overviewBufferSize, 1, <span class="string">'int16'</span>));
+pAppBufferChB       = libpointer(<span class="string">'int16Ptr'</span>, zeros(overviewBufferSize, 1, <span class="string">'int16'</span>));
+pAppBufferDPort0    = libpointer(<span class="string">'int16Ptr'</span>, zeros(overviewBufferSize, 1, <span class="string">'int16'</span>));
+
+<span class="comment">% Streaming properties and functions are located in the Instrument Driver's</span>
+<span class="comment">% Streaming group.</span>
+
+streamingGroupObj = get(ps5000aDeviceObj, <span class="string">'Streaming'</span>);
+streamingGroupObj = streamingGroupObj(1);
+
+<span class="comment">% Register application and driver buffers (with the wrapper library).</span>
+status.setAppDriverBuffersA = invoke(streamingGroupObj, <span class="string">'setAppAndDriverBuffers'</span>, channelA, <span class="keyword">...</span>
+    pAppBufferChA, pDriverBufferChA, overviewBufferSize);
+
+status.setAppDriverBuffersB = invoke(streamingGroupObj, <span class="string">'setAppAndDriverBuffers'</span>, channelB, <span class="keyword">...</span>
+    pAppBufferChB, pDriverBufferChB, overviewBufferSize);
+
+status.setAppDriverBuffersPortD0 = invoke(streamingGroupObj, <span class="string">'setAppAndDriverBuffers'</span>, dPort0, <span class="keyword">...</span>
+    pAppBufferDPort0, pDriverBufferDPort0, overviewBufferSize);
+</pre><h2 id="12">Start streaming and collect data</h2><p>Use default value for streaming interval which is 1e-6 for 1 MS/s. Collect data for 5 seconds with auto stop - maximum array size will depend on the PC's resources - type <a href="matlab:doc('memory')"><tt>memory</tt></a> at the MATLAB command prompt for further information.</p><p>To change the sample interval set the <tt>streamingInterval</tt> property of the Streaming group object. The call to the <tt>ps5000aRunStreaming()</tt> function will output the actual sampling interval used by the driver.</p><pre class="codeinput"><span class="comment">% To change the sample interval e.g 5 us for 200 kS/s</span>
+<span class="comment">% set(streamingGroupObj, 'streamingInterval', 5e-6);</span>
+</pre><p>Set the number of pre- and post-trigger samples. If no trigger is set the library will still store <tt>numPreTriggerSamples</tt> + <tt>numPostTriggerSamples</tt>.</p><pre class="codeinput">set(ps5000aDeviceObj, <span class="string">'numPreTriggerSamples'</span>, 0);
+set(ps5000aDeviceObj, <span class="string">'numPostTriggerSamples'</span>, 5000000);
+</pre><p>The <tt>autoStop</tt> parameter can be set to false (0) to allow for continuous data collection. set(streamingGroupObj, 'autoStop', PicoConstants.FALSE);</p><pre class="codeinput"><span class="comment">% Set other streaming parameters</span>
+downSampleRatio = 1;
+downSampleRatioMode = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_NONE;
+</pre><p>Defined buffers to store data collected from the channels. If capturing data without using the autoStop flag, or if using a trigger with the autoStop flag, allocate sufficient space (1.5 times the sum of the number of pre-trigger and post-trigger samples is shown below) to allow for additional pre-trigger data. Pre-allocating the array is more efficient than using <a href="matlab:doc('vertcat')"><tt>vertcat</tt></a> to combine data.</p><pre class="codeinput">maxSamples = get(ps5000aDeviceObj, <span class="string">'numPreTriggerSamples'</span>) + <span class="keyword">...</span>
+    get(ps5000aDeviceObj, <span class="string">'numPostTriggerSamples'</span>);
+
+<span class="comment">% Take into account the downsampling ratio mode - required if collecting</span>
+<span class="comment">% data without a trigger and using the autoStop flag.</span>
+
+finalBufferLength = round(1.5 * maxSamples / downSampleRatio);
+
+pBufferChAFinal     = libpointer(<span class="string">'int16Ptr'</span>, zeros(finalBufferLength, 1, <span class="string">'int16'</span>));
+pBufferChBFinal     = libpointer(<span class="string">'int16Ptr'</span>, zeros(finalBufferLength, 1, <span class="string">'int16'</span>));
+pBufferDPort0Final  = libpointer(<span class="string">'int16Ptr'</span>, zeros(finalBufferLength, 1, <span class="string">'int16'</span>));
+
+<span class="comment">% Prompt User to indicate if they wish to plot live streaming data.</span>
+plotLiveData = questionDialog(<span class="string">'Plot live streaming data?'</span>, <span class="string">'Streaming Data Plot'</span>);
+
+<span class="keyword">if</span> (plotLiveData == PicoConstants.TRUE)
+
+    disp(<span class="string">'Live streaming data collection with second plot on completion.'</span>);
+
+<span class="keyword">else</span>
+
+    disp(<span class="string">'Streaming data plot on completion.'</span>);
+
+<span class="keyword">end</span>
+
+originalPowerSource = invoke(ps5000aDeviceObj, <span class="string">'ps5000aCurrentPowerSource'</span>);
+
+<span class="comment">% Start streaming data collection.</span>
+[status.runStreaming, sampleInterval, sampleIntervalTimeUnitsStr] = <span class="keyword">...</span>
+    invoke(streamingGroupObj, <span class="string">'ps5000aRunStreaming'</span>, downSampleRatio, <span class="keyword">...</span>
+    downSampleRatioMode, overviewBufferSize);
+
+disp(<span class="string">'Streaming data...'</span>);
+fprintf(<span class="string">'Click the STOP button to stop capture or wait for auto stop if enabled.\n'</span>)
+
+<span class="comment">% Variables to be used when collecting the data:</span>
+
+hasAutoStopOccurred = PicoConstants.FALSE;  <span class="comment">% Indicates if the device has stopped automatically.</span>
+powerChange         = PicoConstants.FALSE;  <span class="comment">% If the device power status has changed.</span>
+newSamples          = 0; <span class="comment">% Number of new samples returned from the driver.</span>
+previousTotal       = 0; <span class="comment">% The previous total number of samples.</span>
+totalSamples        = 0; <span class="comment">% Total samples captured by the device.</span>
+startIndex          = 0; <span class="comment">% Start index of data in the buffer returned.</span>
+hasTriggered        = 0; <span class="comment">% To indicate if trigger has occurred.</span>
+triggeredAtIndex    = 0; <span class="comment">% The index in the overall buffer where the trigger occurred.</span>
+
+time = zeros(overviewBufferSize / downSampleRatio, 1);	<span class="comment">% Array to hold time values</span>
+
+status.getStreamingLatestValuesStatus = PicoStatus.PICO_OK; <span class="comment">% OK</span>
+
+<span class="comment">% Display a 'Stop' button.</span>
+[stopFig.h, stopFig.h] = stopButton();
+
+flag = 1; <span class="comment">% Use flag variable to indicate if stop button has been clicked (0).</span>
+setappdata(gcf, <span class="string">'run'</span>, flag);
+
+<span class="comment">% Plot Properties - these are for displaying data as it is collected.</span>
+
+<span class="keyword">if</span> (plotLiveData == PicoConstants.TRUE)
+
+    <span class="comment">% Plot on a single figure.</span>
+    figure1 = figure(<span class="string">'Name'</span>,<span class="string">'PicoScope 5000 Series (A API) Example - MSO Streaming Mode Capture'</span>, <span class="keyword">...</span>
+         <span class="string">'NumberTitle'</span>,<span class="string">'off'</span>);
+
+    analogAxes = subplot(2, 1, 1);
+    digitalAxes = subplot(2, 1, 2);
+
+    <span class="comment">% Estimate x-axis limit to try and avoid using too much CPU resources</span>
+    <span class="comment">% when drawing - use max voltage range selected if plotting multiple</span>
+    <span class="comment">% channels on the same graph.</span>
+    xlim(analogAxes, [0 (sampleInterval * finalBufferLength)]);
+    xlim(digitalAxes, [0 (sampleInterval * finalBufferLength)]);
+
+    yRange = max(channelARangeMv, channelBRangeMv);
+    ylim(analogAxes, [(-1 * yRange) yRange]);
+
+    hold(analogAxes,<span class="string">'on'</span>);
+    hold(digitalAxes, <span class="string">'on'</span>);
+
+    grid(analogAxes, <span class="string">'on'</span>);
+    grid(digitalAxes, <span class="string">'on'</span>);
+
+    title(analogAxes, <span class="string">'Analog Channel Data Acquisition'</span>);
+    title(digitalAxes, <span class="string">'Digital Channel Data Acquisition'</span>);
+
+    <span class="keyword">if</span> (strcmp(sampleIntervalTimeUnitsStr, <span class="string">'us'</span>))
+
+        xLabelStr = <span class="string">'Time (\mus)'</span>;
+
+    <span class="keyword">else</span>
+
+        xLabelStr = strcat(<span class="string">'Time ('</span>, sampleIntervalTimeUnitsStr, <span class="string">')'</span>);
+
+    <span class="keyword">end</span>
+
+    xlabel(analogAxes, xLabelStr);
+    ylabel(analogAxes, <span class="string">'Voltage (mV)'</span>);
+
+    xlabel(digitalAxes, xLabelStr);
+    ylabel(digitalAxes, <span class="string">'Level (Counts)'</span>);
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Live streaming data collection with second plot on completion.
+ps5000aRunStreaming:- Sample interval 1 us
+Streaming data...
+Click the STOP button to stop capture or wait for auto stop if enabled.
+</pre><img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_01.png" alt=""> <img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_02.png" alt=""> <p>Collect samples as long as the <tt>hasAutoStopOccurred</tt> flag has not been set or the call to <tt>getStreamingLatestValues()</tt> does not return an error code (check for STOP button push inside loop).</p><pre class="codeinput"><span class="keyword">while</span>(hasAutoStopOccurred == PicoConstants.FALSE &amp;&amp; status.getStreamingLatestValuesStatus == PicoStatus.PICO_OK)
+
+    ready = PicoConstants.FALSE;
+
+    <span class="keyword">while</span> (ready == PicoConstants.FALSE)
+
+       status.getStreamingLatestValuesStatus = invoke(streamingGroupObj, <span class="string">'getStreamingLatestValues'</span>);
+
+       ready = invoke(streamingGroupObj, <span class="string">'isReady'</span>);
+
+       <span class="comment">% Give option to abort from here</span>
+       flag = getappdata(gcf, <span class="string">'run'</span>);
+       drawnow;
+
+       <span class="keyword">if</span> (flag == 0)
+
+            disp(<span class="string">'STOP button clicked - aborting data collection.'</span>)
+            <span class="keyword">break</span>;
+
+       <span class="keyword">end</span>
+
+       drawnow;
+
+    <span class="keyword">end</span>
+
+    <span class="comment">% Check for data</span>
+    [newSamples, startIndex] = invoke(streamingGroupObj, <span class="string">'availableData'</span>);
+
+    <span class="keyword">if</span> (newSamples &gt; 0)
+
+        <span class="comment">% Check if the scope has triggered.</span>
+        [triggered, triggeredAt] = invoke(streamingGroupObj, <span class="string">'isTriggerReady'</span>);
+
+        <span class="keyword">if</span> (triggered == PicoConstants.TRUE)
+
+            <span class="comment">% Adjust trigger position as MATLAB does not use zero-based</span>
+            <span class="comment">% indexing.</span>
+            bufferTriggerPosition = triggeredAt + 1;
+
+            fprintf(<span class="string">'Triggered - index in buffer: %d\n'</span>, bufferTriggerPosition);
+
+            hasTriggered = triggered;
+
+            <span class="comment">% Set the total number of samples at which the device</span>
+            <span class="comment">% triggered.</span>
+            triggeredAtIndex = totalSamples + bufferTriggerPosition;
+
+        <span class="keyword">end</span>
+
+        previousTotal   = totalSamples;
+        totalSamples    = totalSamples + newSamples;
+
+        <span class="comment">% Printing to console can slow down acquisition - use for</span>
+        <span class="comment">% demonstration.</span>
+        fprintf(<span class="string">'Collected %d samples, startIndex: %d total: %d.\n'</span>, newSamples, startIndex, totalSamples);
+
+        <span class="comment">% Position indices of data in the buffer(s).</span>
+        firstValuePosn = startIndex + 1;
+        lastValuePosn = startIndex + newSamples;
+
+        <span class="comment">% Convert data values to millivolts from the application buffer(s).</span>
+        bufferChAmV     = adc2mv(pAppBufferChA.Value(firstValuePosn:lastValuePosn), channelARangeMv, maxADCCount);
+        bufferChBmV     = adc2mv(pAppBufferChB.Value(firstValuePosn:lastValuePosn), channelBRangeMv, maxADCCount);
+
+        bufferDPort0    = pAppBufferDPort0.Value(firstValuePosn:lastValuePosn);
+
+        <span class="comment">% Process collected data further if required - this example plots</span>
+        <span class="comment">% the data if the User has selected 'Yes' at the prompt.</span>
+
+        <span class="comment">% Copy data into the final buffer(s).</span>
+        pBufferChAFinal.Value(previousTotal + 1:totalSamples)       = bufferChAmV;
+        pBufferChBFinal.Value(previousTotal + 1:totalSamples)       = bufferChBmV;
+        pBufferDPort0Final.Value(previousTotal + 1:totalSamples)    = bufferDPort0;
+
+        <span class="keyword">if</span> (plotLiveData == PicoConstants.TRUE)
+
+            <span class="comment">% Time axis.</span>
+            <span class="comment">% Multiply by ratio mode as samples get reduced</span>
+            time = (double(sampleInterval) * double(downSampleRatio)) * (previousTotal:(totalSamples - 1));
+
+            plot(analogAxes, time, bufferChAmV, time, bufferChBmV);
+            plot(digitalAxes, time, bufferDPort0);
+
+        <span class="keyword">end</span>
+
+        <span class="comment">% Clear variables for use again</span>
+        clear <span class="string">bufferChAmV</span>;
+        clear <span class="string">bufferChBmV</span>;
+        clear <span class="string">bufferDPort0</span>;
+        clear <span class="string">firstValuePosn</span>;
+        clear <span class="string">lastValuePosn</span>;
+        clear <span class="string">startIndex</span>;
+        clear <span class="string">triggered</span>;
+        clear <span class="string">triggerAt</span>;
+
+   <span class="keyword">end</span>
+
+    <span class="comment">% Check if auto stop has occurred.</span>
+    hasAutoStopOccurred = invoke(streamingGroupObj, <span class="string">'autoStopped'</span>);
+
+    <span class="keyword">if</span> (hasAutoStopOccurred == PicoConstants.TRUE)
+
+       disp(<span class="string">'AutoStop: TRUE - exiting data collection loop.'</span>);
+       <span class="keyword">break</span>;
+
+    <span class="keyword">end</span>
+
+    <span class="comment">% Check if 'STOP' button has been clicked.</span>
+    flag = getappdata(gcf, <span class="string">'run'</span>);
+    drawnow;
+
+    <span class="keyword">if</span> (flag == 0)
+
+        disp(<span class="string">'STOP button clicked - aborting data collection.'</span>)
+        <span class="keyword">break</span>;
+
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="comment">% Close the STOP button window.</span>
+<span class="keyword">if</span> (exist(<span class="string">'stopFig'</span>, <span class="string">'var'</span>))
+
+    close(<span class="string">'Stop Button'</span>);
+    clear <span class="string">stopFig</span>;
+
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> (plotLiveData == PicoConstants.TRUE)
+
+    drawnow;
+
+    <span class="comment">% Take hold off the axes.</span>
+    hold(analogAxes, <span class="string">'off'</span>);
+    hold(digitalAxes, <span class="string">'off'</span>);
+
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> (hasTriggered == PicoConstants.TRUE)
+
+    fprintf(<span class="string">'Triggered at overall index: %d\n\n'</span>, triggeredAtIndex);
+
+<span class="keyword">end</span>
+
+fprintf(<span class="string">'\n'</span>);
+</pre><pre class="codeoutput">Collected 68268 samples, startIndex: 0 total: 68268.
+Collected 31732 samples, startIndex: 68268 total: 100000.
+Collected 37034 samples, startIndex: 0 total: 137034.
+Collected 62966 samples, startIndex: 37034 total: 200000.
+Collected 73068 samples, startIndex: 0 total: 273068.
+Collected 26932 samples, startIndex: 73068 total: 300000.
+Collected 41834 samples, startIndex: 0 total: 341834.
+Collected 58166 samples, startIndex: 41834 total: 400000.
+Triggered - index in buffer: 70647
+Collected 77868 samples, startIndex: 0 total: 477868.
+Collected 22132 samples, startIndex: 77868 total: 500000.
+Collected 46634 samples, startIndex: 0 total: 546634.
+Collected 53366 samples, startIndex: 46634 total: 600000.
+Collected 82668 samples, startIndex: 0 total: 682668.
+Collected 17332 samples, startIndex: 82668 total: 700000.
+Collected 51434 samples, startIndex: 0 total: 751434.
+Collected 48566 samples, startIndex: 51434 total: 800000.
+Collected 87468 samples, startIndex: 0 total: 887468.
+Collected 12532 samples, startIndex: 87468 total: 900000.
+Collected 56234 samples, startIndex: 0 total: 956234.
+Collected 43766 samples, startIndex: 56234 total: 1000000.
+Collected 92268 samples, startIndex: 0 total: 1092268.
+Collected 7732 samples, startIndex: 92268 total: 1100000.
+Collected 61034 samples, startIndex: 0 total: 1161034.
+Collected 38966 samples, startIndex: 61034 total: 1200000.
+Collected 97068 samples, startIndex: 0 total: 1297068.
+Collected 2932 samples, startIndex: 97068 total: 1300000.
+Collected 65834 samples, startIndex: 0 total: 1365834.
+Collected 34166 samples, startIndex: 65834 total: 1400000.
+Collected 34100 samples, startIndex: 0 total: 1434100.
+Collected 65900 samples, startIndex: 34100 total: 1500000.
+Collected 70134 samples, startIndex: 0 total: 1570134.
+Collected 29866 samples, startIndex: 70134 total: 1600000.
+Collected 38900 samples, startIndex: 0 total: 1638900.
+Collected 61100 samples, startIndex: 38900 total: 1700000.
+Collected 74934 samples, startIndex: 0 total: 1774934.
+Collected 25066 samples, startIndex: 74934 total: 1800000.
+Collected 43700 samples, startIndex: 0 total: 1843700.
+Collected 56300 samples, startIndex: 43700 total: 1900000.
+Collected 79734 samples, startIndex: 0 total: 1979734.
+Collected 20266 samples, startIndex: 79734 total: 2000000.
+Collected 48500 samples, startIndex: 0 total: 2048500.
+Collected 51500 samples, startIndex: 48500 total: 2100000.
+Collected 84534 samples, startIndex: 0 total: 2184534.
+Collected 15466 samples, startIndex: 84534 total: 2200000.
+Collected 53300 samples, startIndex: 0 total: 2253300.
+Collected 46700 samples, startIndex: 53300 total: 2300000.
+Collected 89334 samples, startIndex: 0 total: 2389334.
+Collected 10666 samples, startIndex: 89334 total: 2400000.
+Collected 58100 samples, startIndex: 0 total: 2458100.
+Collected 41900 samples, startIndex: 58100 total: 2500000.
+Collected 94134 samples, startIndex: 0 total: 2594134.
+Collected 5866 samples, startIndex: 94134 total: 2600000.
+Collected 62900 samples, startIndex: 0 total: 2662900.
+Collected 37100 samples, startIndex: 62900 total: 2700000.
+Collected 98934 samples, startIndex: 0 total: 2798934.
+Collected 1066 samples, startIndex: 98934 total: 2800000.
+Collected 67700 samples, startIndex: 0 total: 2867700.
+Collected 32300 samples, startIndex: 67700 total: 2900000.
+Collected 35968 samples, startIndex: 0 total: 2935968.
+Collected 64032 samples, startIndex: 35968 total: 3000000.
+Collected 72000 samples, startIndex: 0 total: 3072000.
+Collected 28000 samples, startIndex: 72000 total: 3100000.
+Collected 40768 samples, startIndex: 0 total: 3140768.
+Collected 59232 samples, startIndex: 40768 total: 3200000.
+Collected 76800 samples, startIndex: 0 total: 3276800.
+Collected 23200 samples, startIndex: 76800 total: 3300000.
+Collected 45568 samples, startIndex: 0 total: 3345568.
+Collected 54432 samples, startIndex: 45568 total: 3400000.
+Collected 81600 samples, startIndex: 0 total: 3481600.
+Collected 18400 samples, startIndex: 81600 total: 3500000.
+Collected 50368 samples, startIndex: 0 total: 3550368.
+Collected 49632 samples, startIndex: 50368 total: 3600000.
+Collected 86400 samples, startIndex: 0 total: 3686400.
+Collected 13600 samples, startIndex: 86400 total: 3700000.
+Collected 55168 samples, startIndex: 0 total: 3755168.
+Collected 44832 samples, startIndex: 55168 total: 3800000.
+Collected 91200 samples, startIndex: 0 total: 3891200.
+Collected 8800 samples, startIndex: 91200 total: 3900000.
+Collected 59968 samples, startIndex: 0 total: 3959968.
+Collected 40032 samples, startIndex: 59968 total: 4000000.
+Collected 96000 samples, startIndex: 0 total: 4096000.
+Collected 4000 samples, startIndex: 96000 total: 4100000.
+Collected 64768 samples, startIndex: 0 total: 4164768.
+Collected 35232 samples, startIndex: 64768 total: 4200000.
+Collected 33034 samples, startIndex: 0 total: 4233034.
+Collected 66966 samples, startIndex: 33034 total: 4300000.
+Collected 69068 samples, startIndex: 0 total: 4369068.
+Collected 30932 samples, startIndex: 69068 total: 4400000.
+Collected 37834 samples, startIndex: 0 total: 4437834.
+Collected 62166 samples, startIndex: 37834 total: 4500000.
+Collected 73868 samples, startIndex: 0 total: 4573868.
+Collected 26132 samples, startIndex: 73868 total: 4600000.
+Collected 42634 samples, startIndex: 0 total: 4642634.
+Collected 57366 samples, startIndex: 42634 total: 4700000.
+Collected 78668 samples, startIndex: 0 total: 4778668.
+Collected 21332 samples, startIndex: 78668 total: 4800000.
+Collected 47434 samples, startIndex: 0 total: 4847434.
+Collected 52566 samples, startIndex: 47434 total: 4900000.
+Collected 83468 samples, startIndex: 0 total: 4983468.
+Collected 16532 samples, startIndex: 83468 total: 5000000.
+Collected 52234 samples, startIndex: 0 total: 5052234.
+Collected 47766 samples, startIndex: 52234 total: 5100000.
+Collected 88268 samples, startIndex: 0 total: 5188268.
+Collected 11732 samples, startIndex: 88268 total: 5200000.
+Collected 57034 samples, startIndex: 0 total: 5257034.
+Collected 42966 samples, startIndex: 57034 total: 5300000.
+Collected 93068 samples, startIndex: 0 total: 5393068.
+Collected 6932 samples, startIndex: 93068 total: 5400000.
+Collected 70646 samples, startIndex: 0 total: 5470646.
+AutoStop: TRUE - exiting data collection loop.
+Triggered at overall index: 470647
+
+
+</pre><img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_03.png" alt=""> <h2 id="17">Stop the device</h2><p>This function should be called regardless of whether the autoStop property is enabled or not.</p><pre class="codeinput">[status.stop] = invoke(ps5000aDeviceObj, <span class="string">'ps5000aStop'</span>);
+</pre><h2 id="18">Find the number of samples.</h2><p>This is the number of samples held in the shared library itself. The actual number of samples collected when using a trigger is likely to be greater.</p><pre class="codeinput">[status.noOfStreamingValues, numStreamingValues] = invoke(streamingGroupObj, <span class="string">'ps5000aNoOfStreamingValues'</span>);
+
+fprintf(<span class="string">'Number of samples available after data collection: %u\n'</span>, numStreamingValues);
+</pre><pre class="codeoutput">Number of samples available after data collection: 5000000
+</pre><h2 id="19">Process data</h2><p>Process data post-capture if required - here the data will be plotted.</p><pre class="codeinput"><span class="comment">% Reduce size of arrays if required.</span>
+
+<span class="keyword">if</span> (totalSamples &lt; finalBufferLength)
+
+    pBufferChAFinal.Value(totalSamples + 1:end) = [];
+    pBufferChBFinal.Value(totalSamples + 1:end) = [];
+    pBufferDPort0Final.Value(totalSamples + 1:end)  = [];
+
+<span class="keyword">end</span>
+
+<span class="comment">% Retrieve data for the channels.</span>
+channelAFinal = pBufferChAFinal.Value();
+channelBFinal = pBufferChBFinal.Value();
+dPort0Final   = pBufferDPort0Final.Value();
+
+<span class="comment">% Plot total analog and digital data collected on separate figures.</span>
+</pre><p><b>Analog data</b></p><pre class="codeinput">scrsz = get(groot,<span class="string">'ScreenSize'</span>);
+
+analogFinalFigure = figure(<span class="string">'Name'</span>,<span class="string">'PicoScope 5000 Series (A API) Example - MSO Streaming Mode Capture'</span>, <span class="keyword">...</span>
+    <span class="string">'NumberTitle'</span>, <span class="string">'off'</span>, <span class="string">'Position'</span>, [1 scrsz(4)/4 scrsz(3)/2 scrsz(4)/2]);
+
+movegui(analogFinalFigure, <span class="string">'west'</span>);
+
+analogFinalAxes = axes(<span class="string">'Parent'</span>, analogFinalFigure);
+hold(analogFinalAxes, <span class="string">'on'</span>);
+
+title(analogFinalAxes, <span class="string">'Analog Data Acquisition (Final)'</span>);
+
+<span class="keyword">if</span> (strcmp(sampleIntervalTimeUnitsStr, <span class="string">'us'</span>))
+
+    xLabelStr = <span class="string">'Time (\mus)'</span>;
+
+<span class="keyword">else</span>
+
+    xLabelStr = strcat(<span class="string">'Time ('</span>, sampleIntervalTimeUnitsStr, <span class="string">')'</span>);
+
+<span class="keyword">end</span>
+
+xlabel(analogFinalAxes, xLabelStr);
+ylabel(analogFinalAxes, <span class="string">'Voltage (mV)'</span>);
+
+<span class="comment">% Find the maximum voltage range.</span>
+maxYRange = max(channelARangeMv, channelBRangeMv);
+ylim(analogFinalAxes,[(-1 * maxYRange) maxYRange]);
+
+time = (double(sampleInterval) * double(downSampleRatio)) * (0:length(channelAFinal) - 1);
+
+plot(analogFinalAxes, time, channelAFinal, time, channelBFinal);
+
+grid(analogFinalAxes, <span class="string">'on'</span>);
+legend(analogFinalAxes, <span class="string">'Channel A'</span>, <span class="string">'Channel B'</span>);
+
+hold(analogFinalAxes, <span class="string">'off'</span>);
+</pre><img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_04.png" alt=""> <p><b>Digital data</b></p><pre class="codeinput">digitalFinalFigure = figure(<span class="string">'Name'</span>,<span class="string">'PicoScope 5000 Series (A API) Example - MSO Streaming Mode Capture'</span>, <span class="keyword">...</span>
+    <span class="string">'NumberTitle'</span>, <span class="string">'off'</span>, <span class="string">'Position'</span>, [scrsz(3)/2 + 1 scrsz(4)/4 scrsz(3)/2 scrsz(4)/2]);
+
+movegui(digitalFinalFigure, <span class="string">'east'</span>);
+
+disp(<span class="string">'Converting digital integer data to binary...'</span>);
+
+dPort0Binary = zeros(length(dPort0Final), 8);
+
+<span class="comment">% Retrieve the bit values from the lower 8 bits of the 16-bit values</span>
+<span class="comment">% returned for dPort0 - each bit corresponds to a digital channel. Channel</span>
+<span class="comment">% D0 data will be in column 8 and D7 data will be in column 1.</span>
+<span class="keyword">for</span> sample = 1:length(dPort0Final)
+
+    dPort0Binary(sample,:)= bitget(dPort0Final(sample), 8:-1:1, <span class="string">'int16'</span>);
+
+<span class="keyword">end</span>
+
+<span class="comment">% Specify colours to use for the plots - the colour to use will be selected</span>
+<span class="comment">% according to the digital channel.</span>
+digiPlotColours = [<span class="string">'m'</span>, <span class="string">'b'</span>, <span class="string">'r'</span>, <span class="string">'g'</span>];
+
+<span class="comment">% Display digital data in a 4 x 2 grid</span>
+<span class="keyword">for</span> i = 1:8
+
+    subplot(4, 2, i);
+    plot(time, dPort0Binary(:, (8 - (i - 1))), digiPlotColours(rem(i, length(digiPlotColours)) + 1));
+    title(strcat(<span class="string">'Digital Channel D'</span>, num2str(i - 1)));
+    xlabel(strcat(<span class="string">'Time ('</span>, sampleIntervalTimeUnitsStr, <span class="string">')'</span>));
+    ylabel(<span class="string">'Logic Level'</span>);
+    axis([-inf, inf, -0.5, 1.5])
+    grid <span class="string">on</span>;
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Converting digital integer data to binary...
+</pre><img vspace="5" hspace="5" src="PS5000A_ID_MSO_Streaming_Example_05.png" alt=""> <h2 id="22">Disconnect device</h2><p>Disconnect device object from hardware.</p><pre class="codeinput">disconnect(ps5000aDeviceObj);
+delete(ps5000aDeviceObj);
+</pre><pre class="codeoutput">Connection to PicoScope 5444DMSO with serial number FY971/0003 closed successfully.
+Libraries unloaded successfully.
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% PicoScope 5000 Series (A API) Mixed Signal Instrument Driver Oscilloscope Streaming Data Capture Example
+% This is an example of an instrument control session using a device 
+% object. The instrument control session comprises all the steps you 
+% are likely to take when communicating with your instrument. 
+%       
+% These steps are:
+%    
+% # Create a device object   
+% # Connect to the instrument 
+% # Configure properties 
+% # Invoke functions 
+% # Disconnect from the instrument 
+%
+% To run the instrument control session, type the name of the file,
+% PS5000A_ID_MSO_Streaming_Example, at the MATLAB command prompt.
+% 
+% The file, PS5000A_ID_MSO_STREAMING_EXAMPLE.M must be on your MATLAB PATH. For
+% additional information on setting your MATLAB PATH, type 'help addpath'
+% at the MATLAB command prompt.
+%
+% *Example:*
+%     PS5000A_ID_MSO_Streaming_Example;
+%
+% *Description:*
+%     Demonstrates how to set properties and call functions in order
+%     to capture data in streaming mode from a PicoScope 5000 Series Mixed
+%     Signal Oscilloscope using the underlying 'A' API library functions.
+%
+% *Note:* Not all device functions used in this example are compatible with
+% the Test and Measurement Tool.
+%
+% *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
+%
+% *Copyright:* © 2018 Pico Technology Ltd. See LICENSE file for terms.
+
+%% Suggested input test signals
+% This example was published using the following test signals:
+%
+% * Channel A: 3 Vpp, 1 Hz sine wave
+% * Channel B: 2 Vpp, 4 Hz square wave 
+% * PORT0    : 10 Hz bit counter signal from test device (applied to all channels).
+
+%% Clear command window and close any figures
+
+clc;
+close all;
+
+%% Load configuration information
+
+PS5000aConfig;
+
+%% Parameter definitions
+% Define any parameters that might be required throughout the script.
+
+channelA = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
+channelB = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_B;
+dPort0   = ps5000aEnuminfo.enPS5000AChannel.PS5000A_DIGITAL_PORT0;
+dPort1   = ps5000aEnuminfo.enPS5000AChannel.PS5000A_DIGITAL_PORT1;
+
+%% Device connection
+
+% Check if an Instrument session using the device object |ps5000aDeviceObj|
+% is still open, and if so, disconnect if the User chooses 'Yes' when prompted.
+if (exist('ps5000aDeviceObj', 'var') && ps5000aDeviceObj.isvalid && strcmp(ps5000aDeviceObj.status, 'open'))
+    
+    openDevice = questionDialog(['Device object ps5000aDeviceObj has an open connection. ' ...
+        'Do you wish to close the connection and continue?'], ...
+        'Device Object Connection Open');
+    
+    if (openDevice == PicoConstants.TRUE)
+        
+        % Close connection to device.
+        disconnect(ps5000aDeviceObj);
+        delete(ps5000aDeviceObj);
+        
+    else
+
+        % Exit script if User selects 'No'.
+        return;
+        
+    end
+    
+end
+
+% Create a device object. 
+ps5000aDeviceObj = icdevice('picotech_ps5000a_generic', ''); 
+
+% Connect device object to hardware.
+connect(ps5000aDeviceObj);
+
+%% Display unit information
+
+[status.getUnitInfo, unitInfo] = invoke(ps5000aDeviceObj, 'getUnitInfo');
+disp(unitInfo);
+
+%% Set analog channels and digital ports
+% All channels are enabled by default - if the device is a 4-channel scope,
+% switch off channels C and D so device can be set to 15-bit resolution.
+
+% Channel A
+channelSettings(1).enabled = PicoConstants.TRUE;
+channelSettings(1).coupling = ps5000aEnuminfo.enPS5000ACoupling.PS5000A_DC;
+channelSettings(1).range = ps5000aEnuminfo.enPS5000ARange.PS5000A_2V;
+channelSettings(1).analogueOffset = 0.0;
+
+channelARangeMv = PicoConstants.SCOPE_INPUT_RANGES(channelSettings(1).range + 1);
+
+% Channel B
+channelSettings(2).enabled = PicoConstants.TRUE;
+channelSettings(2).coupling = ps5000aEnuminfo.enPS5000ACoupling.PS5000A_DC;
+channelSettings(2).range = ps5000aEnuminfo.enPS5000ARange.PS5000A_2V;
+channelSettings(2).analogueOffset = 0.0;
+
+% Variables that will be required later
+channelBRangeMv = PicoConstants.SCOPE_INPUT_RANGES(channelSettings(2).range + 1);
+
+if (ps5000aDeviceObj.channelCount == PicoConstants.QUAD_SCOPE)
+
+    % Channel C
+    channelSettings(3).enabled = PicoConstants.FALSE;
+    channelSettings(3).coupling = ps5000aEnuminfo.enPS5000ACoupling.PS5000A_DC;
+    channelSettings(3).range = ps5000aEnuminfo.enPS5000ARange.PS5000A_2V;
+    channelSettings(3).analogueOffset = 0.0;
+
+    % Channel D
+    channelSettings(4).enabled = PicoConstants.FALSE;
+    channelSettings(4).coupling = ps5000aEnuminfo.enPS5000ACoupling.PS5000A_DC;
+    channelSettings(4).range = ps5000aEnuminfo.enPS5000ARange.PS5000A_2V;
+    channelSettings(4).analogueOffset = 0.0;
+    
+end
+
+% Keep the status values returned from the driver.
+numChannels = get(ps5000aDeviceObj, 'channelCount');
+status.setChannelStatus = zeros(numChannels, 1);
+
+[status.currentPowerSource] = invoke(ps5000aDeviceObj, 'ps5000aCurrentPowerSource');
+
+% Check if the power supply is connected - channels C and D will not be
+% enabled on a 4-channel oscilloscope if it is only USB powered.
+if (status.currentPowerSource == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED)
+    
+    numChannels = PicoConstants.DUAL_SCOPE;
+    
+end
+
+for ch = 1:numChannels
+   
+    status.setChannelStatus(ch) = invoke(ps5000aDeviceObj, 'ps5000aSetChannel', ...
+        (ch - 1), channelSettings(ch).enabled, ...
+        channelSettings(ch).coupling, channelSettings(ch).range, ...
+        channelSettings(ch).analogueOffset);
+    
+end
+
+%% 
+% Use the |ps5000aSetDigitalPort()| function to enable/disable digital ports
+% and set the logic level threshold. This function is located in the
+% Instrument Driver's Digital Group. Enabling a digital port will enable
+% all channels on that port, while setting the enabled parameter to 0 will
+% turn off all digital channels on that port.
+
+digitalObj = get(ps5000aDeviceObj, 'Digital');
+
+% Digital Port  : 128 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_DIGITAL_PORT0)
+% Enabled       : 1 (On - PicoConstants.TRUE)
+% Logic Level   : 1.5 V
+
+status.setDPort0 = invoke(digitalObj, 'ps5000aSetDigitalPort', dPort0, 1, 1.5);
+
+% Digital Port  : 129 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_DIGITAL_PORT1)
+% Enabled       : 0 (Off - PicoConstants.FALSE)
+% Logic Level   : 0 V
+
+status.setDPort1 = invoke(digitalObj, 'ps5000aSetDigitalPort', dPort1, 0, 0);
+
+%% Change resolution
+% The maximum resolution will depend on the number of channels enabled.
+
+% Set resolution to 15 bits as 2 channels will be enabled.
+[status.setResolution, resolution] = invoke(ps5000aDeviceObj, 'ps5000aSetDeviceResolution', 15);  
+
+% Obtain the maximum Analog Digital Converter (ADC) count value from the
+% driver - this is used for scaling values returned from the driver when
+% data is collected. This value may change depending on the resolution
+% selected.
+maxADCCount = get(ps5000aDeviceObj, 'maxADCValue');
+
+%% Set simple trigger
+% Set a trigger on channel A, with an auto timeout - the default value for
+% delay is used. The device will wait for a rising edge through
+% the specified threshold unless the timeout occurs first.
+
+% Trigger properties and functions are located in the Instrument
+% Driver's Trigger group.
+
+triggerGroupObj = get(ps5000aDeviceObj, 'Trigger');
+triggerGroupObj = triggerGroupObj(1);
+
+% Set the |autoTriggerMs| property in order to automatically trigger the
+% oscilloscope after 1 second if a trigger event has not occurred. Set to 0
+% to wait indefinitely for a trigger event.
+
+set(triggerGroupObj, 'autoTriggerMs', 1000);
+
+% Channel     : 0 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A)
+% Threshold   : 500 mV
+% Direction   : 2 (ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING)
+
+[status.setSimpleTrigger] = invoke(triggerGroupObj, 'setSimpleTrigger', 0, 500, 2);
+
+%% Set data buffers
+% Data buffers for channels A and B as well as Digital PORT0 - buffers
+% should be set with the driver, and these MUST be passed with application
+% buffers to the wrapper driver. This will ensure that data is correctly
+% copied from the driver buffers for later processing.
+
+overviewBufferSize  = 100000; % Size of the buffer to collect data from buffer.
+segmentIndex        = 0;   
+ratioMode           = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_NONE;
+
+% Buffers to be passed to the driver
+pDriverBufferChA    = libpointer('int16Ptr', zeros(overviewBufferSize, 1, 'int16'));
+pDriverBufferChB    = libpointer('int16Ptr', zeros(overviewBufferSize, 1, 'int16'));
+pDriverBufferDPort0 = libpointer('int16Ptr', zeros(overviewBufferSize, 1, 'int16'));
+
+% Call the functions to register the buffers
+status.setDataBufferChA = invoke(ps5000aDeviceObj, 'ps5000aSetDataBuffer', ...
+    channelA, pDriverBufferChA, overviewBufferSize, segmentIndex, ratioMode);
+
+status.setDataBufferChB = invoke(ps5000aDeviceObj, 'ps5000aSetDataBuffer', ...
+    channelB, pDriverBufferChB, overviewBufferSize, segmentIndex, ratioMode);
+
+status.setDataBufferPortD0 = invoke(ps5000aDeviceObj, 'ps5000aSetDataBuffer', ...
+    dPort0, pDriverBufferDPort0, overviewBufferSize, segmentIndex, ratioMode);
+
+% Application Buffers - these are for copying from the driver into.
+pAppBufferChA       = libpointer('int16Ptr', zeros(overviewBufferSize, 1, 'int16'));
+pAppBufferChB       = libpointer('int16Ptr', zeros(overviewBufferSize, 1, 'int16'));
+pAppBufferDPort0    = libpointer('int16Ptr', zeros(overviewBufferSize, 1, 'int16'));
+
+% Streaming properties and functions are located in the Instrument Driver's
+% Streaming group.
+
+streamingGroupObj = get(ps5000aDeviceObj, 'Streaming');
+streamingGroupObj = streamingGroupObj(1);
+
+% Register application and driver buffers (with the wrapper library).
+status.setAppDriverBuffersA = invoke(streamingGroupObj, 'setAppAndDriverBuffers', channelA, ...
+    pAppBufferChA, pDriverBufferChA, overviewBufferSize);
+
+status.setAppDriverBuffersB = invoke(streamingGroupObj, 'setAppAndDriverBuffers', channelB, ...
+    pAppBufferChB, pDriverBufferChB, overviewBufferSize);
+
+status.setAppDriverBuffersPortD0 = invoke(streamingGroupObj, 'setAppAndDriverBuffers', dPort0, ...
+    pAppBufferDPort0, pDriverBufferDPort0, overviewBufferSize);
+
+%% Start streaming and collect data
+% Use default value for streaming interval which is 1e-6 for 1 MS/s.
+% Collect data for 5 seconds with auto stop - maximum array size will depend
+% on the PC's resources - type <matlab:doc('memory') |memory|> at the
+% MATLAB command prompt for further information.
+%
+% To change the sample interval set the |streamingInterval| property of the
+% Streaming group object. The call to the |ps5000aRunStreaming()| function
+% will output the actual sampling interval used by the driver.
+
+% To change the sample interval e.g 5 us for 200 kS/s
+% set(streamingGroupObj, 'streamingInterval', 5e-6);
+
+%%
+% Set the number of pre- and post-trigger samples.
+% If no trigger is set the library will still store
+% |numPreTriggerSamples| + |numPostTriggerSamples|.
+set(ps5000aDeviceObj, 'numPreTriggerSamples', 0);
+set(ps5000aDeviceObj, 'numPostTriggerSamples', 5000000);
+
+%%
+% The |autoStop| parameter can be set to false (0) to allow for continuous
+% data collection.
+% set(streamingGroupObj, 'autoStop', PicoConstants.FALSE);
+
+% Set other streaming parameters
+downSampleRatio = 1;
+downSampleRatioMode = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_NONE;
+
+%%
+% Defined buffers to store data collected from the channels. If capturing
+% data without using the autoStop flag, or if using a trigger with the
+% autoStop flag, allocate sufficient space (1.5 times the sum of the number
+% of pre-trigger and post-trigger samples is shown below) to allow for
+% additional pre-trigger data. Pre-allocating the array is more efficient
+% than using <matlab:doc('vertcat') |vertcat|> to combine data.
+
+maxSamples = get(ps5000aDeviceObj, 'numPreTriggerSamples') + ...
+    get(ps5000aDeviceObj, 'numPostTriggerSamples');
+
+% Take into account the downsampling ratio mode - required if collecting
+% data without a trigger and using the autoStop flag.
+
+finalBufferLength = round(1.5 * maxSamples / downSampleRatio);
+
+pBufferChAFinal     = libpointer('int16Ptr', zeros(finalBufferLength, 1, 'int16'));
+pBufferChBFinal     = libpointer('int16Ptr', zeros(finalBufferLength, 1, 'int16'));
+pBufferDPort0Final  = libpointer('int16Ptr', zeros(finalBufferLength, 1, 'int16'));
+
+% Prompt User to indicate if they wish to plot live streaming data.
+plotLiveData = questionDialog('Plot live streaming data?', 'Streaming Data Plot');
+
+if (plotLiveData == PicoConstants.TRUE)
+   
+    disp('Live streaming data collection with second plot on completion.');
+    
+else
+    
+    disp('Streaming data plot on completion.');
+    
+end
+
+originalPowerSource = invoke(ps5000aDeviceObj, 'ps5000aCurrentPowerSource');
+
+% Start streaming data collection.
+[status.runStreaming, sampleInterval, sampleIntervalTimeUnitsStr] = ...
+    invoke(streamingGroupObj, 'ps5000aRunStreaming', downSampleRatio, ...
+    downSampleRatioMode, overviewBufferSize);
+    
+disp('Streaming data...');
+fprintf('Click the STOP button to stop capture or wait for auto stop if enabled.\n') 
+
+% Variables to be used when collecting the data:
+
+hasAutoStopOccurred = PicoConstants.FALSE;  % Indicates if the device has stopped automatically.
+powerChange         = PicoConstants.FALSE;  % If the device power status has changed.
+newSamples          = 0; % Number of new samples returned from the driver.
+previousTotal       = 0; % The previous total number of samples.
+totalSamples        = 0; % Total samples captured by the device.
+startIndex          = 0; % Start index of data in the buffer returned.
+hasTriggered        = 0; % To indicate if trigger has occurred.
+triggeredAtIndex    = 0; % The index in the overall buffer where the trigger occurred.
+
+time = zeros(overviewBufferSize / downSampleRatio, 1);	% Array to hold time values
+
+status.getStreamingLatestValuesStatus = PicoStatus.PICO_OK; % OK
+
+% Display a 'Stop' button.
+[stopFig.h, stopFig.h] = stopButton();             
+             
+flag = 1; % Use flag variable to indicate if stop button has been clicked (0).
+setappdata(gcf, 'run', flag);
+
+% Plot Properties - these are for displaying data as it is collected.
+
+if (plotLiveData == PicoConstants.TRUE)
+    
+    % Plot on a single figure. 
+    figure1 = figure('Name','PicoScope 5000 Series (A API) Example - MSO Streaming Mode Capture', ...
+         'NumberTitle','off');
+    
+    analogAxes = subplot(2, 1, 1);
+    digitalAxes = subplot(2, 1, 2);
+    
+    % Estimate x-axis limit to try and avoid using too much CPU resources
+    % when drawing - use max voltage range selected if plotting multiple
+    % channels on the same graph.
+    xlim(analogAxes, [0 (sampleInterval * finalBufferLength)]);
+    xlim(digitalAxes, [0 (sampleInterval * finalBufferLength)]);
+
+    yRange = max(channelARangeMv, channelBRangeMv);
+    ylim(analogAxes, [(-1 * yRange) yRange]);
+
+    hold(analogAxes,'on');
+    hold(digitalAxes, 'on');
+
+    grid(analogAxes, 'on');
+    grid(digitalAxes, 'on');
+
+    title(analogAxes, 'Analog Channel Data Acquisition');
+    title(digitalAxes, 'Digital Channel Data Acquisition');
+    
+    if (strcmp(sampleIntervalTimeUnitsStr, 'us'))
+        
+        xLabelStr = 'Time (\mus)';
+        
+    else
+       
+        xLabelStr = strcat('Time (', sampleIntervalTimeUnitsStr, ')');
+        
+    end
+    
+    xlabel(analogAxes, xLabelStr);
+    ylabel(analogAxes, 'Voltage (mV)');
+    
+    xlabel(digitalAxes, xLabelStr);
+    ylabel(digitalAxes, 'Level (Counts)');
+    
+end
+
+%%
+% Collect samples as long as the |hasAutoStopOccurred| flag has not been
+% set or the call to |getStreamingLatestValues()| does not return an error
+% code (check for STOP button push inside loop).
+while(hasAutoStopOccurred == PicoConstants.FALSE && status.getStreamingLatestValuesStatus == PicoStatus.PICO_OK)
+    
+    ready = PicoConstants.FALSE;
+   
+    while (ready == PicoConstants.FALSE)
+
+       status.getStreamingLatestValuesStatus = invoke(streamingGroupObj, 'getStreamingLatestValues'); 
+        
+       ready = invoke(streamingGroupObj, 'isReady');
+
+       % Give option to abort from here
+       flag = getappdata(gcf, 'run');
+       drawnow;
+
+       if (flag == 0)
+
+            disp('STOP button clicked - aborting data collection.')
+            break;
+
+       end
+
+       drawnow;
+
+    end
+    
+    % Check for data
+    [newSamples, startIndex] = invoke(streamingGroupObj, 'availableData');
+
+    if (newSamples > 0)
+        
+        % Check if the scope has triggered.
+        [triggered, triggeredAt] = invoke(streamingGroupObj, 'isTriggerReady');
+
+        if (triggered == PicoConstants.TRUE)
+
+            % Adjust trigger position as MATLAB does not use zero-based
+            % indexing.
+            bufferTriggerPosition = triggeredAt + 1;
+            
+            fprintf('Triggered - index in buffer: %d\n', bufferTriggerPosition);
+
+            hasTriggered = triggered;
+
+            % Set the total number of samples at which the device
+            % triggered.
+            triggeredAtIndex = totalSamples + bufferTriggerPosition;
+
+        end
+
+        previousTotal   = totalSamples;
+        totalSamples    = totalSamples + newSamples;
+
+        % Printing to console can slow down acquisition - use for
+        % demonstration.
+        fprintf('Collected %d samples, startIndex: %d total: %d.\n', newSamples, startIndex, totalSamples);
+        
+        % Position indices of data in the buffer(s).
+        firstValuePosn = startIndex + 1;
+        lastValuePosn = startIndex + newSamples;
+        
+        % Convert data values to millivolts from the application buffer(s).
+        bufferChAmV     = adc2mv(pAppBufferChA.Value(firstValuePosn:lastValuePosn), channelARangeMv, maxADCCount);
+        bufferChBmV     = adc2mv(pAppBufferChB.Value(firstValuePosn:lastValuePosn), channelBRangeMv, maxADCCount);
+        
+        bufferDPort0    = pAppBufferDPort0.Value(firstValuePosn:lastValuePosn);
+
+        % Process collected data further if required - this example plots
+        % the data if the User has selected 'Yes' at the prompt.
+        
+        % Copy data into the final buffer(s).
+        pBufferChAFinal.Value(previousTotal + 1:totalSamples)       = bufferChAmV;
+        pBufferChBFinal.Value(previousTotal + 1:totalSamples)       = bufferChBmV;
+        pBufferDPort0Final.Value(previousTotal + 1:totalSamples)    = bufferDPort0;
+        
+        if (plotLiveData == PicoConstants.TRUE)
+            
+            % Time axis. 
+            % Multiply by ratio mode as samples get reduced
+            time = (double(sampleInterval) * double(downSampleRatio)) * (previousTotal:(totalSamples - 1));
+
+            plot(analogAxes, time, bufferChAmV, time, bufferChBmV);
+            plot(digitalAxes, time, bufferDPort0);
+        
+        end
+       
+        % Clear variables for use again
+        clear bufferChAmV;
+        clear bufferChBmV;
+        clear bufferDPort0;
+        clear firstValuePosn;
+        clear lastValuePosn;
+        clear startIndex;
+        clear triggered;
+        clear triggerAt;
+          
+   end
+   
+    % Check if auto stop has occurred.
+    hasAutoStopOccurred = invoke(streamingGroupObj, 'autoStopped');
+
+    if (hasAutoStopOccurred == PicoConstants.TRUE)
+
+       disp('AutoStop: TRUE - exiting data collection loop.');
+       break;
+
+    end
+   
+    % Check if 'STOP' button has been clicked.
+    flag = getappdata(gcf, 'run');
+    drawnow;
+
+    if (flag == 0)
+
+        disp('STOP button clicked - aborting data collection.')
+        break;
+        
+    end
+ 
+end
+
+% Close the STOP button window.
+if (exist('stopFig', 'var'))
+    
+    close('Stop Button');
+    clear stopFig;
+        
+end
+
+if (plotLiveData == PicoConstants.TRUE)
+    
+    drawnow;
+    
+    % Take hold off the axes.
+    hold(analogAxes, 'off');
+    hold(digitalAxes, 'off');
+    
+end
+
+if (hasTriggered == PicoConstants.TRUE)
+   
+    fprintf('Triggered at overall index: %d\n\n', triggeredAtIndex);
+    
+end
+
+fprintf('\n');
+
+%% Stop the device
+% This function should be called regardless of whether the autoStop
+% property is enabled or not.
+
+[status.stop] = invoke(ps5000aDeviceObj, 'ps5000aStop');
+
+%% Find the number of samples.
+% This is the number of samples held in the shared library itself. The
+% actual number of samples collected when using a trigger is likely to be
+% greater.
+
+[status.noOfStreamingValues, numStreamingValues] = invoke(streamingGroupObj, 'ps5000aNoOfStreamingValues');
+
+fprintf('Number of samples available after data collection: %u\n', numStreamingValues);
+
+%% Process data
+% Process data post-capture if required - here the data will be plotted.
+
+% Reduce size of arrays if required.
+
+if (totalSamples < finalBufferLength)
+    
+    pBufferChAFinal.Value(totalSamples + 1:end) = [];
+    pBufferChBFinal.Value(totalSamples + 1:end) = [];
+    pBufferDPort0Final.Value(totalSamples + 1:end)  = [];
+
+end
+
+% Retrieve data for the channels.
+channelAFinal = pBufferChAFinal.Value();
+channelBFinal = pBufferChBFinal.Value();
+dPort0Final   = pBufferDPort0Final.Value();
+
+% Plot total analog and digital data collected on separate figures.
+
+%%
+% *Analog data*
+
+scrsz = get(groot,'ScreenSize');
+
+analogFinalFigure = figure('Name','PicoScope 5000 Series (A API) Example - MSO Streaming Mode Capture', ...
+    'NumberTitle', 'off', 'Position', [1 scrsz(4)/4 scrsz(3)/2 scrsz(4)/2]);
+
+movegui(analogFinalFigure, 'west');
+
+analogFinalAxes = axes('Parent', analogFinalFigure);
+hold(analogFinalAxes, 'on');
+
+title(analogFinalAxes, 'Analog Data Acquisition (Final)');
+
+if (strcmp(sampleIntervalTimeUnitsStr, 'us'))
+        
+    xLabelStr = 'Time (\mus)';
+
+else
+
+    xLabelStr = strcat('Time (', sampleIntervalTimeUnitsStr, ')');
+
+end
+
+xlabel(analogFinalAxes, xLabelStr);
+ylabel(analogFinalAxes, 'Voltage (mV)');
+
+% Find the maximum voltage range.
+maxYRange = max(channelARangeMv, channelBRangeMv);
+ylim(analogFinalAxes,[(-1 * maxYRange) maxYRange]);
+
+time = (double(sampleInterval) * double(downSampleRatio)) * (0:length(channelAFinal) - 1);
+
+plot(analogFinalAxes, time, channelAFinal, time, channelBFinal);
+
+grid(analogFinalAxes, 'on');
+legend(analogFinalAxes, 'Channel A', 'Channel B');
+
+hold(analogFinalAxes, 'off');
+
+%% 
+% *Digital data*
+
+digitalFinalFigure = figure('Name','PicoScope 5000 Series (A API) Example - MSO Streaming Mode Capture', ...
+    'NumberTitle', 'off', 'Position', [scrsz(3)/2 + 1 scrsz(4)/4 scrsz(3)/2 scrsz(4)/2]);
+
+movegui(digitalFinalFigure, 'east');
+
+disp('Converting digital integer data to binary...');
+
+dPort0Binary = zeros(length(dPort0Final), 8);
+
+% Retrieve the bit values from the lower 8 bits of the 16-bit values
+% returned for dPort0 - each bit corresponds to a digital channel. Channel
+% D0 data will be in column 8 and D7 data will be in column 1.
+for sample = 1:length(dPort0Final)
+    
+    dPort0Binary(sample,:)= bitget(dPort0Final(sample), 8:-1:1, 'int16');
+    
+end
+
+% Specify colours to use for the plots - the colour to use will be selected
+% according to the digital channel.
+digiPlotColours = ['m', 'b', 'r', 'g'];
+
+% Display digital data in a 4 x 2 grid
+for i = 1:8
+    
+    subplot(4, 2, i); 
+    plot(time, dPort0Binary(:, (8 - (i - 1))), digiPlotColours(rem(i, length(digiPlotColours)) + 1));
+    title(strcat('Digital Channel D', num2str(i - 1)));
+    xlabel(strcat('Time (', sampleIntervalTimeUnitsStr, ')'));
+    ylabel('Logic Level');
+    axis([-inf, inf, -0.5, 1.5])
+    grid on;
+    
+end
+
+%% Disconnect device
+% Disconnect device object from hardware.
+
+disconnect(ps5000aDeviceObj);
+delete(ps5000aDeviceObj);
+##### SOURCE END #####
+--></body></html>
