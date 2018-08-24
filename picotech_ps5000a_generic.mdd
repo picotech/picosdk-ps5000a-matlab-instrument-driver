@@ -3340,7 +3340,7 @@ Please also refer to the ps5000aSetDataBuffer, and ps5000aGetValues functions.
         
         if (channelCount == PicoConstants.QUAD_SCOPE)
         
-            currentPowerState = invoke(obj, 'ps5000aCurrentPowerSource');
+            currentPowerState = invoke(deviceObj, 'ps5000aCurrentPowerSource');
         
             if (currentPowerState == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED)
            
