@@ -34,7 +34,7 @@
 % This example was published using the following test signals:
 %
 % * Channel A: 4 Vpp, 1 kHz sine wave
-% * Channel B: 2 Vpp, 1 kHz ramp up wave
+% * Channel B: 2 Vpp, 1 kHz square wave
 
 %% Clear command window and close any figures
 
