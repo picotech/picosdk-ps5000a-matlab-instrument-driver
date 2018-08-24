@@ -48,7 +48,7 @@ close all;
 
 PS5000aConfig;
 
-%% Parameter Definitions
+%% Parameter definitions
 % Define any parameters that might be required throughout the script.
 
 channelA = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
@@ -85,12 +85,12 @@ ps5000aDeviceObj = icdevice('picotech_ps5000a_generic', '');
 % Connect device object to hardware.
 connect(ps5000aDeviceObj);
 
-%% Display Unit Information
+%% Display unit information
 
 [status.getUnitInfo, unitInfo] = invoke(ps5000aDeviceObj, 'getUnitInfo');
 disp(unitInfo);
 
-%% Channel Setup
+%% Channel setup
 % All channels are enabled by default - if the device is a 4-channel scope,
 % switch off channels C and D so device can be set to 15-bit resolution.
 
@@ -150,7 +150,7 @@ for ch = 1:numChannels
     
 end
 
-%% Change Resolution
+%% Change resolution
 % The maximum resolution will depend on the number of channels enabled.
 
 % Set resolution to 15 bits as 2 channels will be enabled.
@@ -227,7 +227,7 @@ status.setAppDriverBuffersB = invoke(streamingGroupObj, 'setAppAndDriverBuffers'
 % Collect data for 5 seconds with auto stop - maximum array size will depend
 % on the PC's resources - type <matlab:doc('memory') |memory|> at the
 % MATLAB command prompt for further information.
-
+%
 % To change the sample interval set the |streamingInterval| property of the
 % Streaming group object. The call to the |ps5000aRunStreaming()| function
 % will output the actual sampling interval used by the driver.
@@ -235,12 +235,14 @@ status.setAppDriverBuffersB = invoke(streamingGroupObj, 'setAppAndDriverBuffers'
 % To change the sample interval e.g 5 us for 200 kS/s
 % set(streamingGroupObj, 'streamingInterval', 5e-6);
 
+%%
 % Set the number of pre- and post-trigger samples.
-% If no trigger is set the library will still store the
+% If no trigger is set the library will still store
 % |numPreTriggerSamples| + |numPostTriggerSamples|.
 set(ps5000aDeviceObj, 'numPreTriggerSamples', 0);
 set(ps5000aDeviceObj, 'numPostTriggerSamples', 5000000);
 
+%%
 % The |autoStop| parameter can be set to false (0) to allow for continuous
 % data collection.
 % set(streamingGroupObj, 'autoStop', PicoConstants.FALSE);
@@ -249,6 +251,7 @@ set(ps5000aDeviceObj, 'numPostTriggerSamples', 5000000);
 downSampleRatio = 1;
 downSampleRatioMode = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_NONE;
 
+%%
 % Defined buffers to store data collected from the channels. If capturing
 % data without using the autoStop flag, or if using a trigger with the
 % autoStop flag, allocate sufficient space (1.5 times the sum of the number
@@ -350,6 +353,7 @@ if (plotLiveData == PicoConstants.TRUE)
     
 end
 
+%%
 % Collect samples as long as the |hasAutoStopOccurred| flag has not been
 % set or the call to |getStreamingLatestValues()| does not return an error
 % code (check for STOP button push inside loop).
@@ -435,10 +439,8 @@ while(hasAutoStopOccurred == PicoConstants.FALSE && status.getStreamingLatestVal
         end
        
         % Clear variables for use again
-        clear bufferChA
-        clear bufferChB
-        clear bufferChAMV;
-        clear bufferChBMV;
+        clear bufferChAmV;
+        clear bufferChBmV;
         clear firstValuePosn;
         clear lastValuePosn;
         clear startIndex;
