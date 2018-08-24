@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>PicoScope 5000 Series (A API) Instrument Driver Oscilloscope Rapid Block Data Capture Example</h1><!--introduction--><p>This is an example of an instrument control session using a device object. The instrument control session comprises all the steps you are likely to take when communicating with your instrument.</p><p>These steps are:</p><div><ol><li>Create a device object</li><li>Connect to the instrument</li><li>Configure properties</li><li>Invoke functions</li><li>Disconnect from the instrument</li></ol></div><p>To run the instrument control session, type the name of the file, PS5000A_ID_Rapid_Block_Example, at the MATLAB command prompt.</p><p>The file, PS5000A_ID_RAPID_BLOCK_EXAMPLE.M must be on your MATLAB PATH. For additional information on setting your MATLAB PATH, type 'help addpath' at the MATLAB command prompt.</p><p><b>Example:</b>    PS5000A_ID_Rapid_Block_Example;</p><p><b>Description:</b>     Demonstrates how to call functions in order to capture a series of     waveforms using rapid block mode on a PicoScope 5000 Series     Oscilloscope using the underlying 'A' API library functions.</p><p><b>See also:</b> <a href="matlab:doc('icdevice')"><tt>icdevice</tt></a> | <a href="matlab:doc('instrument/invoke')"><tt>invoke</tt></a></p><p><b>Copyright:</b> &copy; 2013-2017 Pico Technology Ltd. See LICENSE file for terms.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Suggested input test signals</a></li><li><a href="#2">Clear command window and close any figures</a></li><li><a href="#3">Load configuration information</a></li><li><a href="#4">Device connection</a></li><li><a href="#5">Set channels</a></li><li><a href="#6">Set device resolution</a></li><li><a href="#7">Set memory segments</a></li><li><a href="#8">Verify timebase index and maximum number of samples</a></li><li><a href="#9">Set simple trigger</a></li><li><a href="#10">Set rapid block parameters and capture data</a></li><li><a href="#12">Obtain the number of captures</a></li><li><a href="#13">Process data</a></li><li><a href="#14">Stop the device</a></li><li><a href="#15">Disconnect device</a></li></ul></div><h2 id="1">Suggested input test signals</h2><p>This example was published using the following test signal:</p><div><ul><li>Channel A: 4 Vpp Swept sine wave (Start: 10 kHz, Stop: 100 kHz, Sweep type: Up, Increment Time: 1 ms, Increment type: Linear, Mode: Continous)</li><li>Channel B: 2 Vpp Swept square wave (Start: 10 kHz, Stop: 50 kHz, Sweep type: Up, Increment: 5 kHz, Increment Time: 1 ms)</li></ul></div><h2 id="2">Clear command window and close any figures</h2><pre class="codeinput">clc;
+  </style></head><body><div class="content"><h1>PicoScope 5000 Series (A API) Instrument Driver Oscilloscope Rapid Block Data Capture Example</h1><!--introduction--><p>This is an example of an instrument control session using a device object. The instrument control session comprises all the steps you are likely to take when communicating with your instrument.</p><p>These steps are:</p><div><ol><li>Create a device object</li><li>Connect to the instrument</li><li>Configure properties</li><li>Invoke functions</li><li>Disconnect from the instrument</li></ol></div><p>To run the instrument control session, type the name of the file, PS5000A_ID_Rapid_Block_Example, at the MATLAB command prompt.</p><p>The file, PS5000A_ID_RAPID_BLOCK_EXAMPLE.M must be on your MATLAB PATH. For additional information on setting your MATLAB PATH, type 'help addpath' at the MATLAB command prompt.</p><p><b>Example:</b>    PS5000A_ID_Rapid_Block_Example;</p><p><b>Description:</b>     Demonstrates how to call functions in order to capture a series of     waveforms using rapid block mode on a PicoScope 5000 Series     Oscilloscope using the underlying 'A' API library functions.</p><p><b>See also:</b> <a href="matlab:doc('icdevice')"><tt>icdevice</tt></a> | <a href="matlab:doc('instrument/invoke')"><tt>invoke</tt></a></p><p><b>Copyright:</b> &copy; 2013-2018 Pico Technology Ltd. See LICENSE file for terms.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Suggested input test signals</a></li><li><a href="#2">Clear command window and close any figures</a></li><li><a href="#3">Load configuration information</a></li><li><a href="#4">Device connection</a></li><li><a href="#5">Set channels</a></li><li><a href="#6">Set device resolution</a></li><li><a href="#7">Set memory segments</a></li><li><a href="#8">Verify timebase index and maximum number of samples</a></li><li><a href="#9">Set simple trigger</a></li><li><a href="#10">Set rapid block parameters and capture data</a></li><li><a href="#12">Obtain the number of captures</a></li><li><a href="#13">Process data</a></li><li><a href="#14">Stop the device</a></li><li><a href="#15">Disconnect device</a></li></ul></div><h2 id="1">Suggested input test signals</h2><p>This example was published using the following test signal:</p><div><ul><li>Channel A: 4 Vpp Swept sine wave (Start: 10 kHz, Stop: 100 kHz, Sweep type: Up, Increment Time: 1 ms, Increment type: Linear, Mode: Continous)</li><li>Channel B: 2 Vpp Swept square wave (Start: 10 kHz, Stop: 50 kHz, Sweep type: Up, Increment: 5 kHz, Increment Time: 1 ms)</li></ul></div><h2 id="2">Clear command window and close any figures</h2><pre class="codeinput">clc;
 close <span class="string">all</span>;
 </pre><h2 id="3">Load configuration information</h2><pre class="codeinput">PS5000aConfig;
 </pre><h2 id="4">Device connection</h2><pre class="codeinput"><span class="comment">% Check if an Instrument session using the device object |ps5000aDeviceObj|</span>
@@ -97,10 +97,10 @@ ps5000aDeviceObj = icdevice(<span class="string">'picotech_ps5000a_generic'</spa
 
 <span class="comment">% Connect device object to hardware.</span>
 connect(ps5000aDeviceObj);
-</pre><pre class="codeoutput">
-Copyright &copy; 2013-2018 Pico Technology Ltd. All rights reserved.
+</pre><pre class="codeoutput">PicoScope 5000 Series (A API) MATLAB Instrument Driver
 
-PicoScope 5000 Series (A API) MATLAB Instrument Driver
+
+Copyright &copy; 2013-2018 Pico Technology Ltd. All rights reserved.
 
 Number of units found: 1
 
@@ -118,7 +118,7 @@ Opening PicoScope 5000 Series (A API) device...
    Driver Information
       DriverType:         MATLAB generic
       DriverName:         picotech_ps5000a_generic.mdd
-      DriverVersion:      2.2.14.38
+      DriverVersion:      2.2.14.39
  
    Communication State
       Status:             open
@@ -381,7 +381,7 @@ Libraries unloaded successfully.
 %   
 % *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
 %
-% *Copyright:* © 2013-2017 Pico Technology Ltd. See LICENSE file for terms.
+% *Copyright:* © 2013-2018 Pico Technology Ltd. See LICENSE file for terms.
 
 %% Suggested input test signals
 % This example was published using the following test signal:

@@ -28,7 +28,7 @@
 %   
 % *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
 %
-% *Copyright:* © 2013-2017 Pico Technology Ltd. See LICENSE file for terms.
+% *Copyright:* © 2013-2018 Pico Technology Ltd. See LICENSE file for terms.
 
 %% Suggested input test signals
 % This example was published using the following test signal:
