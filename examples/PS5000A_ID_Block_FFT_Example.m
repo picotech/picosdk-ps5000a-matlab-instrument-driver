@@ -33,7 +33,7 @@
 %% Suggested input test signals
 % This example was published using the following test signals
 %
-% * Channel A: 4 Vpp, 10 kHz
+% * Channel A: 4 Vpp, 10 kHz square wave
 
 %% Clear command window and close any figures
 

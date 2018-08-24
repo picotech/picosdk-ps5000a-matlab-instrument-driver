@@ -1,0 +1,568 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>PicoScope 5000 Series (A API) Instrument Driver Oscilloscope Block Data Capture with FFT Example</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-24"><meta name="DC.source" content="PS5000A_ID_Block_FFT_Example.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>PicoScope 5000 Series (A API) Instrument Driver Oscilloscope Block Data Capture with FFT Example</h1><!--introduction--><p>This is an example of an instrument control session using a device object. The instrument control session comprises all the steps you are likely to take when communicating with your instrument.</p><p>These steps are:</p><div><ol><li>Create a device object</li><li>Connect to the instrument</li><li>Configure properties</li><li>Invoke functions</li><li>Disconnect from the instrument</li></ol></div><p>To run the instrument control session, type the name of the file, PS5000A_ID_Block_FFT_Example, at the MATLAB command prompt.</p><p>The file, PS5000A_ID_BLOCK_FFT_EXAMPLE.M must be on your MATLAB PATH. For additional information on setting your MATLAB PATH, type 'help addpath' at the MATLAB command prompt.</p><p><b>Example:</b>     PS5000A_ID_Block_FFT_Example;</p><p><b>Description:</b>     Demonstrates how to call functions in order to capture a block of     data from a PicoScope 5000 Series Oscilloscope and calculates FFT     on Channel A.</p><p><b>See also:</b> <a href="matlab:doc('fft')"><tt>fft</tt></a> | <a href="matlab:doc('icdevice')"><tt>icdevice</tt></a> | <a href="matlab:doc('instrument/invoke')"><tt>invoke</tt></a></p><p><b>Copyright:</b> &copy; 2013-2018 Pico Technology Ltd. See LICENSE file for terms.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Suggested input test signals</a></li><li><a href="#2">Clear command window and close any figures</a></li><li><a href="#3">Load configuration information</a></li><li><a href="#4">Device connection</a></li><li><a href="#5">Set channels</a></li><li><a href="#6">Set device resolution</a></li><li><a href="#7">Verify timebase index and maximum number of samples</a></li><li><a href="#8">Set simple trigger</a></li><li><a href="#9">Set block parameters and capture data</a></li><li><a href="#11">Process data</a></li><li><a href="#12">Stop the device</a></li><li><a href="#13">Disconnect device</a></li></ul></div><h2 id="1">Suggested input test signals</h2><p>This example was published using the following test signals</p><div><ul><li>Channel A: 4 Vpp, 10 kHz square wave</li></ul></div><h2 id="2">Clear command window and close any figures</h2><pre class="codeinput">clc;
+close <span class="string">all</span>;
+</pre><h2 id="3">Load configuration information</h2><pre class="codeinput">PS5000aConfig;
+</pre><h2 id="4">Device connection</h2><pre class="codeinput"><span class="comment">% Check if an Instrument session using the device object |ps5000aDeviceObj|</span>
+<span class="comment">% is still open, and if so, disconnect if the User chooses 'Yes' when prompted.</span>
+<span class="keyword">if</span> (exist(<span class="string">'ps5000aDeviceObj'</span>, <span class="string">'var'</span>) &amp;&amp; ps5000aDeviceObj.isvalid &amp;&amp; strcmp(ps5000aDeviceObj.status, <span class="string">'open'</span>))
+
+    openDevice = questionDialog([<span class="string">'Device object ps5000aDeviceObj has an open connection. '</span> <span class="keyword">...</span>
+        <span class="string">'Do you wish to close the connection and continue?'</span>], <span class="keyword">...</span>
+        <span class="string">'Device Object Connection Open'</span>);
+
+    <span class="keyword">if</span> (openDevice == PicoConstants.TRUE)
+
+        <span class="comment">% Close connection to device.</span>
+        disconnect(ps5000aDeviceObj);
+        delete(ps5000aDeviceObj);
+
+    <span class="keyword">else</span>
+
+        <span class="comment">% Exit script if User selects 'No'.</span>
+        <span class="keyword">return</span>;
+
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="comment">% Create a device object.</span>
+ps5000aDeviceObj = icdevice(<span class="string">'picotech_ps5000a_generic.mdd'</span>);
+
+<span class="comment">% Connect device object to hardware.</span>
+connect(ps5000aDeviceObj);
+</pre><pre class="codeoutput">
+Copyright &copy; 2013-2018 Pico Technology Ltd. All rights reserved.
+
+PicoScope 5000 Series (A API) MATLAB Instrument Driver
+
+Number of units found: 1
+
+Serial number(s): FY984/0005
+
+Opening PicoScope 5000 Series (A API) device...
+
+   Instrument Device Object Using Driver : picotech_ps5000a_generic.mdd
+ 
+   Instrument Information
+      Type:               Oscilloscope
+      Manufacturer:       Pico Technology Ltd.
+      Model:              PicoScope 5000A, 5000B and 5000D Series
+ 
+   Driver Information
+      DriverType:         MATLAB generic
+      DriverName:         picotech_ps5000a_generic.mdd
+      DriverVersion:      2.2.14.38
+ 
+   Communication State
+      Status:             open
+
+Default Channel Setup:-
+-----------------------
+
+Channel A:-
+	Enabled: True
+	Coupling: DC
+	Range: 5 V
+	Analog offset: 0.0 V
+
+Channel B:-
+	Enabled: True
+	Coupling: DC
+	Range: 5 V
+	Analog offset: 0.0 V
+
+Channel C:-
+	Enabled: True
+	Coupling: DC
+	Range: 5 V
+	Analog offset: 0.0 V
+
+Channel D:-
+	Enabled: True
+	Coupling: DC
+	Range: 5 V
+	Analog offset: 0.0 V
+
+Turning off Equivalent Time Sampling...
+Equivalent Time Sampling turned off.
+
+Turning off trigger...
+Trigger turned off.
+
+Default Block mode parameters:-
+
+               Timebase index : 65
+                 Time Interval: 504 ns
+ Number of pre-trigger samples: 0
+Number of post-trigger samples: 10000
+       Total number of samples: 10000
+
+Default Streaming mode parameters:-
+
+ Streaming interval: 1.00e-06 s
+Streaming auto stop: 1
+
+Default Signal generator parameters:-
+
+Start frequency: 1000 Hz
+ Stop frequency: 1000 Hz
+
+Connected to PicoScope 5000 Series (A API) device:-
+
+          Instrument Model: 5444D
+       Batch/Serial Number: FY984/0005
+               USB Version: 3.0
+           Analog Channels: 4
+                Resolution: 8 bits
+                 Bandwidth: 200 MHz
+             Buffer Memory: 512 MS
+     Maximum Sampling Rate: 1 GS/s
+     Signal Generator Type: Arbitrary Waveform Generator
+5 V Power Supply connected: True
+
+</pre><h2 id="5">Set channels</h2><p>Default driver settings applied to channels are listed below - use the Instrument Driver's <tt>ps5000aSetChannel()</tt> function to turn channels on or off and set voltage ranges, coupling, as well as analog offset.</p><h2 id="6">Set device resolution</h2><pre class="codeinput"><span class="comment">% Max. resolution with 2 channels enabled is 15 bits.</span>
+[status.setResolution, resolution] = invoke(ps5000aDeviceObj, <span class="string">'ps5000aSetDeviceResolution'</span>, 15);
+</pre><pre class="codeoutput">ps5000aSetDeviceResolution: Device resolution set to 14 bits.
+
+</pre><h2 id="7">Verify timebase index and maximum number of samples</h2><p>Use the <tt>ps5000aGetTimebase2()</tt> function to query the driver as to the suitability of using a particular timebase index and the maximum number of samples available in the segment selected, then set the <tt>timebase</tt> property if required.</p><p>To use the fastest sampling interval possible, enable one analog channel and turn off all other channels.</p><p>Use a while loop to query the function until the status indicates that a valid timebase index has been selected. In this example, the timebase index of 65 is valid.</p><pre class="codeinput"><span class="comment">% Initial call to ps5000aGetTimebase2() with parameters:</span>
+<span class="comment">%</span>
+<span class="comment">% timebase      : 65</span>
+<span class="comment">% segment index : 0</span>
+
+status.getTimebase2 = PicoStatus.PICO_INVALID_TIMEBASE;
+timebaseIndex = 65;
+
+<span class="keyword">while</span> (status.getTimebase2 == PicoStatus.PICO_INVALID_TIMEBASE)
+
+    [status.getTimebase2, timeIntervalNanoseconds, maxSamples] = invoke(ps5000aDeviceObj, <span class="keyword">...</span>
+                                                                    <span class="string">'ps5000aGetTimebase2'</span>, timebaseIndex, 0);
+
+    <span class="keyword">if</span> (status.getTimebase2 == PicoStatus.PICO_OK)
+
+        <span class="keyword">break</span>;
+
+    <span class="keyword">else</span>
+
+        timebaseIndex = timebaseIndex + 1;
+
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+fprintf(<span class="string">'Timebase index: %d, sampling interval: %d ns\n'</span>, timebaseIndex, timeIntervalNanoseconds);
+
+<span class="comment">% Configure the device object's |timebase| property value.</span>
+set(ps5000aDeviceObj, <span class="string">'timebase'</span>, timebaseIndex);
+</pre><pre class="codeoutput">Timebase index: 65, sampling interval: 504 ns
+</pre><h2 id="8">Set simple trigger</h2><p>Set a trigger on channel A, with an auto timeout - the default value for delay is used.</p><pre class="codeinput"><span class="comment">% Trigger properties and functions are located in the Instrument</span>
+<span class="comment">% Driver's Trigger group.</span>
+
+triggerGroupObj = get(ps5000aDeviceObj, <span class="string">'Trigger'</span>);
+triggerGroupObj = triggerGroupObj(1);
+
+<span class="comment">% Set the |autoTriggerMs| property in order to automatically trigger the</span>
+<span class="comment">% oscilloscope after 1 second if a trigger event has not occurred. Set to 0</span>
+<span class="comment">% to wait indefinitely for a trigger event.</span>
+
+set(triggerGroupObj, <span class="string">'autoTriggerMs'</span>, 1000);
+
+<span class="comment">% Channel     : 0 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A)</span>
+<span class="comment">% Threshold   : 1000 mV</span>
+<span class="comment">% Direction   : 2 (ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING)</span>
+
+[status.setSimpleTrigger] = invoke(triggerGroupObj, <span class="string">'setSimpleTrigger'</span>, 0, 1000, 2);
+</pre><h2 id="9">Set block parameters and capture data</h2><p>Capture a block of data and retrieve data values for channels A and B.</p><pre class="codeinput">blockGroupObj = get(ps5000aDeviceObj, <span class="string">'Block'</span>);
+blockGroupObj = blockGroupObj(1);
+
+<span class="comment">% Set pre-trigger samples.</span>
+set(ps5000aDeviceObj, <span class="string">'numPreTriggerSamples'</span>, 1024);
+<span class="comment">% Set post-trigger samples.</span>
+set(ps5000aDeviceObj, <span class="string">'numPostTriggerSamples'</span>, 10000);
+</pre><p>This example uses the <tt>runBlock()</tt> function in order to collect a block of data - if other code needs to be executed while waiting for the device to indicate that it is ready, use the <tt>ps5000aRunBlock()</tt> function and poll the <tt>ps5000aIsReady()</tt> function.</p><pre class="codeinput"><span class="comment">% Capture a block of data:</span>
+<span class="comment">%</span>
+<span class="comment">% segment index: 0 (The buffer memory is not segmented in this example)</span>
+
+[status.runBlock] = invoke(blockGroupObj, <span class="string">'runBlock'</span>, 0);
+
+<span class="comment">% Retrieve data values:</span>
+
+startIndex              = 0;
+segmentIndex            = 0;
+downsamplingRatio       = 1;
+downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_NONE;
+
+[numSamples, overflow, chA, chB] = invoke(blockGroupObj, <span class="string">'getBlockData'</span>, startIndex, segmentIndex, <span class="keyword">...</span>
+                                            downsamplingRatio, downsamplingRatioMode);
+</pre><pre class="codeoutput">runBlock:- Collecting block of data:
+	Timebase: 65
+	Pre-trigger samples: 1024
+	Post-trigger samples: 10000
+
+runBlock: Waiting for device to become ready...
+runBlock: Device ready.
+
+getBlockData: Setting up data buffers...
+getBlockData: Retrieving data...
+getBlockData: Assigning analog data to array and converting to millivolts.
+getBlockData: Data succesfully retrieved.
+
+</pre><h2 id="11">Process data</h2><p>Plot data values, calculate and plot FFT.</p><pre class="codeinput">figure1 = figure(<span class="string">'Name'</span>,<span class="string">'PicoScope 5000 Series (A API) Example - Block Mode Capture with FFT'</span>, <span class="keyword">...</span>
+    <span class="string">'NumberTitle'</span>,<span class="string">'off'</span>);
+
+<span class="comment">% Calculate time (nanoseconds) and convert to milliseconds</span>
+<span class="comment">% Use |timeIntervalNanoseconds| output from the |ps5000aGetTimebase2()|</span>
+<span class="comment">% function or calculate it using the main Programmer's Guide.</span>
+<span class="comment">% Take into account the downsampling ratio used.</span>
+
+timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
+timeMs = timeNs / 1e6;
+
+<span class="comment">% Channel A</span>
+chAAxes = subplot(2,1,1);
+plot(chAAxes, timeMs, chA);
+ylim(chAAxes, [-2500 2500]); <span class="comment">% Adjust vertical axis for signal</span>
+
+title(chAAxes, <span class="string">'Block Data Acquisition'</span>);
+xlabel(chAAxes, <span class="string">'Time (ms)'</span>);
+ylabel(chAAxes, <span class="string">'Voltage (mV)'</span>);
+grid(chAAxes, <span class="string">'on'</span>);
+legend(chAAxes, <span class="string">'Channel A'</span>);
+
+<span class="comment">% Calculate FFT of Channel A and plot - based on &lt;matlab:doc('fft') fft documentation&gt;.</span>
+L = length(chA);
+n = 2 ^ nextpow2(L); <span class="comment">% Next power of 2 from length of chA</span>
+
+Y = fft(chA, n);
+
+<span class="comment">% Obtain the single-sided spectrum of the signal.</span>
+P2 = abs(Y/n);
+P1 = P2(1:n/2+1);
+P1(2:end-1) = 2 * P1(2:end-1);
+
+Fs = 1 / (timeIntervalNanoseconds * 1e-9);
+f = 0:(Fs/n):(Fs/2 - Fs/n);
+
+chAFFTAxes = subplot(2,1,2);
+plot(chAFFTAxes, f, P1(1:n/2));
+
+title(chAFFTAxes, <span class="string">'Single-Sided Amplitude Spectrum of y(t)'</span>);
+xlabel(chAFFTAxes, <span class="string">'Frequency (Hz)'</span>);
+ylabel(chAFFTAxes, <span class="string">'|Y(f)|'</span>);
+grid(chAFFTAxes, <span class="string">'on'</span>);
+</pre><img vspace="5" hspace="5" src="PS5000A_ID_Block_FFT_Example_01.png" alt=""> <h2 id="12">Stop the device</h2><pre class="codeinput">[status.stop] = invoke(ps5000aDeviceObj, <span class="string">'ps5000aStop'</span>);
+</pre><h2 id="13">Disconnect device</h2><p>Disconnect device object from hardware.</p><pre class="codeinput">disconnect(ps5000aDeviceObj);
+delete(ps5000aDeviceObj);
+</pre><pre class="codeoutput">Connection to PicoScope 5444D with serial number FY984/0005 closed successfully.
+Libraries unloaded successfully.
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% PicoScope 5000 Series (A API) Instrument Driver Oscilloscope Block Data Capture with FFT Example
+% This is an example of an instrument control session using a device 
+% object. The instrument control session comprises all the steps you 
+% are likely to take when communicating with your instrument. 
+%
+% These steps are:
+%    
+% # Create a device object   
+% # Connect to the instrument 
+% # Configure properties 
+% # Invoke functions 
+% # Disconnect from the instrument 
+%  
+% To run the instrument control session, type the name of the file,
+% PS5000A_ID_Block_FFT_Example, at the MATLAB command prompt.
+% 
+% The file, PS5000A_ID_BLOCK_FFT_EXAMPLE.M must be on your MATLAB PATH. For
+% additional information on setting your MATLAB PATH, type 'help addpath'
+% at the MATLAB command prompt.
+%
+% *Example:*
+%     PS5000A_ID_Block_FFT_Example;
+%
+% *Description:*
+%     Demonstrates how to call functions in order to capture a block of
+%     data from a PicoScope 5000 Series Oscilloscope and calculates FFT
+%     on Channel A.
+%
+% *See also:* <matlab:doc('fft') |fft|> | <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
+%
+% *Copyright:* © 2013-2018 Pico Technology Ltd. See LICENSE file for terms.
+
+%% Suggested input test signals
+% This example was published using the following test signals
+%
+% * Channel A: 4 Vpp, 10 kHz square wave
+
+%% Clear command window and close any figures
+
+clc;
+close all;
+
+%% Load configuration information
+
+PS5000aConfig;
+
+%% Device connection
+
+% Check if an Instrument session using the device object |ps5000aDeviceObj|
+% is still open, and if so, disconnect if the User chooses 'Yes' when prompted.
+if (exist('ps5000aDeviceObj', 'var') && ps5000aDeviceObj.isvalid && strcmp(ps5000aDeviceObj.status, 'open'))
+    
+    openDevice = questionDialog(['Device object ps5000aDeviceObj has an open connection. ' ...
+        'Do you wish to close the connection and continue?'], ...
+        'Device Object Connection Open');
+    
+    if (openDevice == PicoConstants.TRUE)
+        
+        % Close connection to device.
+        disconnect(ps5000aDeviceObj);
+        delete(ps5000aDeviceObj);
+        
+    else
+
+        % Exit script if User selects 'No'.
+        return;
+        
+    end
+    
+end
+
+% Create a device object. 
+ps5000aDeviceObj = icdevice('picotech_ps5000a_generic.mdd');
+
+% Connect device object to hardware.
+connect(ps5000aDeviceObj);
+
+%% Set channels
+% Default driver settings applied to channels are listed below - use the
+% Instrument Driver's |ps5000aSetChannel()| function to turn channels on or
+% off and set voltage ranges, coupling, as well as analog offset.
+
+%% Set device resolution
+
+% Max. resolution with 2 channels enabled is 15 bits.
+[status.setResolution, resolution] = invoke(ps5000aDeviceObj, 'ps5000aSetDeviceResolution', 15);
+
+%% Verify timebase index and maximum number of samples
+% Use the |ps5000aGetTimebase2()| function to query the driver as to the
+% suitability of using a particular timebase index and the maximum number
+% of samples available in the segment selected, then set the |timebase|
+% property if required.
+%
+% To use the fastest sampling interval possible, enable one analog
+% channel and turn off all other channels.
+%
+% Use a while loop to query the function until the status indicates that a
+% valid timebase index has been selected. In this example, the timebase
+% index of 65 is valid.
+
+% Initial call to ps5000aGetTimebase2() with parameters:
+%
+% timebase      : 65
+% segment index : 0
+
+status.getTimebase2 = PicoStatus.PICO_INVALID_TIMEBASE;
+timebaseIndex = 65;
+
+while (status.getTimebase2 == PicoStatus.PICO_INVALID_TIMEBASE)
+    
+    [status.getTimebase2, timeIntervalNanoseconds, maxSamples] = invoke(ps5000aDeviceObj, ...
+                                                                    'ps5000aGetTimebase2', timebaseIndex, 0);
+    
+    if (status.getTimebase2 == PicoStatus.PICO_OK)
+       
+        break;
+        
+    else
+        
+        timebaseIndex = timebaseIndex + 1;
+        
+    end    
+    
+end
+
+fprintf('Timebase index: %d, sampling interval: %d ns\n', timebaseIndex, timeIntervalNanoseconds);
+
+% Configure the device object's |timebase| property value.
+set(ps5000aDeviceObj, 'timebase', timebaseIndex);
+
+%% Set simple trigger
+% Set a trigger on channel A, with an auto timeout - the default value for
+% delay is used.
+
+% Trigger properties and functions are located in the Instrument
+% Driver's Trigger group.
+
+triggerGroupObj = get(ps5000aDeviceObj, 'Trigger');
+triggerGroupObj = triggerGroupObj(1);
+
+% Set the |autoTriggerMs| property in order to automatically trigger the
+% oscilloscope after 1 second if a trigger event has not occurred. Set to 0
+% to wait indefinitely for a trigger event.
+
+set(triggerGroupObj, 'autoTriggerMs', 1000);
+
+% Channel     : 0 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A)
+% Threshold   : 1000 mV
+% Direction   : 2 (ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING)
+
+[status.setSimpleTrigger] = invoke(triggerGroupObj, 'setSimpleTrigger', 0, 1000, 2);
+
+%% Set block parameters and capture data
+% Capture a block of data and retrieve data values for channels A and B.
+
+blockGroupObj = get(ps5000aDeviceObj, 'Block');
+blockGroupObj = blockGroupObj(1);
+
+% Set pre-trigger samples.
+set(ps5000aDeviceObj, 'numPreTriggerSamples', 1024);
+% Set post-trigger samples.
+set(ps5000aDeviceObj, 'numPostTriggerSamples', 10000);
+
+%%
+% This example uses the |runBlock()| function in order to collect a block of
+% data - if other code needs to be executed while waiting for the device to
+% indicate that it is ready, use the |ps5000aRunBlock()| function and poll
+% the |ps5000aIsReady()| function.
+
+% Capture a block of data:
+%
+% segment index: 0 (The buffer memory is not segmented in this example)
+
+[status.runBlock] = invoke(blockGroupObj, 'runBlock', 0);
+
+% Retrieve data values:
+
+startIndex              = 0;
+segmentIndex            = 0;
+downsamplingRatio       = 1;
+downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_NONE;
+
+[numSamples, overflow, chA, chB] = invoke(blockGroupObj, 'getBlockData', startIndex, segmentIndex, ...
+                                            downsamplingRatio, downsamplingRatioMode);
+
+%% Process data
+% Plot data values, calculate and plot FFT.
+
+figure1 = figure('Name','PicoScope 5000 Series (A API) Example - Block Mode Capture with FFT', ...
+    'NumberTitle','off');
+
+% Calculate time (nanoseconds) and convert to milliseconds
+% Use |timeIntervalNanoseconds| output from the |ps5000aGetTimebase2()|
+% function or calculate it using the main Programmer's Guide.
+% Take into account the downsampling ratio used.
+
+timeNs = double(timeIntervalNanoseconds) * downsamplingRatio * double(0:numSamples - 1);
+timeMs = timeNs / 1e6;
+
+% Channel A
+chAAxes = subplot(2,1,1); 
+plot(chAAxes, timeMs, chA);
+ylim(chAAxes, [-2500 2500]); % Adjust vertical axis for signal
+
+title(chAAxes, 'Block Data Acquisition');
+xlabel(chAAxes, 'Time (ms)');
+ylabel(chAAxes, 'Voltage (mV)');
+grid(chAAxes, 'on');
+legend(chAAxes, 'Channel A');
+
+% Calculate FFT of Channel A and plot - based on <matlab:doc('fft') fft documentation>.
+L = length(chA);
+n = 2 ^ nextpow2(L); % Next power of 2 from length of chA
+
+Y = fft(chA, n);
+
+% Obtain the single-sided spectrum of the signal.
+P2 = abs(Y/n);
+P1 = P2(1:n/2+1);
+P1(2:end-1) = 2 * P1(2:end-1);
+
+Fs = 1 / (timeIntervalNanoseconds * 1e-9);
+f = 0:(Fs/n):(Fs/2 - Fs/n);
+
+chAFFTAxes = subplot(2,1,2);
+plot(chAFFTAxes, f, P1(1:n/2)); 
+
+title(chAFFTAxes, 'Single-Sided Amplitude Spectrum of y(t)');
+xlabel(chAFFTAxes, 'Frequency (Hz)');
+ylabel(chAFFTAxes, '|Y(f)|');
+grid(chAFFTAxes, 'on');
+
+%% Stop the device
+
+[status.stop] = invoke(ps5000aDeviceObj, 'ps5000aStop');
+
+%% Disconnect device
+% Disconnect device object from hardware.
+
+disconnect(ps5000aDeviceObj);
+delete(ps5000aDeviceObj);
+##### SOURCE END #####
+--></body></html>
