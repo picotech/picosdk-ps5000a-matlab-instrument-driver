@@ -31,7 +31,7 @@
 %
 % *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
 %
-% *Copyright:* © 2013-2018 Pico Technology Ltd. See LICENSE file for terms.
+% *Copyright:* Â© 2013-2018 Pico Technology Ltd. See LICENSE file for terms.
 
 %% Suggested input test signals
 % This example was published using the following test signals:
@@ -434,7 +434,7 @@ while(hasAutoStopOccurred == PicoConstants.FALSE && status.getStreamingLatestVal
             % Multiply by ratio mode as samples get reduced
             time = (double(sampleInterval) * double(downSampleRatio)) * (previousTotal:(totalSamples - 1));
 
-            plot(time, bufferChAmV, time, bufferChBmV);
+            plot(axes1, time, bufferChAmV, time, bufferChBmV);
         
         end
        
