@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.14.39</InstrumentVersion>
+   <InstrumentVersion>2.2.14.40</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -21,7 +21,7 @@
 % You may copy and distribute this file as long as it remains unmodified. 
 % SB
     
-    fprintf('PicoScope 5000 Series (A API) MATLAB Instrument Driver\n');
+    fprintf('PicoScope 5000 Series (A API) MATLAB Instrument Driver');
     fprintf('\n');
     fprintf('\nCopyright © 2013-2018 Pico Technology Ltd. All rights reserved.\n');
     fprintf('\n');
@@ -36,6 +36,9 @@
     
     ps5000aMFile = str2func(strcat('ps5000aMFile_', archStr));
     ps5000aWrapMFile = str2func(strcat('ps5000aWrapMFile_', archStr));
+    
+    % Suppress warnings of functions that are not found
+    warning('off','MATLAB:loadlibrary:FunctionNotFound');
     
     % Only load library once 
     if (libisloaded('ps5000a'))
@@ -1564,24 +1567,24 @@ When used in Streaming mode, this is the maximum number of raw samples before th
                <Code>
                   <MCode>function [status, unitInfoValues] = getUnitInfo(obj)
 
-    unit_info_desc = {'Driver version: '; 'USB version: '; 'Hardware version: '; 'Variant: '; ...
+    unitInfoDesc = {'Driver version: '; 'USB version: '; 'Hardware version: '; 'Variant: '; ...
         'Batch &amp; Serial: '; 'Cal. Date: '; 'Kernel version: '; 'Digital HW version: '; ...
         'Analogue HW version: '};
 
-    info_line = '               ';
+    infoLine = blanks(100);
 
     unitInfoValues = cell(9,1);
 
-    req_size = 15;
+    reqSize = 15;
 
     status = zeros(9,1);
 
     % Loop through and put together information
     for n = 1:9
 
-        [status(n,1), info_line1, req_size]  = calllib('ps5000a', ...
-            'ps5000aGetUnitInfo', get(obj, 'unitHandle'), info_line, ... 
-            length(info_line), req_size,(n-1));
+        [status(n,1), infoLine1, reqSize]  = calllib('ps5000a', ...
+            'ps5000aGetUnitInfo', obj.DriverData.unitHandle, infoLine, ... 
+            length(infoLine), reqSize,(n-1));
         
         if (status(n,1) ~= PicoStatus.PICO_OK)
            
@@ -1589,8 +1592,8 @@ When used in Streaming mode, this is the maximum number of raw samples before th
         
         end
 
-        unit_info_line = strcat(unit_info_desc(n), info_line1);
-        unitInfoValues(n) = cellstr(unit_info_line);
+        unitInfoLine = strcat(unitInfoDesc(n), infoLine1);
+        unitInfoValues(n) = cellstr(unitInfoLine);
         
     end</MCode>
                </Code>
