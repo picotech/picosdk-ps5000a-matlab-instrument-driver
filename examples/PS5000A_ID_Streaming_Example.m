@@ -187,7 +187,7 @@ set(triggerGroupObj, 'autoTriggerMs', 1000);
 
 %% Set data buffers
 % Data buffers for channels A and B - buffers should be set with the driver,
-% and these MUST be passed with application buffers to the wrapper driver.
+% and these *MUST* be passed with application buffers to the wrapper driver.
 % This will ensure that data is correctly copied from the driver buffers
 % for later processing.
 
