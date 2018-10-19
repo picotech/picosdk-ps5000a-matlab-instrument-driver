@@ -35,7 +35,7 @@
 %% Suggested input test signal
 % This example was published using the following test signals:
 %
-% * Channel A: 4 Vpp, 1 MHz sine wave
+% * Channel A: 4 Vpp, 100 kHz MHz sine wave
 
 %% Clear command window and close any figures
 
