@@ -29,7 +29,7 @@
 %
 % *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
 %
-% *Copyright:* © 2018 Pico Technology Ltd. See LICENSE file for terms.
+% *Copyright:* ï¿½ 2018 Pico Technology Ltd. See LICENSE file for terms.
 
 %% Suggested input test signals
 % This example was published using the following test signals:
@@ -311,8 +311,6 @@ hold(analogAxes, 'off');
 digitalFigure = figure('Name','PicoScope 5000 Series (A API) Example - MSO Rapid Block Mode Capture', ...
     'NumberTitle', 'off', 'Position', [scrsz(3)/2 + 1 scrsz(4)/4 scrsz(3)/2 scrsz(4)/2]);
 
-movegui(digitalFigure, 'east');
-
 disp('Converting digital integer data to binary...');
 
 % Create 3D array to hold binary data values for each channel/segment
@@ -336,24 +334,28 @@ hold on;
 
 for i = 1:8
     
-    subplot(4, 2, i);
+    digitalAxes = subplot(4, 2, i);
     hold on;
     
     for segment = 1:numCaptures
         
-        plot3(timeNs, segment * uint32(ones(numSamples, 1)), dPort0Binary(:,(8 - (i - 1)), segment));
+        plot3(digitalAxes, timeNs, segment * uint32(ones(numSamples, 1)), dPort0Binary(:,(8 - (i - 1)), segment));
         
     end
     
-    title(strcat('Digital Channel D', num2str(i - 1)));
-    xlabel('Time (ns)');
-    ylabel('Capture');
-    zlabel('Logic Level');
-    axis([-inf, inf, -inf, inf, -0.5, 1.5])
-    view([-15 24]);
-    grid on;
+    title(digitalAxes, strcat('Digital Channel D', num2str(i - 1)));
+    xlabel(digitalAxes, 'Time (ns)');
+    ylabel(digitalAxes, 'Capture');
+    zlabel(digitalAxes, 'Logic Level');
+    axis(digitalAxes, [-inf, inf, -inf, inf, -0.5, 1.5])
+    view(digitalAxes, [-15 24]);
+    grid(digitalAxes, 'on');
     
 end
+
+hold off;
+
+movegui(digitalFigure, 'east');
 
 %% Stop the device
 

@@ -28,7 +28,7 @@
 %
 % *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
 %
-% *Copyright:* © 2018 Pico Technology Ltd. See LICENSE file for terms.
+% *Copyright:* Â© 2018 Pico Technology Ltd. See LICENSE file for terms.
 
 %% Suggested input test signals
 % This example was published using the following test signals:
@@ -263,17 +263,19 @@ analogFigure = figure('Name','PicoScope 5000 Series (A API) - MSO Block Mode Cap
 
 movegui(analogFigure, 'west');
 
-hold on;
+analogAxes = axes('Parent', analogFigure);
+
+hold(analogAxes, 'on');
 
 % Channels A and B.
-plot(timeMs, chA, timeMs, chB);
-title('Analog Channel Data');
-xlabel('Time (ms)');
-ylabel('Voltage (mV)');
-legend('Channel A', 'Channel B');
-grid on;
+plot(analogAxes, timeMs, chA, timeMs, chB);
+title(analogAxes, 'Analog Channel Data');
+xlabel(analogAxes, 'Time (ms)');
+ylabel(analogAxes, 'Voltage (mV)');
+legend(analogAxes, 'Channel A', 'Channel B');
+grid(analogAxes, 'on');
 
-hold off;
+hold(analogAxes, 'off');
 
 %% 
 % *Digital data*
@@ -282,6 +284,8 @@ digitalFigure = figure('Name','PicoScope 5000 Series (A API) Example - MSO Block
     'NumberTitle', 'off', 'Position', [scrsz(3)/2 + 1 scrsz(4)/4 scrsz(3)/2 scrsz(4)/2]);
 
 movegui(digitalFigure, 'east');
+
+digitalAxes = axes('Parent', digitalFigure);
 
 disp('Converting digital integer data to binary...');
 
@@ -306,13 +310,13 @@ digiPlotColours = ['m', 'b', 'r', 'g'];
 % Display digital data in a 4 x 2 grid
 for i = 1:8
     
-    subplot(4, 2, i); 
-    plot(timeMs, dPort0Binary(:, (8 - (i - 1))), digiPlotColours(rem(i, length(digiPlotColours)) + 1));
-    title(strcat('Digital Channel D', num2str(i - 1)));
-    xlabel('Time (ms)');
-    ylabel('Logic Level');
-    axis([-inf, inf, -0.5, 1.5])
-    grid on;
+    digitalAxes = subplot(4, 2, i); 
+    plot(digitalAxes, timeMs, dPort0Binary(:, (8 - (i - 1))), digiPlotColours(rem(i, length(digiPlotColours)) + 1));
+    title(digitalAxes, strcat('Digital Channel D', num2str(i - 1)));
+    xlabel(digitalAxes, 'Time (ms)');
+    ylabel(digitalAxes, 'Logic Level');
+    axis(digitalAxes, [-inf, inf, -0.5, 1.5])
+    grid(digitalAxes, 'on');
     
 end
 
