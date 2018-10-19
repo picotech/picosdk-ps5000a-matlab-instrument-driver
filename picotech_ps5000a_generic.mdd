@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.14.40</InstrumentVersion>
+   <InstrumentVersion>2.2.14.41</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -6181,14 +6181,16 @@ status - status code returned by the driver.
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    propertyValue = obj.DriverData.autoStop;</GetMCode>
+    deviceObj = get(obj, 'Parent');
+    propertyValue = deviceObj.DriverData.autoStop;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    obj.DriverData.autoStop = propertyValue;</SetMCode>
+    deviceObj = get(obj, 'Parent');
+    deviceObj.DriverData.autoStop = propertyValue;</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -6216,14 +6218,16 @@ This flag should be set to 0 or 1.</Description>
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    propertyValue = obj.DriverData.streamingInterval;</GetMCode>
+    deviceObj = get(obj, 'Parent');
+    propertyValue = deviceObj.DriverData.streamingInterval;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    obj.DriverData.streamingInterval = propertyValue;</SetMCode>
+    deviceObj = get(obj, 'Parent');
+    deviceObj.DriverData.streamingInterval = propertyValue;</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
