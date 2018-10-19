@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.14.41</InstrumentVersion>
+   <InstrumentVersion>2.2.15.42</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -3297,7 +3297,7 @@ Please also refer to the ps5000aSetDataBuffer, and ps5000aGetValues functions.
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
-                  <MCode>function [etsTimes, channelA, channelB, channelC, channelD, numSamples, overflow] = getEtsBlockData(obj, startIndex, segmentIndex, ratio, ratioMode)
+                  <MCode>function [numSamples, overflow, etsTimes, channelA, channelB, channelC, channelD] = getEtsBlockData(obj, startIndex, segmentIndex, ratio, ratioMode)
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
 
@@ -3491,13 +3491,13 @@ ratioMode - which downsampling mode to use (specified by enumeration from the PS
 
 Output parameters:
 
+numSamples - the number of samples retrieved from the driver.
+overflow - a set of flags that indicate whether an overvoltage has occurred on any of the channels.
 etsTimes - an array containing the times (in femtoseconds) at which each sample was captured.
 channelA - an array containing data values (in millivolts) for channel A.
 channelB - an array containing data values (in millivolts) for channel B.
 channelC - an array containing data values (in millivolts) for channel C.
 channelD - an array containing data values (in millivolts) for channel D.
-numSamples - the number of samples retrieved from the driver.
-overflow - a set of flags that indicate whether an overvoltage has occurred on any of the channels.
 
 Channels not enabled or not supported by this device will be returned as an empty array.
 
