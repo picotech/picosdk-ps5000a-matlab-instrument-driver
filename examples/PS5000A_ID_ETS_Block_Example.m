@@ -13,14 +13,14 @@
 % # Disconnect from the instrument 
 %
 % To run the instrument control session, type the name of the file,
-% PS5000A_ID_Block_ETS_Example, at the MATLAB command prompt.
+% PS5000A_ID_ETS_Block_Example, at the MATLAB command prompt.
 % 
-% The file, PS5000A_ID_BLOCK_ETS_EXAMPLE.M must be on your MATLAB PATH. For
+% The file, PS5000A_ID_ETS_BLOCK_EXAMPLE.M must be on your MATLAB PATH. For
 % additional information on setting your MATLAB PATH, type 'help addpath'
 % at the MATLAB command prompt.
 %
 % *Example:*
-%     PS5000A_ID_Block_ETS_Example;
+%     PS5000A_ID_ETS_Block_Example;
 %
 % *Description:*
 %     Demonstrates how to set properties and call functions in order to
