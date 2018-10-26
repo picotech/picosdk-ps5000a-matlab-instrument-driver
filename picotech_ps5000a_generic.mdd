@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.15.42</InstrumentVersion>
+   <InstrumentVersion>2.2.16.43</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -854,20 +854,14 @@
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If bandwidth doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'bandwidth') )
-        obj.UserData.bandwidth = 0;
-    end
-    
-    propertyValue = obj.UserData.bandwidth;
+    propertyValue = obj.DriverData.bandwidth;
     </GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.bandwidth = propertyValue;</SetMCode>
+</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -875,7 +869,7 @@
                </PermissibleType>
                <DefaultValue>0</DefaultValue>
                <ReadOnly>never</ReadOnly>
-               <Description>bandwidth represents the maximum bandwidth (3dB cut-off point) of the oscilloscope in Hertz.</Description>
+               <Description>bandwidth represents the maximum bandwidth (3dB cut-off point) of the oscilloscope in hertz.</Description>
             </Property>
             <Property>
                <Name>bufferMemory</Name>
@@ -889,25 +883,19 @@
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If bufferMemory doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'bufferMemory') )
-        obj.UserData.bufferMemory = 0;
-    else
-        propertyValue = obj.UserData.bufferMemory;
-    end</GetMCode>
+    propertyValue = obj.DriverData.bufferMemory;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.bufferMemory = propertyValue;</SetMCode>
+</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
                   <Constraint>none</Constraint>
                </PermissibleType>
-               <DefaultValue>4194304</DefaultValue>
+               <DefaultValue>33554432</DefaultValue>
                <ReadOnly>never</ReadOnly>
                <Description>Defines the size of the memory buffer on the device (in samples).</Description>
             </Property>
@@ -923,19 +911,13 @@
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If channelCount doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'channelCount') )
-        obj.UserData.channelCount = [ ];
-    end
-
-    propertyValue = obj.UserData.channelCount;</GetMCode>
+    propertyValue = obj.DriverData.channelCount;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.channelCount = propertyValue;</SetMCode>
+</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -943,7 +925,7 @@
                </PermissibleType>
                <DefaultValue>2</DefaultValue>
                <ReadOnly>never</ReadOnly>
-               <Description>The number of analogue input channels on the device.</Description>
+               <Description>The number of analog input channels on the device.</Description>
             </Property>
             <Property>
                <Name>channelSettings</Name>
@@ -957,23 +939,13 @@
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If channelSettings doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'channelSettings') )
-        
-        obj.UserData.channelSettings = [ ];
-    else
-        
-        propertyValue = obj.UserData.channelSettings;
-    end
-
-    %propertyValue = obj.UserData.channelSettings;</GetMCode>
+    propertyValue = obj.DriverData.channelSettings;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.channelSettings = propertyValue;</SetMCode>
+</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Object</Type>
@@ -1013,19 +985,13 @@ analogueOffset - the offset on the channel.
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If digitalPorts doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'digitalPorts') )
-        obj.UserData.digitalPorts = [ ];
-    end
-    
-    propertyValue = obj.UserData.digitalPorts;</GetMCode>
+    propertyValue = obj.DriverData.digitalPortCount;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.digitalPorts = propertyValue;</SetMCode>
+</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -1033,7 +999,7 @@ analogueOffset - the offset on the channel.
                </PermissibleType>
                <DefaultValue>0</DefaultValue>
                <ReadOnly>never</ReadOnly>
-               <Description>The number of digital ports on the device (MSO Devices only). (NOT SUPPORTED IN THIS RANGE)</Description>
+               <Description>The number of digital ports on the device (MSO Devices only).</Description>
             </Property>
             <Property>
                <Name>digitalPortSettings</Name>
@@ -1047,19 +1013,14 @@ analogueOffset - the offset on the channel.
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If digitalPortSettings doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'digitalPortSettings') )
-        obj.UserData.digitalPortSettings = [ ];
-    end
-
-    propertyValue = obj.UserData.digitalPortSettings;</GetMCode>
+    propertyValue = obj.DriverData.digitalPortSettings;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    obj.UserData.digitalPortSettings = propertyValue;</SetMCode>
+    </SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -1067,7 +1028,7 @@ analogueOffset - the offset on the channel.
                </PermissibleType>
                <DefaultValue>0</DefaultValue>
                <ReadOnly>never</ReadOnly>
-               <Description>A structure containing the channel settings for digital ports (MSO Only). (NOT SUPPORTED IN THIS RANGE)</Description>
+               <Description>A structure containing the channel settings for digital ports (MSO devices only).</Description>
             </Property>
             <Property>
                <Name>displayOutput</Name>
@@ -1119,19 +1080,14 @@ Note: Output will still be sent to the Command Window when calling the icdevice,
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If firstRange doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'firstRange') )
-        obj.UserData.firstRange = [ ];
-    else
-        propertyValue = obj.UserData.firstRange;
-    end</GetMCode>
+    propertyValue = obj.DriverData.firstRange;
+</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.firstRange = propertyValue;</SetMCode>
+</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -1153,7 +1109,7 @@ Note: Output will still be sent to the Command Window when calling the icdevice,
                </PermissibleType>
                <DefaultValue>2</DefaultValue>
                <ReadOnly>never</ReadOnly>
-               <Description>Enumeration corresponding to the lowest voltage range supported by the device.</Description>
+               <Description>Enumeration value corresponding to the lowest voltage range supported by the device. For further information, please refer to the enPS5000ARange enumeration set.</Description>
             </Property>
             <Property>
                <Name>hasHardwareEts</Name>
@@ -1167,19 +1123,13 @@ Note: Output will still be sent to the Command Window when calling the icdevice,
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If hasHardwareEts doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'hasHardwareEts') )
-        obj.UserData.hasHardwareEts = [ ];
-    end
-    
-    propertyValue = obj.UserData.hasHardwareEts;</GetMCode>
+    propertyValue = obj.DriverData.hasHardwareEts;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.hasHardwareEts = propertyValue;</SetMCode>
+</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -1205,19 +1155,13 @@ Note: Output will still be sent to the Command Window when calling the icdevice,
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If lastRange doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'lastRange') )
-        obj.UserData.lastRange = [ ];
-    else
-        propertyValue = obj.UserData.lastRange;
-    end</GetMCode>
+    propertyValue = obj.DriverData.lastRange;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.lastRange = propertyValue;</SetMCode>
+</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -1239,7 +1183,7 @@ Note: Output will still be sent to the Command Window when calling the icdevice,
                </PermissibleType>
                <DefaultValue>10</DefaultValue>
                <ReadOnly>never</ReadOnly>
-               <Description>Enumeration corresponding to highest voltage range supported by device.</Description>
+               <Description>Enumeration corresponding to highest voltage range supported by device. For further information, please refer to the enPS5000ARange enumeration set.</Description>
             </Property>
             <Property>
                <Name>maxADCValue</Name>
@@ -1280,19 +1224,13 @@ Note: Output will still be sent to the Command Window when calling the icdevice,
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If maxSamplingRate doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'maxSamplingRate') )
-        obj.UserData.maxSamplingRate = [ ];
-    end
-    
-    propertyValue = obj.UserData.maxSamplingRate;</GetMCode>
+    propertyValue = obj.DriverData.maxSamplingRate;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
-
-    propertyValue = obj.UserData.maxSamplingRate;</SetMCode>
+</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -1314,7 +1252,7 @@ Note: Output will still be sent to the Command Window when calling the icdevice,
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-        propertyValue = obj.DriverData.minADCValue;</GetMCode>
+    propertyValue = obj.DriverData.minADCValue;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
@@ -1341,20 +1279,14 @@ Note: Output will still be sent to the Command Window when calling the icdevice,
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If numPostTriggerSamples doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'numPostTriggerSamples') )
-        obj.UserData.numPostTriggerSamples = [ ];
-    end
-    
-    propertyValue = obj.UserData.numPostTriggerSamples;
-    propertyValue = obj.DriverData.numPostTriggerSamples;</GetMCode>
+    propertyValue = obj.DriverData.numPostTriggerSamples;
+</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    obj.UserData.numPostTriggerSamples = propertyValue;
     obj.DriverData.numPostTriggerSamples = propertyValue;</SetMCode>
                </Code>
                <PermissibleType>
@@ -1369,7 +1301,7 @@ If no trigger event has been set then this specifies the maximum number of sampl
 condition has been set, this specifies the number of samples to be taken after a trigger has fired, and the number of samples to be
 collected is then: -
 
-noOfPreTriggerSamples + noOfPostTriggerSamples
+numPreTriggerSamples + numPostTriggerSamples
 
 When used in Streaming mode, this is the maximum number of raw samples after a trigger event for each enabled channel.</Description>
             </Property>
@@ -1385,12 +1317,6 @@ When used in Streaming mode, this is the maximum number of raw samples after a t
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If numPreTriggerSamples doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'numPreTriggerSamples') )
-        obj.UserData.numPreTriggerSamples = [ ];
-    end
-    
-    propertyValue = obj.UserData.numPreTriggerSamples;
     propertyValue = obj.DriverData.numPreTriggerSamples;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
@@ -1398,7 +1324,6 @@ When used in Streaming mode, this is the maximum number of raw samples after a t
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    obj.UserData.numPreTriggerSamples = propertyValue;
     obj.DriverData.numPreTriggerSamples = propertyValue;</SetMCode>
                </Code>
                <PermissibleType>
@@ -1409,7 +1334,7 @@ When used in Streaming mode, this is the maximum number of raw samples after a t
                <ReadOnly>never</ReadOnly>
                <Description>The number of samples to return before the trigger event.
 
-If no trigger has been set then this argument is ignored and noOfPostTriggerSamples specifies the maximum number of samples to collect.
+If no trigger has been set then this argument is ignored and numPostTriggerSamples specifies the maximum number of samples to collect.
 
 When used in Streaming mode, this is the maximum number of raw samples before the trigger event for each enabled channel.
 </Description>
@@ -1426,21 +1351,12 @@ When used in Streaming mode, this is the maximum number of raw samples before th
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If resolution doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'resolution') )
-        obj.UserData.resolution = [ ];
-
-    else
-
-         propertyValue = obj.UserData.resolution;
-    end</GetMCode>
+    propertyValue = obj.DriverData.resolution;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
 %   This function is called to set the device or group object property
 %   value. If the property is a group property, OBJ is the group object. If
-%   the property is a base device property, OBJ is the device object.
-
-    obj.UserData.resolution = propertyValue;</SetMCode>
+%   the property is a base device property, OBJ is the device object.</SetMCode>
                </Code>
                <PermissibleType>
                   <Type>Double</Type>
@@ -1462,13 +1378,6 @@ When used in Streaming mode, this is the maximum number of raw samples before th
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    % If timebase doesn't exist, create it.
-    if ( ~isfield(obj.UserData, 'timebase') )
-        obj.UserData.timebase = 1;
-    else
-        propertyValue = obj.UserData.timebase;
-    end
-    
     propertyValue = obj.DriverData.timebase;</GetMCode>
                   <SetMCode>function set(obj, propertyName, propertyValue)
 % Set a property value.
@@ -1476,7 +1385,6 @@ When used in Streaming mode, this is the maximum number of raw samples before th
 %   value. If the property is a group property, OBJ is the group object. If
 %   the property is a base device property, OBJ is the device object.
 
-    obj.UserData.timebase = propertyValue;
     obj.DriverData.timebase = propertyValue;</SetMCode>
                </Code>
                <PermissibleType>
@@ -1485,7 +1393,11 @@ When used in Streaming mode, this is the maximum number of raw samples before th
                </PermissibleType>
                <DefaultValue>65</DefaultValue>
                <ReadOnly>never</ReadOnly>
-               <Description>The timebase used for the scope when capturing data in Block mode - please refer to the Programmer's Guide for the formulae to calculate the timebase index based on the interval.</Description>
+               <Description>The timebase used for the scope when capturing data in Block and Rapid Block mode - please refer to the Programmer's Guide for the formulae to calculate the timebase index based on the interval.
+
+The default value set is 65 corresponding to a sampling interval of 504 ns at 8-bit resolution.
+
+</Description>
             </Property>
             <Property>
                <Name>unitHandle</Name>
@@ -1512,7 +1424,7 @@ When used in Streaming mode, this is the maximum number of raw samples before th
                </PermissibleType>
                <DefaultValue>0</DefaultValue>
                <ReadOnly>never</ReadOnly>
-               <Description>The handle assigned by the underlying driver for the device.</Description>
+               <Description>The handle assigned by the underlying shared library for the device.</Description>
             </Property>
             <Property>
                <Name>unitSerial</Name>
