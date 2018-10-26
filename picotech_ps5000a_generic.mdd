@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.16.43</InstrumentVersion>
+   <InstrumentVersion>2.2.16.44</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -1509,7 +1509,7 @@ The default value set is 65 corresponding to a sampling interval of 504 ns at 8-
         
     end</MCode>
                </Code>
-               <Description>GetUnitInfo(obj) retrieves information about the specified oscilloscope for the following types of information:
+               <Description>getUnitInfo(obj) retrieves information about the specified oscilloscope for the following types of information:
 
 1. Driver version
 2. USB version
@@ -1539,85 +1539,85 @@ For further information on the underlying ps5000aGetUnitInfo function please ref
                <Type>MCode</Type>
                <Code>
                   <MCode>function status = ps5000aChangePowerSource(obj, powerstate)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
     status = calllib('ps5000a', 'ps5000aChangePowerSource', ...
-                get(obj, 'unitHandle'), powerstate);
+                obj.DriverData.unitHandle, powerstate);
             
     if (status == PicoStatus.PICO_OK)
             
         % Retrieve channel settings - channel x data field matrix
-        channel_settings = cell2mat(obj.UserData.channelSettings(:)); 
+        channelSettings = obj.DriverData.channelSettings; 
         
         % Turn off channels C and D if USB powered
         if (powerstate == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED &amp;&amp; ... 
-                get(obj, 'channelCount') == PicoConstants.QUAD_SCOPE)
+                obj.DriverData.channelCount == PicoConstants.QUAD_SCOPE)
             
-            channel_c = evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_C');
-            channel_d = evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_D');
+            channelC = obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_C;
+            channelD = obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_D;
             
-            status_ch_c = invoke(obj, 'ps5000aSetChannel', channel_c, PicoConstants.FALSE, ...
-                channel_settings(3,2), ... % DC Coupling
-                channel_settings(3,3), ... % Range
-                channel_settings(3,4));    % Analogue Offset
+            statusChC = invoke(obj, 'ps5000aSetChannel', channelC, PicoConstants.FALSE, ...
+                                channelSettings(3,2), ... % DC Coupling
+                                channelSettings(3,3), ... % Range
+                                channelSettings(3,4));    % Analogue Offset
             
             % If successful update channel settings
-            if (status_ch_c == PicoStatus.PICO_OK)
+            if (statusChC == PicoStatus.PICO_OK)
                
-                channel_settings(3,1) = PicoConstants.FALSE;
+                channelSettings(3,1) = PicoConstants.FALSE;
                 
             else
                 
-                error('ps5000aChangePowerSource calling ps5000aSetChannel for Channel C, error code %d\n', status_ch_c);
+                error('ps5000aChangePowerSource calling ps5000aSetChannel for channel C: status code %d, please refer to the PicoStatus.m file.\n', statusChC);
                 
             end
             
-            status_ch_d = invoke(obj, 'ps5000aSetChannel', channel_d, PicoConstants.FALSE, ...
-                channel_settings(4,2), ... % DC Coupling
-                channel_settings(4,3), ... % Range
-                channel_settings(4,4));    % Analogue Offset
+            statusChD = invoke(obj, 'ps5000aSetChannel', channelD, PicoConstants.FALSE, ...
+                                channelSettings(4,2), ... % DC Coupling
+                                channelSettings(4,3), ... % Range
+                                channelSettings(4,4));    % Analogue Offset
             
             % If successful update channel settings
-            if (status_ch_d == PicoStatus.PICO_OK)
+            if (statusChD == PicoStatus.PICO_OK)
                
-                channel_settings(4,1) = PicoConstants.FALSE;
+                channelSettings(4,1) = PicoConstants.FALSE;
                 
                 else
                 
-                error('ps5000aChangePowerSource calling ps5000aSetChannel for Channel D, error code %d\n', status_ch_d);
+                error('ps5000aChangePowerSource calling ps5000aSetChannel for channel D: status code %d, please refer to the PicoStatus.m file.\n', statusChD);
                 
             end
             
-            set(obj, 'channelSettings', channel_settings);
+            obj.DriverData.channelSettings = channelSettings;
             
             % Information to be passed to the wrapper dll
-            enabled_channels = zeros(PicoConstants.QUAD_SCOPE, 1);
+            enabledChannels = zeros(PicoConstants.QUAD_SCOPE, 1);
             
             % Pass information to wrapper dll
-            enabled_channels = [channel_settings(1,1); ...
-                channel_settings(2,1); ...
-                channel_settings(3,1); ...
-                channel_settings(4,1)];
+            enabledChannels = [channelSettings(1,1); ...
+                                channelSettings(2,1); ...
+                                channelSettings(3,1); ...
+                                channelSettings(4,1)];
             
-            calllib('ps5000aWrap', 'setEnabledChannels', get(obj, 'unitHandle'), enabled_channels);
+            setEnabledChannelsStatus = calllib('ps5000aWrap', 'setEnabledChannels', obj.DriverData.unitHandle, enabledChannels);
                     
         end
         
     else
         
-        error('ps5000aChangePowerSource: Error code %d\n', status);
+        error('ps5000aChangePowerSource: status code %d, please refer to the PicoStatus.m file.\n', status);
         
     end</MCode>
                </Code>
                <Description>ps5000aChangePowerSource(obj, powerstate) is called to select the power supply mode.
-
-NOTE: Applies to 4-Channel 5000 A and B Series oscilloscopes only.
 
 This function may be used with the Test and Measurement Tool.
 
 Input parameters:
 
 obj - the object representing the device.
-powerstate - the required state of the unit. Either PicoStatus.PICO_POWER_SUPPLY_CONNECTED or  PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED.
+powerstate - the required state of the unit. Either PicoStatus.PICO_POWER_SUPPLY_CONNECTED,  PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED or PicoStatus.PICO_USB3_0_DEVICE_NON_USB3_0_PORT
 
 Output parameters:
 
@@ -1632,13 +1632,12 @@ For further information on the ps5000aChangePowerSource function please refer to
                <Type>MCode</Type>
                <Code>
                   <MCode>function status = ps5000aCurrentPowerSource(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    status = calllib('ps5000a', 'ps5000aCurrentPowerSource', ...
-        get(obj, 'unitHandle'));</MCode>
+    status = calllib('ps5000a', 'ps5000aCurrentPowerSource', obj.DriverData.unitHandle);</MCode>
                </Code>
                <Description>ps5000aCurrentPowerSource(obj) returns the current power state of the device.
-
-NOTE: Applies to 4-Channel 5000 A and B Series oscilloscopes only.
 
 This function may be used with the Test and Measurement Tool.
 
@@ -1648,9 +1647,7 @@ obj - the object representing the device.
 
 Output parameters:
 
-status - the current power state of the device or the status code for an invalid handle.
-
-For further information on the ps5000aCurrentPowerSource function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+status - the current power state of the device or the status code for an invalid handle.</Description>
             </Method>
             <Method>
                <Name>ps5000aFlashLed</Name>
@@ -1659,13 +1656,14 @@ For further information on the ps5000aCurrentPowerSource function please refer t
                <Type>MCode</Type>
                <Code>
                   <MCode>function status = ps5000aFlashLed(obj, start)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    status = calllib('ps5000a', 'ps5000aFlashLed', get(obj, 'unitHandle'), ...
-                start);
+    status = calllib('ps5000a', 'ps5000aFlashLed', obj.DriverData.unitHandle, start);
             
-	if(status ~= PicoStatus.PICO_OK)
+	if (status ~= PicoStatus.PICO_OK)
            
-        % TBD - Error handling 
+        error('ps5000aFlashLed: status code %d, please refer to the PicoStatus.m file.\n', status);
         
     end</MCode>
                </Code>
@@ -1684,9 +1682,7 @@ start - the action required:
 
 Output parameters:
 
-status - status code returned by the device.
-
-For further information on the ps5000aFlashLed function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+status - status code returned by the device.</Description>
             </Method>
             <Method>
                <Name>ps5000aGetAnalogueOffset</Name>
@@ -1695,23 +1691,25 @@ For further information on the ps5000aFlashLed function please refer to the Pico
                <Type>MCode</Type>
                <Code>
                   <MCode>function [status, maximumVoltage, minimumVoltage] = ps5000aGetAnalogueOffset(obj, range, coupling)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    % Values to be used for pointers
-    max_voltage = 0.0;    
-    min_voltage = 0.0;
+    % Initialise pointers
+    pMaxVoltage = libpointer('singlePtr', 0.0);    
+    pMinVoltage = libpointer('singlePtr', 0.0);
 
-    [status, maximumVoltage, minimumVoltage] = calllib('ps5000a', ...
-        'ps5000aGetAnalogueOffset', get(obj, 'unitHandle'), range, coupling, ...
-        max_voltage, min_voltage);
-    
-    clear max_voltage;
-    clear min_voltage;
+    [status, ~, ~] = calllib('ps5000a', ...
+        'ps5000aGetAnalogueOffset', obj.DriverData.unitHandle, range, coupling, ...
+            pMaxVoltage, pMinVoltage);
     
     if (status ~= PicoStatus.PICO_OK)
        
-        error('getAnalogueOffset: error code %d\n', status);
+        error('ps5000aGetAnalogueOffset: status code %d, please refer to the PicoStatus.m file.\n', status);
     
-    end</MCode>
+    end
+    
+    maximumVoltage = pMaxVoltage.Value;
+    minimumVoltage = pMinVoltage.Value;</MCode>
                </Code>
                <Description>ps5000aGetAnalogueOffset(obj, range, coupling) is used to get the maximum and minimum allowable analogue offset for a specific voltage range.
 
@@ -1720,16 +1718,14 @@ This function may be used with the Test and Measurement Tool.
 Input parameters: 
 
 obj - the object representing the device.
-range - an enumeration representing the voltage range to be used.
-coupling - an enumeration representing the the type of AC/DC coupling used.
+range - an enPS5000ARange enumeration value representing the voltage range to be used.
+coupling - an enPS5000ACoupling enumeration value representing the the type of AC/DC coupling used.
 
 Output parameters:
 
 status - status code returned by the driver.
 maximumVoltage - the maximum voltage allowed for the range.
 minimumVoltage - the minimum voltage allowed for the range.
-
-For further information on the ps5000aGetAnalogueOffset function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
 
 
 </Description>
@@ -1741,26 +1737,27 @@ For further information on the ps5000aGetAnalogueOffset function please refer to
                <Type>MCode</Type>
                <Code>
                   <MCode>function [status, ranges, length] = ps5000aGetChannelInformation(obj, channels)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
     % Current info supported is PS5000A_CI_RANGES
-    info = evalin('base', 'ps5000aEnuminfo.enPS5000AChannelInfo.PS5000A_CI_RANGES');
+    info = obj.DriverData.enums.enPS5000AChannelInfo.PS5000A_CI_RANGES;
     probe = 0;
-    ranges = zeros(10, 1);
-    length = 0;
+    pRanges = libpointer('int32Ptr', zeros(10, 1, 'int32'));
+    pLength = libpointer('int32Ptr', 10);
 
-    [status, ranges, length] = calllib('ps5000a', ...
-        'ps5000aGetChannelInformation', get(obj, 'unitHandle'), info, ...
-        0, ranges, length, channels);
-    
-    
-    clear info;
-    clear probe;
+    [status, ~, ~] = calllib('ps5000a', ...
+        'ps5000aGetChannelInformation', obj.DriverData.unitHandle, info, ...
+        0, pRanges, pLength, channels);
     
     if (status ~= PicoStatus.PICO_OK)
            
-       % TBD - Error handling 
-        
-    end   </MCode>
+       error('ps5000aGetChannelInformation: status code %d, please refer to the PicoStatus.m file.\n', status);
+       
+    end  
+    
+    ranges = pRanges.Value;
+    length = pLength.Value;</MCode>
                </Code>
                <Description>ps5000aGetChannelInformation(obj, channels) queries which ranges are available on a scope device.
 
@@ -1774,10 +1771,8 @@ channels - the channel for which the range information is required.
 Output parameters:
 
 status - status code returned by the driver.
-ranges - an array that will be populated with available PS5000A_RANGE enumeration values.
-length - the number of elements written to the ranges array.
-
-For further information on the ps5000aGetChannelInformation function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+ranges - an array that will be populated with available enPS5000A_RANGE enumeration values.
+length - the number of elements written to the ranges array.</Description>
             </Method>
             <Method>
                <Name>ps5000aGetDeviceResolution</Name>
@@ -1789,35 +1784,36 @@ For further information on the ps5000aGetChannelInformation function please refe
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
 
-    device_res = 'PS5000A_DR_8BIT';
+    pResolution = libpointer('enPS5000ADeviceResolution', obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_8BIT);
     resolution = 8;
 
-    [status, device_res] = calllib('ps5000a', 'ps5000aGetDeviceResolution', ...
-        get(obj, 'unitHandle'), device_res);
+    
+    status = calllib('ps5000a', 'ps5000aGetDeviceResolution', ...
+        obj.DriverData.unitHandle, pResolution);
     
     if (status == PicoStatus.PICO_OK)
             
         % Convert to value
     
-        switch(device_res)
+        switch (deviceRes)
             
-            case 'PS5000A_DR_8BIT'
+            case obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_8BIT
                 
                 resolution = 8;
                 
-            case 'PS5000A_DR_12BIT'
+            case obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_12BIT
                 
                 resolution = 12;
                 
-            case 'PS5000A_DR_14BIT'
+            case obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_14BIT
                 
                 resolution = 14;
                 
-            case 'PS5000A_DR_15BIT'
+            case obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_15BIT
                 
                 resolution = 15;
                
-            case 'PS5000A_DR_16BIT'
+            case obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_16BIT
                 
                 resolution = 16;
                 
@@ -1827,13 +1823,13 @@ For further information on the ps5000aGetChannelInformation function please refe
                 % has returned successfully.
         end
         
-        set(obj, 'resolution', resolution);
+        obj.DriverData.resolution = resolution;
         
         % TBD - Update the bandwidth and memory of the device.
 
     else
         
-        % TBD - Error handling
+        error('ps5000aGetDeviceResolution: status code %d, please refer to the PicoStatus.m file.\n', status);
         
     end</MCode>
                </Code>
@@ -1850,9 +1846,7 @@ Output parameters:
 status - status code returned by the driver.
 resolution - the resolution (in bits) that the device will run in. 
 
-The resolution property is also updated.
-
-For further information on the ps5000aGetDeviceResolution function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+The resolution property is also updated.</Description>
             </Method>
             <Method>
                <Name>ps5000aGetMaxDownSampleRatio</Name>
@@ -1861,18 +1855,24 @@ For further information on the ps5000aGetDeviceResolution function please refer 
                <Type>MCode</Type>
                <Code>
                   <MCode>function [status, maxDownSampleRatio] = ps5000aGetMaxDownSampleRatio(obj, numUnaggregatedSamples, downSampleRatioMode, segmentIndex)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
     % Value to which the max downsample ration is assigned
-    maxDownSampleRatio = 0;        
+    pMaxDownSampleRatio = libpointer('uint32Ptr', 0);        
 
-    [status, maxDownSampleRatio] = calllib('ps5000a', ...
-        'ps5000aGetMaxDownSampleRatio', get(obj, 'unitHandle'), numUnaggregatedSamples, ...
-            maxDownSampleRatio, downSampleRatioMode, segmentIndex);
+    [status] = calllib('ps5000a', 'ps5000aGetMaxDownSampleRatio', ...
+        obj.DriverData.unitHandle, numUnaggregatedSamples, ...
+            pMaxDownSampleRatio, downSampleRatioMode, segmentIndex);
         
-    if(status ~= PicoStatus.PICO_OK)
+    if (status ~= PicoStatus.PICO_OK)
            
-       % TBD - Error handling 
+      error('ps5000aGetMaxDownSampleRatio: status code %d, please refer to the PicoStatus.m file.\n', status);
         
+    else
+        
+        maxDownSampleRatio = pMaxDownSampleRatio.Value;
+      
     end   </MCode>
                </Code>
                <Description>ps5000aGetMaxDownSampleRatio(obj, numUnaggregatedSamples, downSampleRatioMode, segmentIndex) returns the maximum downsampling ratio that can be used for a given number of samples in a given downsampling mode.
@@ -1889,9 +1889,8 @@ segmentIndex - the memory segment where the data is stored.
 Output parameters:
 
 status - status code returned by the driver.
-maxDownSampleRatio - the maximum possible downsampling ratio output
-
-For further information on the ps5000aGetMaxDownSampleRatio function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+maxDownSampleRatio - the maximum possible downsampling ratio output.
+</Description>
             </Method>
             <Method>
                <Name>ps5000aGetMaxSegments</Name>
@@ -1900,16 +1899,18 @@ For further information on the ps5000aGetMaxDownSampleRatio function please refe
                <Type>MCode</Type>
                <Code>
                   <MCode>function [status, maxSegments] = ps5000aGetMaxSegments(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
     % Passing pointer to function
-    maxSegments = 0; 
+    pMaxSegments = libpointer('uint32Ptr', 0); 
 
-    [status, maxSegments] = calllib('ps5000a', 'ps5000aGetMaxSegments', ...
-                                get(obj, 'unitHandle'), maxSegments);
+    status = calllib('ps5000a', 'ps5000aGetMaxSegments', ...
+                                obj.DriverData.unitHandle, pMaxSegments);
                             
-	if(status ~= PicoStatus.PICO_OK)
+	if (status ~= PicoStatus.PICO_OK)
            
-	% TBD - Error handling 
+        error('ps5000aGetMaxSegments: status code %d, please refer to the PicoStatus.m file.\n', status);
         
     end</MCode>
                </Code>
@@ -1925,8 +1926,6 @@ Output parameters:
 
 status - status code returned by the device.
 maxSegments - the maximum number of segments allowed.
-
-For further information on the ps5000aGetMaxSegments function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
 </Description>
             </Method>
             <Method>
@@ -1936,23 +1935,38 @@ For further information on the ps5000aGetMaxSegments function please refer to th
                <Type>MCode</Type>
                <Code>
                   <MCode>function [status, timeIntervalNanoSeconds, maxSamples] = ps5000aGetTimebase(obj, timebase, segmentIndex)
-    
-    timeIntervalNanoSeconds = 0;
-    num_samples = get(obj, 'numPreTriggerSamples') + get(obj, 'numPostTriggerSamples');
-    max_samples = 0; % Pass data to return the max samples from the driver
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    pTimeIntervalNanoSeconds = libpointer('int32Ptr', 0);
+    numSamples = obj.DriverData.numPreTriggerSamples + obj.DriverData.numPostTriggerSamples;
+    pMaxSamples = libpointer('int32Ptr', 0); % Pass data to return the max samples from the driver
     
     [status, timeIntervalNanoSeconds, maxSamples] = calllib('ps5000a', ...
-        'ps5000aGetTimebase', get(obj, 'unitHandle'), timebase, num_samples, ...
-        timeIntervalNanoSeconds, max_samples, segmentIndex);
+        'ps5000aGetTimebase', obj.DriverData.unitHandle, timebase, numSamples, ...
+        pTimeIntervalNanoSeconds, pMaxSamples, segmentIndex);
     
     if (status ~= PicoStatus.PICO_OK)
            
-        % TBD - Error handling 
+        % Inform the User that an invalid timebase index has been selected
+        if (status == PicoStatus.PICO_INVALID_TIMEBASE)
+           
+            warning('PS5000AInstrumentDriver:InvalidTimebase', ['Invalid timebase ', ...
+                'index used in call to ps5000aGetTimebase().']);
+            
+        else
+            
+            error('PS5000AInstrumentDriver:PS5000aGetTimebase', ['ps5000aGetTimebase2:- Status code: ', ...
+                '%d. Please refer to the PicoStatus.m file.'], status);
         
-    end
+        end
     
-    clear max_samples;
-    clear num_samples;</MCode>
+    else
+        
+        timeIntervalNanoSeconds = pTimeIntervalNanoSeconds.Value;
+        maxSamples = pMaxSamples.Value;
+        
+    end</MCode>
                </Code>
                <Description>ps5000aGetTimebase(obj, timebase, segmentIndex) calculates the sampling rate and maximum number of samples for a given timebase under the specified conditions.
 
@@ -1968,9 +1982,7 @@ Output parameters:
 
 status - status code returned by the driver.
 timeIntervalNanoSeconds: the time interval between readings at the selected timebase.
-maxSamples: the maximum number of samples available. 
-
-For further information on the ps5000aGetTimebase function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+maxSamples: the maximum number of samples available. </Description>
             </Method>
             <Method>
                <Name>ps5000aGetTimebase2</Name>
@@ -1979,23 +1991,38 @@ For further information on the ps5000aGetTimebase function please refer to the P
                <Type>MCode</Type>
                <Code>
                   <MCode>function [status, timeIntervalNanoSeconds, maxSamples] = ps5000aGetTimebase2(obj, timebase, segmentIndex)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    timeIntervalNanoSeconds = 0;
-    num_samples = get(obj, 'numPreTriggerSamples') + get(obj, 'numPostTriggerSamples');
-    max_samples = 0; % Pass data to return the max samples from the driver
+    pTimeIntervalNanoSeconds = libpointer('singlePtr', 0);
+    numSamples = obj.DriverData.numPreTriggerSamples + obj.DriverData.numPostTriggerSamples;
+    pMaxSamples = libpointer('int32Ptr', 0); % Pass data to return the max samples from the driver
     
     [status, timeIntervalNanoSeconds, maxSamples] = calllib('ps5000a', ...
-        'ps5000aGetTimebase2', get(obj, 'unitHandle'), timebase, num_samples, ...
-        timeIntervalNanoSeconds, max_samples, segmentIndex);
+        'ps5000aGetTimebase2', obj.DriverData.unitHandle, timebase, numSamples, ...
+        pTimeIntervalNanoSeconds, pMaxSamples, segmentIndex);
     
-    if(status ~= PicoStatus.PICO_OK)
+    if (status ~= PicoStatus.PICO_OK)
            
-        % TBD - Error handling 
+        % Inform the User that an invalid timebase index has been selected
+        if (status == PicoStatus.PICO_INVALID_TIMEBASE)
+           
+            warning('PS5000AInstrumentDriver:InvalidTimebase', ['Invalid timebase ', ...
+                'index used in call to ps5000aGetTimebase2().']);
+            
+        else
+            
+            error('PS5000AInstrumentDriver:PS5000aGetTimebase', ['ps5000aGetTimebase2:- Status code: ', ...
+                '%d. Please refer to the PicoStatus.m file.'], status);
         
-    end
+        end
     
-    clear max_samples;
-    clear num_samples;</MCode>
+    else
+        
+        timeIntervalNanoSeconds = pTimeIntervalNanoSeconds.Value;
+        maxSamples = pMaxSamples.Value;
+        
+    end</MCode>
                </Code>
                <Description>ps5000aGetTimebase2(obj, timebase, segmentIndex) is an upgraded version of ps5000aGetTimebase, and returns the time interval as a float rather than a long integer. This allows it to return sub-nanosecond time intervals.
 
@@ -2011,9 +2038,7 @@ Output parameters:
 
 status - status code returned by the driver.
 timeIntervalNanoSeconds: the time interval between readings at the selected timebase.
-maxSamples: the maximum number of samples available. 
-
-For further information on the ps5000aGetTimebase2 function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+maxSamples: the maximum number of samples available. </Description>
             </Method>
             <Method>
                <Name>ps5000aMaximumValue</Name>
@@ -2022,41 +2047,14 @@ For further information on the ps5000aGetTimebase2 function please refer to the 
                <Type>MCode</Type>
                <Code>
                   <MCode>function status = ps5000aMaximumValue(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    max_val_ptr = 0;
-
-    [status, obj.UserData.maxADCValue]  = calllib('ps5000a', ...
-            'ps5000aMaximumValue', get(obj, 'unitHandle'), max_val_ptr);
-
-    if (status == PicoStatus.PICO_OK)
-    
-        % Maximum value is stored in the driver 
-        set(obj, 'maxADCValue', obj.UserData.maxADCValue);
-    
-    else
-           
-        % TBD - Error handling 
-        
-    end</MCode>
+    % Show warning message
+    warning('PS5000AInstrumentDriver:FunctionDeprecated', ...
+        'ps5000aMaximumValue is not supported by this Instrument Driver - please use the maxADCValue property instead.');</MCode>
                </Code>
-               <Description>ps5000aMaximumValue(obj) sets the maxADCValue property corresponding to the  maximum ADC count returned by calls to get values.
-
-For 8-bit resolution mode the maximum ADC count is 32512.
-
-For 12, 14, 15 and 16-bit resolution modes, the maximum ADC count is 32767.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-status - status code returned by the driver.
-
-For further information on the ps5000aMaximumValue function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
-
+               <Description>ps5000aMaximumValue(obj) has been deprecated. Please query the base device maxADCValue function instead.
 </Description>
             </Method>
             <Method>
@@ -2066,15 +2064,21 @@ For further information on the ps5000aMaximumValue function please refer to the 
                <Type>MCode</Type>
                <Code>
                   <MCode>function [status, nMaxSamples] = ps5000aMemorySegments(obj, nSegments)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    nMaxSamples = 0; % Initialise value for pointer
+    pNMaxSamples = libpointer('int32Ptr', 0); % Initialise value for pointer
 
-    [status, nMaxSamples] = calllib('ps5000a', 'ps5000aMemorySegments', ...
-        get(obj, 'unitHandle'), nSegments, nMaxSamples);
+    status = calllib('ps5000a', 'ps5000aMemorySegments', ...
+                obj.DriverData.unitHandle, nSegments, pNMaxSamples);
     
     if (status ~= PicoStatus.PICO_OK)
            
-        % TBD - Error handling 
+        error('ps5000aMemorySegments: status code %d, please refer to the PicoStatus.m file.\n', status);
+        
+    else
+        
+        nMaxSamples = pNMaxSamples.Value;
         
     end</MCode>
                </Code>
@@ -2085,18 +2089,15 @@ This function may be used with the Test and Measurement Tool.
 Input parameters:
 
 obj - the object representing the device.
-nSegments - the number of segments required from:
-
-1 to 65,535: PicoScope 5242A/B, 5243A/B, 5442A/B, 5443A/B
-1 to 125,000: PicoScope 5244A, 5444A
-1 to 250,000: PicoScope 5244B, 5444B
+nSegments - the number of segments required (see ps5000aGetMaxSegments).
 
 Output parameters:
 
 status - status code returned by the driver.
-nMaxSamples - the number of samples available in each segment.
-
-For further information on the ps5000aMemorySegments function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+nMaxSamples - the number of samples available in each segment. This is the total number over
+all channels, so if two channels or 8-bit digital ports are in use, the number of samples available to each
+channel is nMaxSamples divided by 2; for 3 or 4 channels or digital ports divide by 4; and for 5 to 6 channels
+or digital ports divide by 8.</Description>
             </Method>
             <Method>
                <Name>ps5000aMinimumValue</Name>
@@ -2105,40 +2106,14 @@ For further information on the ps5000aMemorySegments function please refer to th
                <Type>MCode</Type>
                <Code>
                   <MCode>function status = ps5000aMinimumValue(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    min_val_ptr = 0; % Initialise pointer
-
-    [status, obj.UserData.minADCValue]  = calllib('ps5000a', ...
-            'ps5000aMinimumValue', get(obj, 'unitHandle'), min_val_ptr);
-
-    if (status == PicoStatus.PICO_OK)
-        
-        % Store value in driver    
-        set(obj, 'minADCValue', obj.UserData.minADCValue);
-    
-    else
-           
-        % TBD - Error handling 
-        
-    end</MCode>
+    % Show warning message
+    warning('PS5000AInstrumentDriver:FunctionDeprecated', ...
+        'ps5000aMinimumValue is not supported by this Instrument Driver - please use the minADCValue property instead.');</MCode>
                </Code>
-               <Description>ps5000aMinimumValue(obj) sets the minValue property corresponding to the minimum ADC count returned by calls to get values.
-
-For 8-bit resolution mode, the minimum ADC count is -32512.
-
-For 12, 14, 15 and 16-bit resolution modes, the minimum ADC count is -32767.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the device.
-
-Output parameters:
-
-status - status code returned by the driver.
-
-For further information on the ps5000aMinimumValue function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
+               <Description>ps5000aMinimumValue(obj) has been deprecated. Please query the base device minADCValue function instead.
 </Description>
             </Method>
             <Method>
@@ -2148,12 +2123,14 @@ For further information on the ps5000aMinimumValue function please refer to the 
                <Type>MCode</Type>
                <Code>
                   <MCode>function status = ps5000aPingUnit(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    status = calllib('ps5000a', 'ps5000aPingUnit', get(obj, 'unitHandle'));
+    status = calllib('ps5000a', 'ps5000aPingUnit', obj.DriverData.unitHandle);
     
     if (status ~= PicoStatus.PICO_OK)
            
-        % TBD - Error handling 
+        error('ps5000aPingUnit: status code %d, please refer to the PicoStatus.m file.\n', status);
         
     end </MCode>
                </Code>
