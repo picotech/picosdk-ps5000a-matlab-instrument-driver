@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.16.44</InstrumentVersion>
+   <InstrumentVersion>2.2.16.45</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -2130,7 +2130,7 @@ or digital ports divide by 8.</Description>
     
     if (status ~= PicoStatus.PICO_OK)
            
-        error('ps5000aPingUnit: status code %d, please refer to the PicoStatus.m file.\n', status);
+        error('ps5000aPingUnit: status code %d, please refer to the PicoStatus.m file.', status);
         
     end </MCode>
                </Code>
@@ -2144,9 +2144,7 @@ obj - the object representing the device.
 
 Output parameters:
 
-status - status code returned by the driver.
-
-For further information on the ps5000aPingUnit function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+status - status code returned by the driver.</Description>
             </Method>
             <Method>
                <Name>ps5000aSetBandwidthFilter</Name>
@@ -2158,12 +2156,11 @@ For further information on the ps5000aPingUnit function please refer to the Pico
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
 
-    channelCount = get(obj, 'channelCount');
+    channelCount = obj.DriverData.channelCount;
     
     if (channelCount == PicoConstants.QUAD_SCOPE)
         
-            currentPowerState = calllib('ps5000a', 'ps5000aCurrentPowerSource', ...
-                                    get(obj, 'unitHandle'));
+            currentPowerState = calllib('ps5000a', 'ps5000aCurrentPowerSource', obj.DriverData.unitHandle);
         
             if (currentPowerState == PicoStatus.PICO_POWER_SUPPLY_NOT_CONNECTED)
            
@@ -2175,8 +2172,8 @@ For further information on the ps5000aPingUnit function please refer to the Pico
     
     if (channelCount == PicoConstants.DUAL_SCOPE)
         
-        if (channel &lt; evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A') ...
-            || channel &gt; evalin('base', ' ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_B'))
+        if (channel &lt; obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A ...
+            || channel &gt; obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_B)
 
             error('ps5000aSetBandwidthFilter: Invalid channel number (should be 0 (A) to 1 (B)');    
 
@@ -2185,8 +2182,8 @@ For further information on the ps5000aPingUnit function please refer to the Pico
         
     elseif (channelCount == PicoConstants.QUAD_SCOPE)
         
-        if (channel &lt; evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A') ...
-            || channel &gt;= evalin('base', ' ps5000aEnuminfo.enPS5000AChannel.PS5000A_MAX_CHANNELS'))
+        if (channel &lt; obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A ...
+            || channel &gt;= obj.DriverData.enums.enPS5000AChannel.PS5000A_MAX_CHANNELS)
 
             error('ps5000aSetBandwidthFilter: Invalid channel number (should be 0 (A) to 3 (D)');    
 
@@ -2198,19 +2195,18 @@ For further information on the ps5000aPingUnit function please refer to the Pico
         
     end
 
-    if (bandwidth ~= evalin('base', 'ps5000aEnuminfo.enPS5000ABandwidthLimiter.PS5000A_BW_FULL') ...
-        &amp;&amp; bandwidth ~= evalin('base', 'ps5000aEnuminfo.enPS5000ABandwidthLimiter.PS5000A_BW_20MHZ'))
+    if (bandwidth ~= obj.DriverData.enums.enPS5000ABandwidthLimiter.PS5000A_BW_FULL ...
+        &amp;&amp; bandwidth ~= obj.DriverData.enums.enPS5000ABandwidthLimiter.PS5000A_BW_20MHZ)
 
         error('ps5000aSetBandwidthFilter: bandwidth must be 0 (Full) or 1 (20MHz).')
 
     end
 
-    status = calllib('ps5000a', 'ps5000aSetBandwidthFilter', ...
-            get(obj, 'unitHandle'), channel, bandwidth);
+    status = calllib('ps5000a', 'ps5000aSetBandwidthFilter', obj.DriverData.unitHandle, channel, bandwidth);
 
     if (status ~= PicoStatus.PICO_OK)
 
-        error('ps5000aSetBandwidthFilter: error code %d\n', status);
+        error('ps5000aSetBandwidthFilter: status code %d, please refer to the PicoStatus.m file.', status);
 
     end   </MCode>
                </Code>
@@ -2221,14 +2217,12 @@ This function may be used with the Test and Measurement Tool.
 Input parameters:
 
 obj - the object representing the device.
-channel - the channel to be configured (an enumeration from the PS5000A_CHANNEL range).
-bandwidth - the bandwidth is either 0 (Full Bandwidth) or 1 (20MHz).
+channel - the channel to be configured (an enumeration from the enPS5000AChannel range).
+bandwidth - the bandwidth is either enPS5000ABandwidthLimiter.PS5000A_BW_FULL (0) or enPS5000ABandwidthLimiter.PS5000A_BW_20MHZ (1).
 
 Output parameters:
 
-status - status code returned by the driver.
-
-For further information on the ps5000aSetBandwidthFilter function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+status - status code returned by the driver.</Description>
             </Method>
             <Method>
                <Name>ps5000aSetChannel</Name>
@@ -2237,47 +2231,46 @@ For further information on the ps5000aSetBandwidthFilter function please refer t
                <Type>MCode</Type>
                <Code>
                   <MCode>function status = ps5000aSetChannel(obj, channel, enabled, type, range, analogueOffset)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    status = calllib('ps5000a', 'ps5000aSetChannel', get(obj, 'unitHandle'), ...
+    status = calllib('ps5000a', 'ps5000aSetChannel', obj.DriverData.unitHandle, ...
                 channel, enabled, type, range, analogueOffset);
-     
-    % Obtain information is contained in UserData.channelSettings
-    % info = obj.UserData
     
     % Convert cell array to channel x data field matrix
-    channel_settings = cell2mat(obj.UserData.channelSettings(:));
+    channelSettings = obj.DriverData.channelSettings;
             
-	if(status == PicoStatus.PICO_OK)
+	if (status == PicoStatus.PICO_OK)
         
-        switch(channel)
+        switch (channel)
             
-            case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A')
+            case obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A
                 
-                channel_settings(1,1) = enabled;
-                channel_settings(1,2) = type;
-                channel_settings(1,3) = range;
-                channel_settings(1,4) = analogueOffset; 
+                channelSettings(1,1) = enabled;
+                channelSettings(1,2) = type;
+                channelSettings(1,3) = range;
+                channelSettings(1,4) = analogueOffset; 
                 
-            case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_B')
+            case obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_B
                 
-                channel_settings(2,1) = enabled;
-                channel_settings(2,2) = type;
-                channel_settings(2,3) = range;
-                channel_settings(2,4) = analogueOffset; 
+                channelSettings(2,1) = enabled;
+                channelSettings(2,2) = type;
+                channelSettings(2,3) = range;
+                channelSettings(2,4) = analogueOffset; 
 
-            case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_C')
+            case obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_C
                 
-                channel_settings(3,1) = enabled;
-                channel_settings(3,2) = type;
-                channel_settings(3,3) = range;
-                channel_settings(3,4) = analogueOffset;  
+                channelSettings(3,1) = enabled;
+                channelSettings(3,2) = type;
+                channelSettings(3,3) = range;
+                channelSettings(3,4) = analogueOffset;  
                 
-            case evalin('base', 'ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_D')
+            case obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_D
                 
-                channel_settings(4,1) = enabled;
-                channel_settings(4,2) = type;
-                channel_settings(4,3) = range;
-                channel_settings(4,4) = analogueOffset; 
+                channelSettings(4,1) = enabled;
+                channelSettings(4,2) = type;
+                channelSettings(4,3) = range;
+                channelSettings(4,4) = analogueOffset; 
                 
             otherwise
                 
@@ -2285,28 +2278,23 @@ For further information on the ps5000aSetBandwidthFilter function please refer t
                     
         end
         
-        %obj.UserData.channelSettings
-        set(obj, 'channelSettings', channel_settings);
-        
         % Information to be passed to the wrapper dll
-        enabled_channels = zeros(PicoConstants.QUAD_SCOPE, 1);
+        enabledChannels = zeros(PicoConstants.QUAD_SCOPE, 1);
         
-        %disp('Setting channels')
-        
-        switch(get(obj, 'channelCount'))
+        switch (obj.DriverData.channelCount)
             
             case PicoConstants.DUAL_SCOPE
            
                 % Only channels A and B
-            enabled_channels = [channel_settings(1,1); ...
-                channel_settings(2,1); 0; 0];
+                enabledChannels = [channelSettings(1,1); ...
+                                    channelSettings(2,1); 0; 0];
             
             case PicoConstants.QUAD_SCOPE
                 
-            enabled_channels = [channel_settings(1,1); ...
-                channel_settings(2,1); ...
-                channel_settings(3,1); ...
-                channel_settings(4,1)];
+                enabledChannels = [channelSettings(1,1); ...
+                                    channelSettings(2,1); ...
+                                    channelSettings(3,1); ...
+                                    channelSettings(4,1)];
             
             otherwise
         
@@ -2314,12 +2302,11 @@ For further information on the ps5000aSetBandwidthFilter function please refer t
             
         end
         
-        set_enabled_channels_status = calllib('ps5000aWrap', ...
-            'setEnabledChannels', get(obj, 'unitHandle'), enabled_channels);
+        setEnabledChannelsStatus = calllib('ps5000aWrap', 'setEnabledChannels', obj.DriverData.unitHandle, enabledChannels);
         
     else
         
-        error('ps5000aSetChannel: error code %d\n', status);
+        error('ps5000aSetChannel: status code %d, please refer to the PicoStatus.m file.', status);
         
     end</MCode>
                </Code>
@@ -2330,17 +2317,15 @@ This function may be used with the Test and Measurement Tool.
 Input parameters:
 
 obj - the object representing the device.
-channel - the channel to be configured (an enumeration from the PS5000A_CHANNEL range).
+channel - the channel to be configured (an enumeration from the enPS5000AChannel range).
 enabled - set to TRUE (1) to enable the channel, FALSE (0) otherwise.
-type - the impedance and coupling type (an enumeration from the PS5000A_COUPLING range).
-range - the input voltage range (an enumeration from the PS5000A_RANGE range).
+type - the impedance and coupling type (an enumeration from the enPS5000ACoupling range).
+range - the input voltage range (an enumeration from the enPS5000ARange set).
 analogueOffset - a voltage to add to the input channel before digitization.
 
 Output parameters:
 
-status - status code returned by the driver.
-
-For further information on the ps5000aSetChannel function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+status - status code returned by the driver.</Description>
             </Method>
             <Method>
                <Name>ps5000aSetDataBuffer</Name>
@@ -2349,13 +2334,15 @@ For further information on the ps5000aSetChannel function please refer to the Pi
                <Type>MCode</Type>
                <Code>
                   <MCode>function status = ps5000aSetDataBuffer(obj, channel, buffer, bufferLth, segmentIndex, mode)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    status = calllib('ps5000a', 'ps5000aSetDataBuffer', get(obj, 'unitHandle'), ...
+    status = calllib('ps5000a', 'ps5000aSetDataBuffer', obj.DriverData.unitHandle, ...
                 channel, buffer, bufferLth, segmentIndex, mode);
             
     if (status ~= PicoStatus.PICO_OK)
            
-        error('ps5000aSetDataBuffer: code %d', status);
+        error('ps5000aSetDataBuffer: status code %d, please refer to the PicoStatus.m file.', status);
         
     end</MCode>
                </Code>
@@ -2364,19 +2351,17 @@ For further information on the ps5000aSetChannel function please refer to the Pi
 Input parameters:
 
 obj - the object representing the device.
-channel - the channel to which the buffer corresponds (an enumeration from the PS5000A_CHANNEL range).
+channel - the channel to which the buffer corresponds (an enumeration from the enPS5000AChannel range).
 buffer - a libpointer to a 1-D array to receive the data values for the channel.
 bufferLth - the length of the buffer array.
 segmentIndex - the number of the memory segment to be used.
-mode - the downsampling mode (an enumeration from the PS5000A_RATIO_MODE range).
+mode - the downsampling mode (an enumeration from the enPS5000ARatioMode range).
 
 Output parameters:
 
 status - status code returned by the device.
 
 If capturing data in streaming mode without aggregation, buffer must also be passed as the driverBuffer argument for the setAppAndDriverBuffers function call.
-
-For further information on the ps5000aSetDataBuffer function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
 
 </Description>
             </Method>
@@ -2387,14 +2372,16 @@ For further information on the ps5000aSetDataBuffer function please refer to the
                <Type>MCode</Type>
                <Code>
                   <MCode>function status = ps5000aSetDataBuffers(obj, channel, pBufferMax, pBufferMin, bufferLth, segmentIndex, ratioMode)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
     status = calllib('ps5000a', 'ps5000aSetDataBuffers', ...
-        get(obj, 'unitHandle'), channel, pBufferMax, pBufferMin, bufferLth, ...
+        obj.DriverData.unitHandle, channel, pBufferMax, pBufferMin, bufferLth, ...
         segmentIndex, ratioMode);
     
     if (status ~= PicoStatus.PICO_OK)
            
-        % TBD - Error handling 
+        error('ps5000aSetDataBuffers: status code %d, please refer to the PicoStatus.m file.', status);
         
     end</MCode>
                </Code>
@@ -2431,32 +2418,32 @@ For further information on the ps5000aSetDataBuffers function please refer to th
 % base device functions, OBJ is the device object.
 
     % Initialise a value for the resolution.
-    device_res = evalin('base', 'ps5000aEnuminfo.enPS5000ADeviceResolution.PS5000A_DR_8BIT');
+    deviceRes = obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_8BIT;
     
     % Verify resolution is valid
     
     % Find number of active channels
     
-    % Convert cell array to channel x data field matrix
-    channel_settings = cell2mat(obj.UserData.channelSettings(:));
+    % Obtain channel settings
+    channelSettings = obj.DriverData.channelSettings;
 
     % Array to represent channels enabled
-    enabled_channels = zeros(PicoConstants.QUAD_SCOPE, 1);
+    enabledChannels = zeros(PicoConstants.QUAD_SCOPE, 1);
     
-    switch(get(obj, 'channelCount'))
+    switch (obj.DriverData.channelCount)
             
         case PicoConstants.DUAL_SCOPE
 
             % Only channels A and B
-        enabled_channels = [channel_settings(1,1); ...
-            channel_settings(2,1); 0; 0];
+            enabledChannels = [channelSettings(1,1); ...
+                                channelSettings(2,1); 0; 0];
 
         case PicoConstants.QUAD_SCOPE
 
-        enabled_channels = [channel_settings(1,1); ...
-            channel_settings(2,1); ...
-            channel_settings(3,1); ...
-            channel_settings(4,1)];
+            enabledChannels = [channelSettings(1,1); ...
+                                channelSettings(2,1); ...
+                                channelSettings(3,1); ...
+                                channelSettings(4,1)];
 
         otherwise
 
@@ -2464,7 +2451,7 @@ For further information on the ps5000aSetDataBuffers function please refer to th
             
     end
     
-    num_channels_enabled = length(find(enabled_channels));
+    numChannelsEnabled = length(find(enabledChannels));
     
     switch(resolution)
         
@@ -2474,34 +2461,34 @@ For further information on the ps5000aSetDataBuffers function please refer to th
             
         case 12
             
-            device_res = evalin('base', 'ps5000aEnuminfo.enPS5000ADeviceResolution.PS5000A_DR_12BIT');
+            deviceRes = obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_12BIT;
             
         case 14
             
-            device_res = evalin('base', 'ps5000aEnuminfo.enPS5000ADeviceResolution.PS5000A_DR_14BIT');
+            deviceRes = obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_14BIT;
             
         case 15
             
-            device_res = evalin('base', 'ps5000aEnuminfo.enPS5000ADeviceResolution.PS5000A_DR_15BIT');
+            deviceRes = obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_15BIT;
             
-            if (num_channels_enabled &gt; 2)
+            if (numChannelsEnabled &gt; 2)
                 
-                device_res = evalin('base', 'ps5000aEnuminfo.enPS5000ADeviceResolution.PS5000A_DR_14BIT');
+                deviceRes = obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_14BIT;
                 resolution = 14;
             end
             
         case 16
 
-            device_res = evalin('base', 'ps5000aEnuminfo.enPS5000ADeviceResolution.PS5000A_DR_16BIT');
+            deviceRes = obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_16BIT;
             
-            if (num_channels_enabled == 2)
+            if (numChannelsEnabled == 2)
                
-                device_res = evalin('base', 'ps5000aEnuminfo.enPS5000ADeviceResolution.PS5000A_DR_15BIT');
+                deviceRes = obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_15BIT;
                 resolution = 15;
                 
-            elseif (num_channels_enabled &gt; 2)
+            elseif (numChannelsEnabled &gt; 2)
                 
-                device_res = evalin('base', 'ps5000aEnuminfo.enPS5000ADeviceResolution.PS5000A_DR_14BIT');
+                deviceRes = obj.DriverData.enums.enPS5000ADeviceResolution.PS5000A_DR_14BIT;
                 resolution = 14;
                 
             else
@@ -2516,13 +2503,12 @@ For further information on the ps5000aSetDataBuffers function please refer to th
             
     end
 
-    status = calllib('ps5000a', 'ps5000aSetDeviceResolution', ...
-        get(obj, 'unitHandle'), device_res);
+    status = calllib('ps5000a', 'ps5000aSetDeviceResolution', obj.DriverData.unitHandle, deviceRes);
     
     if (status == PicoStatus.PICO_OK)
            
         % Set local resolution value
-        set(obj, 'resolution', resolution);
+        obj.DriverData.resolution = resolution;
         
         if (obj.DriverData.displayOutput == PicoConstants.TRUE)
             
@@ -2532,8 +2518,19 @@ For further information on the ps5000aSetDataBuffers function please refer to th
         
         % Set the maximum and minimum ADC count value
         
-        status = invoke(obj, 'ps5000aMaximumValue');
-        status = invoke(obj, 'ps5000aMinimumValue');
+        % Set the max. ADC value
+        maxValPtr = libpointer('int16Ptr', 0);
+        
+        [maxValueStatus, ~]  = calllib('ps5000a', 'ps5000aMaximumValue', obj.DriverData.unitHandle, maxValPtr);
+
+        obj.DriverData.maxADCValue = maxValPtr.Value;
+        
+        % Set the min. ADC value 
+        minValPtr = libpointer('int16Ptr', 0);
+
+        [minValueStatus, ~] = calllib('ps5000a', 'ps5000aMinimumValue', unitHandle, minValPtr);
+
+        obj.DriverData.minADCValue = minValPtr.Value;
         
         % Depending on resolution set:
         %   Bandwidth
@@ -2541,19 +2538,19 @@ For further information on the ps5000aSetDataBuffers function please refer to th
         
         if (resolution &lt; 16)
            
-            model_variant = obj.InstrumentModel;
+            modelVariant = obj.InstrumentModel;
                 
-                if(strncmp(model_variant, '5242', 4) || strncmp(model_variant, '5442', 4))
+                if(strncmp(modelVariant, '5242', 4) || strncmp(modelVariant, '5442', 4))
                     
-                    set(obj, 'bandwidth', PicoConstants.BANDWIDTH_60MHZ);
+                    obj.DriverData.bandwidth = PicoConstants.BANDWIDTH_60MHZ;
                     
-                elseif(strncmp(model_variant, '5243', 4) || strncmp(model_variant, '5443', 4))
+                elseif(strncmp(modelVariant, '5243', 4) || strncmp(modelVariant, '5443', 4))
                     
-                    set(obj, 'bandwidth', PicoConstants.BANDWIDTH_100MHZ);
+                    obj.DriverData.bandwidth = PicoConstants.BANDWIDTH_100MHZ;
                     
-                elseif(strncmp(model_variant, '5244', 4) || strncmp(model_variant, '5444', 4))
+                elseif(strncmp(modelVariant, '5244', 4) || strncmp(modelVariant, '5444', 4))
                     
-                    set(obj, 'bandwidth', PicoConstants.BANDWIDTH_200MHZ);
+                    obj.DriverData.bandwidth = PicoConstants.BANDWIDTH_200MHZ;
                         
                 else
                     
@@ -2563,7 +2560,7 @@ For further information on the ps5000aSetDataBuffers function please refer to th
                 
         else
             
-            set(obj, 'bandwidth', PicoConstants.BANDWIDTH_60MHZ);
+            obj.DriverData.bandwidth = PicoConstants.BANDWIDTH_60MHZ;
             
         end
             
@@ -2603,8 +2600,6 @@ Output parameters:
 
 status - status code returned by the driver.
 resolution - the resolution set by the driver.
-
-For further information on the ps5000aSetDeviceResolution  function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.
 </Description>
             </Method>
             <Method>
@@ -2614,12 +2609,14 @@ For further information on the ps5000aSetDeviceResolution  function please refer
                <Type>MCode</Type>
                <Code>
                   <MCode>function status = ps5000aStop(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
 
-    status = calllib('ps5000a', 'ps5000aStop', get(obj, 'unitHandle'));
+    status = calllib('ps5000a', 'ps5000aStop', obj.DriverData.unitHandle);
     
     if (status ~= PicoStatus.PICO_OK)
            
-        error('ps5000aStop: error code %d\n', status)
+        error('ps5000aStop: status code %d, please refer to the PicoStatus.m file.', status);
         
     end</MCode>
                </Code>
@@ -2633,9 +2630,7 @@ obj - the object representing the device.
 
 Output parameters:
 
-status - status code returned by the driver.
-
-For further information on the ps5000aStop function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+status - status code returned by the driver.</Description>
             </Method>
             <Method>
                <Name>resetDevice</Name>
@@ -2773,7 +2768,7 @@ This includes the folliowing:
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
-                  <MCode>function [setChA, setChB, setChC, setChD, setD0, setD1] = setChannelDefaults(obj)
+                  <MCode>function [setChA, setChB, setChC, setChD] = setChannelDefaults(obj)
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
 
@@ -2798,37 +2793,23 @@ This includes the folliowing:
     
     % Matrix of values to represent channels (rows) x properties (cols)
     obj.DriverData.channelSettings = zeros(PicoConstants.QUAD_SCOPE);
-    obj.UserData.channelSettings = obj.DriverData.channelSettings;
     
     % Set Channel A and B, updating internal settings
     % Parameters are channel index, enabled, dc coupling, range index and 
     % analogue offset
 
     % Update internal setting
-    channel_settings(1).enabled = true;
-    channel_settings(1).dc = true;
-    channel_settings(1).range = range5V;
-    channel_settings(1).offset = analogueOffset;
+    channelSettings(1,1) = true;
+    channelSettings(1,2) = true;
+    channelSettings(1,3) = range5V;
+    channelSettings(1,4) = analogueOffset; 
     
-    channel_settings(2).enabled = true;
-    channel_settings(2).dc = true;
-    channel_settings(2).range = range5V;
-    channel_settings(2).offset = analogueOffset;
+    channelSettings(2,1) = true;
+    channelSettings(2,2) = true;
+    channelSettings(2,3) = range5V;
+    channelSettings(2,4) = analogueOffset; 
     
-    % Create a num channels x fields array
-    ch_settings = zeros(PicoConstants.QUAD_SCOPE);
-    
-    % Transpose the resulting array
-    ch_a_info = cell2mat(struct2cell(channel_settings(1)))';
-    ch_b_info = cell2mat(struct2cell(channel_settings(2)))';
-    
-    % Combine together
-    ch_settings(1, :) = ch_a_info;
-    ch_settings(2, :) = ch_b_info;
-    
-    obj.DriverData.channelSettings = ch_settings;
-    obj.UserData.channelSettings = obj.DriverData.channelSettings;
-    set(obj, 'channelSettings', obj.UserData.channelSettings);
+    obj.DriverData.channelSettings = channelSettings;
     
     setChA = invoke(obj, 'ps5000aSetChannel', chA, true, true, range5V, analogueOffset);
     fprintf('Channel A:-\n\tEnabled: True\n\tCoupling: DC\n\tRange: 5 V\n\tAnalog offset: 0.0 V\n\n');
@@ -2847,27 +2828,17 @@ This includes the folliowing:
         chD = obj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_D;
         
         % Update internal setting
-        channel_settings(3).enabled = true;
-        channel_settings(3).dc = true;
-        channel_settings(3).range = range5V;
-        channel_settings(3).offset = analogueOffset;
+        channelSettings(3,1) = true;
+        channelSettings(3,2) = true;
+        channelSettings(3,3) = range5V;
+        channelSettings(3,4) = analogueOffset; 
 
-        channel_settings(4).enabled = true;
-        channel_settings(4).dc = true;
-        channel_settings(4).range = range5V;
-        channel_settings(4).offset = analogueOffset;
-        
-        % Add to the channel settings array
-        ch_c_info = cell2mat(struct2cell(channel_settings(3)))';
-        ch_d_info = cell2mat(struct2cell(channel_settings(4)))';
-        
-        ch_settings(3, :) = ch_c_info;
-        ch_settings(4, :) = ch_d_info;
+        channelSettings(4,1) = true;
+        channelSettings(4,2) = true;
+        channelSettings(4,3) = range5V;
+        channelSettings(4,4) = analogueOffset; 
     
-        obj.DriverData.channelSettings = ch_settings;
-        obj.UserData.channelSettings = obj.DriverData.channelSettings;
-    
-        set(obj, 'channelSettings', obj.UserData.channelSettings);
+        obj.DriverData.channelSettings = channelSettings;
 
         setChC = invoke(obj, 'ps5000aSetChannel', chC, true, true, range5V, analogueOffset);
         fprintf('Channel C:-\n\tEnabled: True\n\tCoupling: DC\n\tRange: 5 V\n\tAnalog offset: 0.0 V\n\n');
@@ -2877,24 +2848,34 @@ This includes the folliowing:
         
         clear chC;
         clear chD;
-        clear ch_c_info;
-        clear ch_d_info;
+        
     end
     
     % Clear local variables
     clear chA;
     clear chB;
     clear true;
-    clear range_5V;
         </MCode>
                </Code>
                <Description>setChannelDefaults(obj) sets the following default values for any analog channels found on the device:
 
-Analogue Channel:
+Analogue channel:
 
 Enabled: True
 Coupling: DC
-Voltage Range: 5V</Description>
+Voltage Range: 5V
+Analog offset: 0 V
+
+Input parameters:
+
+obj - the object representing the device.
+
+Output parameters:
+
+chA - status for setting channel A
+chB - status for setting channel A
+chC - status for setting channel C (4 channel devices only)
+chD - status for setting channel D (4 channel devices only)</Description>
             </Method>
          </MethodInfo>
       </Group>
