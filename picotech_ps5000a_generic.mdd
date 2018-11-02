@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.16.45</InstrumentVersion>
+   <InstrumentVersion>2.2.16.46</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -119,17 +119,6 @@
     
     [~, obj.DriverData.structs, obj.DriverData.enums, ~] = ps5000aMFile(); 
     [~, ~, obj.DriverData.wrapEnums, ~] = ps5000aWrapMFile();
-
-    
-    if (isstruct(evalin('base', 'ps5000aEnuminfo')) &amp;&amp; isstruct(evalin('base', 'ps5000aStructs')))
-    
-        % Do nothing - structures have been loaded
-    
-    else
-
-        error('Failed to load enumerations and/or structures from ps5000aMFile');
-    
-    end
     
     % Define constant values used by this Instrument Driver
     % =====================================================
