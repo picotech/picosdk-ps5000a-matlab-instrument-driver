@@ -341,7 +341,7 @@
     obj.DriverData.resolution = 8;
 
     % Open the unit
-    [connectStatus.openUnit, obj.DriverData.unitHandle, obj.UserData.unitSerial] = ...
+    [connectStatus.openUnit, obj.DriverData.unitHandle, ~] = ...
         calllib('ps5000a', 'ps5000aOpenUnit', unitHandle, unitSerial, resolution8bit);
     
     % Confirm handle is valid
@@ -714,7 +714,7 @@
             
         else
 
-            if (isfield(obj.UserData, 'unitSerial'))
+            if (isfield(obj.DriverData, 'unitSerial'))
                 
                 error('Disconnect:ConnectionNotClosed',['Connection to PicoScope %s with serial number %s ' ...
                     'not closed. Status code %d\n'], ...
@@ -2502,7 +2502,7 @@ For further information on the ps5000aSetDataBuffers function please refer to th
         % Set the min. ADC value 
         minValPtr = libpointer('int16Ptr', 0);
 
-        [minValueStatus, ~] = calllib('ps5000a', 'ps5000aMinimumValue', unitHandle, minValPtr);
+        [minValueStatus, ~] = calllib('ps5000a', 'ps5000aMinimumValue', obj.DriverData.unitHandle, minValPtr);
 
         obj.DriverData.minADCValue = minValPtr.Value;
         
@@ -2617,7 +2617,7 @@ status - status code returned by the driver.</Description>
 % base device functions, OBJ is the device object.
 
     % Reset Channels
-    [chA, chB, chC, chD, d0, d1] = invoke(obj, 'setChannelDefaults');
+    [chA, chB, chC, chD] = invoke(obj, 'setChannelDefaults');
     
     % Digital ports
     
@@ -2670,7 +2670,6 @@ status - status code returned by the driver.</Description>
     
     % Timebase
     obj.DriverData.timebase = 65;
-    obj.UserData.timebase = obj.DriverData.timebase;
     timeIntervalNs = 0;
     segmentIndex = 0;
     
