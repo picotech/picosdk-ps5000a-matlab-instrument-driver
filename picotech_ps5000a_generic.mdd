@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.16.47</InstrumentVersion>
+   <InstrumentVersion>2.2.16.48</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -2251,6 +2251,8 @@ status - status code returned by the driver.</Description>
                 % Do nothing
                     
         end
+        
+        obj.DriverData.channelSettings = channelSettings;
         
         % Information to be passed to the wrapper dll
         enabledChannels = zeros(PicoConstants.QUAD_SCOPE, 1);
