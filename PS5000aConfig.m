@@ -178,14 +178,21 @@ if (~any(strcmp(ps5000aConfigInfo.psTbxName, {ps5000aConfigInfo.v.Name})))
     
     % If the PicoScope Support Toolbox has not been installed, check to see
     % if the folder is on the MATLAB path, having been downloaded via zip
-    % file or copied from the Microsoft Windows Pico SDK installer
-    % directory.
+    % file.
     
     ps5000aConfigInfo.psTbxFound = strfind(path, ps5000aConfigInfo.psTbxName);
     
     if (isempty(ps5000aConfigInfo.psTbxFound))
         
-        warning('PS5000aConfig:PSTbxDirNotFound', 'PicoScope Support Toolbox directory not found.');
+        ps5000aConfigInfo.psTbxNotFoundWarningMsg = sprintf(['Please install the PicoScope Support Toolbox '...
+            'via the Add-Ons Explorer or download the zip file from MATLAB Central File Exchange ' ...
+            'and add the location of the extracted contents to the MATLAB path.']);
+        
+        warning('PS5000aConfig:PSTbxDirNotFound', ps5000aConfigInfo.psTbxNotFoundWarningMsg);
+        
+        ps5000aConfigInfo.f = warndlg(ps5000aConfigInfo.psTbxNotFoundWarningMsg, 'PicoScope Support Toolbox Not Found', 'modal');
+        uiwait(ps5000aConfigInfo.f);
+        
         web('https://uk.mathworks.com/matlabcentral/fileexchange/53681-picoscope-support-toolbox');
             
     end
