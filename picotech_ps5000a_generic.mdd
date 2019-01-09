@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.16.48</InstrumentVersion>
+   <InstrumentVersion>2.2.16.49</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -430,13 +430,18 @@
                     obj.DriverData.bufferMemory = PicoConstants.BUFFER_MEMORY_16MS;
                     obj.DriverData.bandwidth = PicoConstants.BANDWIDTH_60MHZ;
 
-                case {obj.DriverData.constants.MODEL_PS5242B, obj.DriverData.constants.MODEL_PS5442B, ...
-                        obj.DriverData.constants.MODEL_PS5242D, obj.DriverData.constants.MODEL_PS5242D_MSO, ...
-                         obj.DriverData.constants.MODEL_PS5442D, obj.DriverData.constants.MODEL_PS5442D_MSO}
+                case {obj.DriverData.constants.MODEL_PS5242B, obj.DriverData.constants.MODEL_PS5442B}
 
                     obj.DriverData.hasHardwareEts = PicoConstants.FALSE;
                     obj.DriverData.bufferMemory = PicoConstants.BUFFER_MEMORY_32MS;
                     obj.DriverData.bandwidth = PicoConstants.BANDWIDTH_60MHZ;
+                    
+                case {obj.DriverData.constants.MODEL_PS5242D, obj.DriverData.constants.MODEL_PS5242D_MSO, ...
+                         obj.DriverData.constants.MODEL_PS5442D, obj.DriverData.constants.MODEL_PS5442D_MSO}
+                     
+                    obj.DriverData.hasHardwareEts = PicoConstants.FALSE;
+                    obj.DriverData.bufferMemory = PicoConstants.BUFFER_MEMORY_128MS;
+                    obj.DriverData.bandwidth = PicoConstants.BANDWIDTH_60MHZ; 
 
                 case {obj.DriverData.constants.MODEL_PS5243A, obj.DriverData.constants.MODEL_PS5443A}
 
@@ -444,12 +449,17 @@
                     obj.DriverData.bufferMemory = PicoConstants.BUFFER_MEMORY_64MS;
                     obj.DriverData.bandwidth = PicoConstants.BANDWIDTH_100MHZ;
 
-                case {obj.DriverData.constants.MODEL_PS5243B, obj.DriverData.constants.MODEL_PS5443B, ...
-                        obj.DriverData.constants.MODEL_PS5243D, obj.DriverData.constants.MODEL_PS5243D_MSO, ... 
-                        obj.DriverData.constants.MODEL_PS5443D, obj.DriverData.constants.MODEL_PS5443D_MSO}
+                case {obj.DriverData.constants.MODEL_PS5243B, obj.DriverData.constants.MODEL_PS5443B}
 
                     obj.DriverData.hasHardwareEts = PicoConstants.TRUE;
                     obj.DriverData.bufferMemory = PicoConstants.BUFFER_MEMORY_128MS;
+                    obj.DriverData.bandwidth = PicoConstants.BANDWIDTH_100MHZ;
+                    
+                case {obj.DriverData.constants.MODEL_PS5243D, obj.DriverData.constants.MODEL_PS5243D_MSO, ... 
+                        obj.DriverData.constants.MODEL_PS5443D, obj.DriverData.constants.MODEL_PS5443D_MSO}
+                    
+                    obj.DriverData.hasHardwareEts = PicoConstants.TRUE;
+                    obj.DriverData.bufferMemory = PicoConstants.BUFFER_MEMORY_256MS;
                     obj.DriverData.bandwidth = PicoConstants.BANDWIDTH_100MHZ;
 
                 case {obj.DriverData.constants.MODEL_PS5244A, obj.DriverData.constants.MODEL_PS5444A}
