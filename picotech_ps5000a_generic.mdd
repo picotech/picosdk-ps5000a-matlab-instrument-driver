@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.17.50</InstrumentVersion>
+   <InstrumentVersion>2.2.17.51</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -6960,7 +6960,7 @@ For further information on the ps5000aSetPulseWidthQualifier function please ref
             
     if (status ~= PicoStatus.PICO_OK)
        
-        error('Picotech:PS5000AMID:ps5000aSetTriggerChannelConditionsV2Error', ...
+        error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelConditionsV2Error', ...
             ['ps5000aSetTriggerChannelConditionsV2Error has returned status code ', ...
             num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
         
