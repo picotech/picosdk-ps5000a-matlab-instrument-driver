@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.17.51</InstrumentVersion>
+   <InstrumentVersion>2.2.17.52</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -6949,24 +6949,37 @@ For further information on the ps5000aSetPulseWidthQualifier function please ref
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
 
-    deviceObj = get(obj, 'Parent');
-    
-    % Create a libpointer object for the conditions structure
-    pConditions = libpointer('tPS5000AConditionPtr', conditions);
-    
-    status = calllib('ps5000a', 'ps5000aSetTriggerChannelConditionsV2', ...
-                deviceObj.DriverData.unitHandle, pConditions, ...
-                length(conditions), info);
-            
-    if (status ~= PicoStatus.PICO_OK)
-       
-        error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelConditionsV2Error', ...
-            ['ps5000aSetTriggerChannelConditionsV2Error has returned status code ', ...
-            num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
+    if (isstruct(conditions) || isempty(conditions))
+        
+        deviceObj = get(obj, 'Parent');
+
+        % Create a libpointer object for the conditions structure
+        pConditions = libpointer('tPS5000AConditionPtr', conditions);
+
+        status = calllib('ps5000a', 'ps5000aSetTriggerChannelConditionsV2', ...
+                    deviceObj.DriverData.unitHandle, pConditions, ...
+                    length(conditions), int16(info));
+
+        if (status ~= PicoStatus.PICO_OK)
+
+            error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelConditionsV2Error', ...
+                ['ps5000aSetTriggerChannelConditionsV2 has returned status code ', ...
+                num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
+
+        end
+        
+    else
+        
+        error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelConditionsV2InvalidConditions', ...
+                ['ps5000aSetTriggerChannelConditionsV2: conditions input ',...
+                'argument should be a tPS5000ACondition structure or empty.']);
         
     end</MCode>
                </Code>
                <Description>ps5000aSetTriggerChannelConditionsV2(obj, conditions, info) specifies which channels to trigger on.
+
+If you only need to trigger on a single analog input with edge or level detection, it's easier to use
+setSimpleTrigger. 
 
 Input arguments:
 
@@ -7018,6 +7031,57 @@ Output parameters:
 status - status code returned by the device.
 
 For further information on the ps5000aSetTriggerChannelDirections function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aSetTriggerChannelDirectionsV2</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSetTriggerChannelDirectionsV2(obj, directions)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    if (isstruct(directions) || isempty(directions))
+        
+        deviceObj = get(obj, 'Parent');
+
+        % Create a libpointer object for the directions structure
+        pDirections = libpointer('tPS5000ADirectionPtr', directions);
+
+        status = calllib('ps5000a', 'ps5000aSetTriggerChannelDirectionsV2', ...
+            deviceObj.DriverData.unitHandle, pDirections, uint16(length(directions)));
+
+        if (status ~= PicoStatus.PICO_OK)
+
+            error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelDirectionsV2Error', ...
+                ['ps5000aSetTriggerChannelDirectionsV2 has returned status code ', ...
+                num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
+
+        end
+        
+    else
+       
+        error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelDirectionsV2InvalidDirections', ...
+                ['ps5000aSetTriggerChannelDirectionsV2: directions input ',...
+                'argument should be a tPS5000ADirection structure or empty.']);
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aSetTriggerChannelDirectionsV2(obj, directions) sets up signal polarities for triggering.
+
+This function applies to analog channels only (use ps5000aSetTriggerDigitalPortProperties for digital channels). 
+
+Input arguments:
+
+obj - the object representing the Trigger group object.
+directions - a structure array consisting of 1 or more MATLAB structures corresponding to the tPS5000ADirection structure (accessible from the ps5000aStructs struct).
+
+Output  arguments:
+
+status - status code returned by the device.
+
+Please refer to the ps5000aSetTriggerChannelDirectionsV2 function in the PicoScope 5000 Series (A API) Flexible Resolution Oscilloscopes Programmer's Guide for further information.</Description>
             </Method>
             <Method>
                <Name>setAdvancedTrigger</Name>
