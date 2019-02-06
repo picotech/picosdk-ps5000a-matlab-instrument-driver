@@ -12,12 +12,12 @@
 % packages from the <a href="matlab:
 % web('https://www.picotech.com/downloads/linux')">Pico Technology Linux Software & Drivers for Oscilloscopes and Data Loggers</a> page.
 %
-% Apple Mac OS X: Follow the instructions to install the PicoScope 6
+% Apple macOS: Follow the instructions to install the PicoScope 6
 % application from the <a href="matlab: web('https://www.picotech.com/downloads')">Pico Technology Download software and manuals for oscilloscopes and data loggers</a> page.
 % Optionally, create a 'maci64' folder in the same directory as this file
 % and copy the following files into it:
 %
-% * libps5000a.dylib and any other libps2000a library files
+% * libps5000a.dylib and any other libps5000a library files
 % * libps5000aWrap.dylib and any other libps5000aWrap library files
 % * libpicoipp.dylib and any other libpicoipp library files
 % * libiomp5.dylib
@@ -29,7 +29,7 @@
 %
 % This file can be edited to suit application requirements.
 %
-% Copyright: © 2013-2018 Pico Technology Ltd. See LICENSE file for terms.	
+% Copyright: © 2013-2019 Pico Technology Ltd. See LICENSE file for terms.	
 
 %% Set path to shared libraries, prototype and thunk Files
 % Set paths to shared library files, prototype and thunk files according to
