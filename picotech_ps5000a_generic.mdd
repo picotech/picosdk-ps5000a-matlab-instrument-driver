@@ -6961,20 +6961,21 @@ For further information on the ps5000aSetPulseWidthQualifier function please ref
                     length(conditions), int16(info));
 
         if (status ~= PicoStatus.PICO_OK)
-
+ 
             error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelConditionsV2Error', ...
                 ['ps5000aSetTriggerChannelConditionsV2 has returned status code ', ...
                 num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
-
+            
         end
         
     else
-        
+
         error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelConditionsV2InvalidConditions', ...
                 ['ps5000aSetTriggerChannelConditionsV2: conditions input ',...
-                'argument should be a tPS5000ACondition structure or empty.']);
-        
-    end</MCode>
+                'argument should be a tPS5000ACondition structure or empty matrix.']);
+
+    end
+    </MCode>
                </Code>
                <Description>ps5000aSetTriggerChannelConditionsV2(obj, conditions, info) specifies which channels to trigger on.
 
@@ -7064,7 +7065,7 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
        
         error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelDirectionsV2InvalidDirections', ...
                 ['ps5000aSetTriggerChannelDirectionsV2: directions input ',...
-                'argument should be a tPS5000ADirection structure or empty.']);
+                'argument should be a tPS5000ADirection structure or empty matrix.']);
         
     end</MCode>
                </Code>
