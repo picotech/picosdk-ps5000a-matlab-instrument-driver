@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.17.53</InstrumentVersion>
+   <InstrumentVersion>2.2.17.54</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -7083,6 +7083,57 @@ Output  arguments:
 status - status code returned by the device.
 
 Please refer to the ps5000aSetTriggerChannelDirectionsV2 function in the PicoScope 5000 Series (A API) Flexible Resolution Oscilloscopes Programmer's Guide for further information.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aSetTriggerChannelPropertiesV2</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSetTriggerChannelPropertiesV2(obj, channelProperties)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    if (isstruct(directions) || isempty(directions))
+        
+        deviceObj = get(obj, 'Parent');
+        
+        numChannelProperties = length(channelProperties);
+        
+        % Convert the threshold and hysteresis values to ADC counts for
+        % each property
+
+        for n = 1:numChannelProperties
+            
+            vRange = 0; % millivolts
+            maxADCValue = 0;
+            
+            if (channelProperties.channel == deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_EXTERNAL)
+               
+                vRange = deviceObj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE * 1000; % convert to millivolts
+                maxADCValue = deviceObj.DriverData.constants.PS5000A_EXT_MAX_VALUE;
+                
+            else
+                
+                channelIndex = channelProperties(n).channel + 1;
+                vRange = PicoConstants.SCOPE_INPUT_RANGES(deviceObj.DriverData.channelSettings(channelIndex, 3) + 1);
+                maxADCValue = deviceObj.DriverData.maxADCValue;
+                
+            end
+            
+            % Convert the data 
+            
+        end
+        
+        % Create a libpointer object for the directions structure
+        pChannelProperties = libpointer('tPS5000ATriggerChannelPropertiesV2Ptr', channelProperties);
+       
+        
+        
+        
+    end</MCode>
+               </Code>
+               <Description/>
             </Method>
             <Method>
                <Name>setAdvancedTrigger</Name>
