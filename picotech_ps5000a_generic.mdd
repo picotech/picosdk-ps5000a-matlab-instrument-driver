@@ -7094,7 +7094,7 @@ Please refer to the ps5000aSetTriggerChannelDirectionsV2 function in the PicoSco
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
 
-    if (isstruct(directions) || isempty(directions))
+    if (isstruct(channelProperties) || isempty(channelProperties))
         
         deviceObj = get(obj, 'Parent');
         
@@ -7108,32 +7108,71 @@ Please refer to the ps5000aSetTriggerChannelDirectionsV2 function in the PicoSco
             vRange = 0; % millivolts
             maxADCValue = 0;
             
-            if (channelProperties.channel == deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_EXTERNAL)
+            if (channelProperties(n).channel &gt;= deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A &amp;&amp; ...
+                        channelProperties(n).channel &lt; deviceObj.DriverData.channelCount)
+                
+                channelIndex = channelProperties(n).channel + 1; % Offset by 1 for the voltage range array
+                vRange = PicoConstants.SCOPE_INPUT_RANGES(deviceObj.DriverData.channelSettings(channelIndex, 3) + 1);
+                maxADCValue = deviceObj.DriverData.maxADCValue;
+                
+            elseif (channelProperties(n).channel == deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_EXTERNAL)
                
                 vRange = deviceObj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE * 1000; % convert to millivolts
                 maxADCValue = deviceObj.DriverData.constants.PS5000A_EXT_MAX_VALUE;
                 
             else
-                
-                channelIndex = channelProperties(n).channel + 1;
-                vRange = PicoConstants.SCOPE_INPUT_RANGES(deviceObj.DriverData.channelSettings(channelIndex, 3) + 1);
-                maxADCValue = deviceObj.DriverData.maxADCValue;
+                    
+                error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelPropertiesV2InvalidChannel', ...
+                ['ps5000aSetTriggerChannelPropertiesV2: Invalid channel found in element ', num2str(n), ...
+                ' of the channelProperties structure.']);
                 
             end
             
             % Convert the data 
+            channelProperties(n).thresholdUpper = mv2adc(channelProperties(n).thresholdUpper, vRange, maxADCValue);
+            channelProperties(n).thresholdUpperHysteresis = mv2adc(channelProperties(n).thresholdUpperHysteresis, vRange, maxADCValue);
+            channelProperties(n).thresholdLower = mv2adc(channelProperties(n).thresholdLower, vRange, maxADCValue);
+            channelProperties(n).thresholdLowerHysteresis = mv2adc(channelProperties(n).thresholdLowerHysteresis, vRange, maxADCValue);
             
         end
         
-        % Create a libpointer object for the directions structure
+        % Create a libpointer object for the channelProperties structure
         pChannelProperties = libpointer('tPS5000ATriggerChannelPropertiesV2Ptr', channelProperties);
-       
+        auxOutputEnable = 0;
         
+        status = calllib('ps5000a', 'ps5000aSetTriggerChannelPropertiesV2', ...
+            deviceObj.DriverData.unitHandle, pChannelProperties, int16(numChannelProperties), auxOutputEnable);
         
+        if (status ~= PicoStatus.PICO_OK)
+            
+            error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelPropertiesV2', ...
+                    ['ps5000aSetTriggerChannelPropertiesV2 has returned status code ', ...
+                    num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
+        
+        end
+        
+    else
+        
+        error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelPropertiesV2InvalidProperties', ...
+                ['ps5000aSetTriggerChannelPropertiesV2: channelProperties input ',...
+                'argument should be a tPS5000ATriggerChannelPropertiesV2 structure or empty matrix.']);
         
     end</MCode>
                </Code>
-               <Description/>
+               <Description>ps5000aSetTriggerChannelPropertiesV2(obj, channelProperties) n is used to enable or disable triggering on the analog channels and set its parameters.
+
+This function applies to analog channels only (use ps5000aSetTriggerDigitalPortProperties for digital channels). 
+
+Input arguments:
+
+obj - the object representing the Trigger group object.
+channelProperties - a structure array consisting of 1 or more MATLAB structures corresponding to the tPS5000ATriggerChannelPropertiesV2 structure (accessible from the ps5000aStructs struct).
+
+Output  arguments:
+
+status - status code returned by the device.
+
+Please refer to the ps5000aSetTriggerChannelPropertiesV2 function in the PicoScope 5000 Series (A API) Flexible Resolution Oscilloscopes Programmer's Guide for further information.</Description>
             </Method>
             <Method>
                <Name>setAdvancedTrigger</Name>
