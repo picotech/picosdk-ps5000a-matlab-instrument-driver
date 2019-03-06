@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.17.56</InstrumentVersion>
+   <InstrumentVersion>2.2.17.57</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -7105,14 +7105,20 @@ Please refer to the ps5000aSetTriggerChannelDirectionsV2 function in the PicoSco
         
         deviceObj = get(obj, 'Parent');
         
-        channelProperties = invoke(obj, 'triggerChannelPropertiesConversion', channelProperties)
+        channelPropertiesLength = length(channelProperties);
+        
+        if (channelPropertiesLength &gt; 0)
+            
+            channelProperties = invoke(obj, 'triggerChannelPropertiesConversion', channelProperties);
+            
+        end
         
         % Create a libpointer object for the channelProperties structure
         pChannelProperties = libpointer('tPS5000ATriggerChannelPropertiesV2Ptr', channelProperties);
         auxOutputEnable = 0;
         
         status = calllib('ps5000a', 'ps5000aSetTriggerChannelPropertiesV2', ...
-            deviceObj.DriverData.unitHandle, pChannelProperties, int16(length(channelProperties)), auxOutputEnable);
+            deviceObj.DriverData.unitHandle, pChannelProperties, int16(channelPropertiesLength), auxOutputEnable);
         
         if (status ~= PicoStatus.PICO_OK)
             
@@ -7137,7 +7143,7 @@ This function applies to analog channels only (use ps5000aSetTriggerDigitalPortP
 Input parameters:
 
 obj - the object representing the Trigger group object.
-channelProperties - a structure array consisting of 1 or more MATLAB structures corresponding to the tPS5000ATriggerChannelPropertiesV2 structure (accessible from the ps5000aStructs struct).
+channelProperties - a structure array consisting of 1 or more MATLAB structures corresponding to the tPS5000ATriggerChannelPropertiesV2 structure (accessible from the ps5000aStructs struct) with the threshold and hysteresis levels specified in millivolts.
 
 Output  parameters:
 
@@ -7545,45 +7551,68 @@ For further information on the ps5000aSetTriggerChannelProperties function and t
 
     deviceObj = get(obj, 'Parent');
 
-    numChannelProperties = length(channelProperties);
+    if (isstruct(channelProperties))
+        
+        numChannelProperties = length(channelProperties);
 
-    % Convert the threshold and hysteresis values to ADC counts for
-    % each property
+        % Convert the threshold and hysteresis values to ADC counts for
+        % each property
 
-    for n = 1:numChannelProperties
+        for n = 1:numChannelProperties
 
-        vRange = 0; % millivolts
-        maxADCValue = 0;
+            vRange = 0; % millivolts
+            maxADCValue = 0;
 
-        if (channelProperties(n).channel &gt;= deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A &amp;&amp; ...
-                    channelProperties(n).channel &lt; deviceObj.DriverData.channelCount)
+            if (channelProperties(n).channel &gt;= deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A &amp;&amp; ...
+                        channelProperties(n).channel &lt; deviceObj.DriverData.channelCount)
 
-            channelIndex = channelProperties(n).channel + 1; % Offset by 1 for the voltage range array
-            vRange = PicoConstants.SCOPE_INPUT_RANGES(deviceObj.DriverData.channelSettings(channelIndex, 3) + 1);
-            maxADCValue = deviceObj.DriverData.maxADCValue;
+                channelIndex = channelProperties(n).channel + 1; % Offset by 1 for the voltage range array
+                vRange = PicoConstants.SCOPE_INPUT_RANGES(deviceObj.DriverData.channelSettings(channelIndex, 3) + 1);
+                maxADCValue = deviceObj.DriverData.maxADCValue;
 
-        elseif (channelProperties(n).channel == deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_EXTERNAL)
+            elseif (channelProperties(n).channel == deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_EXTERNAL)
 
-            vRange = deviceObj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE * 1000; % convert to millivolts
-            maxADCValue = deviceObj.DriverData.constants.PS5000A_EXT_MAX_VALUE;
+                vRange = deviceObj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE * 1000; % convert to millivolts
+                maxADCValue = deviceObj.DriverData.constants.PS5000A_EXT_MAX_VALUE;
 
-        else
+            else
 
-            error('Picotech:PS5000AInstrumentDriver:triggerChannelPropertiesConversion', ...
-            ['triggerChannelPropertiesConversion: Invalid channel found in element ', num2str(n), ...
-            ' of the channelProperties structure.']);
+                error('Picotech:PS5000AInstrumentDriver:triggerChannelPropertiesConversion', ...
+                ['triggerChannelPropertiesConversion: Invalid channel found in element ', num2str(n), ...
+                ' of the channelProperties structure.']);
+
+            end
+
+            % Convert the data 
+            channelProperties(n).thresholdUpper = mv2adc(channelProperties(n).thresholdUpper, vRange, maxADCValue);
+            channelProperties(n).thresholdUpperHysteresis = mv2adc(channelProperties(n).thresholdUpperHysteresis, vRange, maxADCValue);
+            channelProperties(n).thresholdLower = mv2adc(channelProperties(n).thresholdLower, vRange, maxADCValue);
+            channelProperties(n).thresholdLowerHysteresis = mv2adc(channelProperties(n).thresholdLowerHysteresis, vRange, maxADCValue);
 
         end
-
-        % Convert the data 
-        channelProperties(n).thresholdUpper = mv2adc(channelProperties(n).thresholdUpper, vRange, maxADCValue);
-        channelProperties(n).thresholdUpperHysteresis = mv2adc(channelProperties(n).thresholdUpperHysteresis, vRange, maxADCValue);
-        channelProperties(n).thresholdLower = mv2adc(channelProperties(n).thresholdLower, vRange, maxADCValue);
-        channelProperties(n).thresholdLowerHysteresis = mv2adc(channelProperties(n).thresholdLowerHysteresis, vRange, maxADCValue);
-
+        
+    else
+       
+        error('Picotech:PS5000AInstrumentDriver:triggerChannelPropertiesConversion', ...
+                ['triggerChannelPropertiesConversion: channelProperties input ',...
+                'argument should be a tPS5000ATriggerChannelPropertiesV2 structure.']);
+        
     end</MCode>
                </Code>
-               <Description/>
+               <Description>triggerChannelPropertiesConversion(obj, channelProperties) converts the threshold and hysteresis values specified for a channel to ADC counts.
+
+This function applies to analog channels only and is a helper function for the ps5000aSetTriggerChannelPropertiesV2 function. 
+
+Input parameters:
+
+obj - the object representing the Trigger group object.
+channelProperties - a structure array consisting of 1 or more MATLAB structures corresponding to the tPS5000ATriggerChannelPropertiesV2 structure (accessible from the ps5000aStructs struct) with the threshold and hysteresis levels set to millivolts.
+
+Output  parameters:
+
+channelProperties - the structure passed as the input argument but with the threshold and hysteresis levels converted to ADC counts.
+
+Please refer to the ps5000aSetTriggerChannelPropertiesV2 function for additional information.</Description>
             </Method>
          </MethodInfo>
       </Group>
