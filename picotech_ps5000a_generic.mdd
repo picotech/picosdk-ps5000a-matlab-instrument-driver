@@ -7027,6 +7027,35 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
 </Description>
             </Method>
             <Method>
+               <Name>setDigitalTrigger</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function digTrigStatus = setDigitalTrigger(obj, channelConditionsV2, digitalDirections)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+
+    % Set the trigger channel conditions
+    digTrigStatus.setConditions = calllib('ps5000a', ...
+        'ps5000aTriggerChannelConditionsV2', deviceObj.DriverData.unitHandle,...
+        channelConditionsV2, length(channelConditionsV2),3);
+
+    % Set digital channel directions
+    digTrigStatus.setDigitalProperties = calllib('ps5000a', ...
+        'ps5000aSetTriggerDigitalPortProperties', deviceObj.DriverData.unitHandle,...
+        digitalDirections, length(digitalDirections));
+
+    % Post trigger delay
+    digTrigStatus.setTriggerDelay = calllib('ps5000a',...
+        'ps5000aSetTriggerDelay', deviceObj.DriverData.unitHandle,...
+        deviceObj.DriverData.delay);</MCode>
+               </Code>
+               <Description/>
+            </Method>
+            <Method>
                <Name>setPulseWidthQualifier</Name>
                <Location>trigger</Location>
                <CapabilityGroup>Base</CapabilityGroup>
