@@ -328,6 +328,6 @@ hold off;
 
 %% Disconnect device
 % Disconnect device object from hardware.
-
+clear channelConditionsV2 digitalDirections
 disconnect(ps5000aDeviceObj);
 delete(ps5000aDeviceObj);
