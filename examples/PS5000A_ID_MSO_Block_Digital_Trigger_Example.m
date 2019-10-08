@@ -191,10 +191,12 @@ triggerGroupObj = triggerGroupObj(1);
 channelConditionsV2 = libstruct('tPS5000ACondition');
 channelConditionsV2.source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_DIGITAL_PORT0;
 channelConditionsV2.condition = ps5000aEnuminfo.enPS5000ATriggerState.PS5000A_CONDITION_TRUE;
+channelConditionsV2 = libpointer('tPS5000ACondition', channelConditionsV2);
 
-digitalDirections = ps5000aStructs.tPS5000ADigitalChannelDirections.members;
+digitalDirections = libstruct('tPS5000ADigitalChannelDirections');
 digitalDirections.channel = ps5000aEnuminfo.enPS5000ADigitalChannel.PS5000A_DIGITAL_CHANNEL_0;
 digitalDirections.direction = ps5000aEnuminfo.enPS5000ADigitalDirection.PS5000A_DIGITAL_DIRECTION_RISING;
+digitalDirections = libpointer('tPS5000ADigitalChannelDirections', digitalDirections);
 %%
 status.digTrigStatus = invoke(triggerGroupObj, 'setDigitalTrigger', channelConditionsV2, digitalDirections);
 

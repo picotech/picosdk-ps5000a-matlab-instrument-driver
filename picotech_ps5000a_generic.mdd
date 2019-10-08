@@ -7039,19 +7039,11 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
     deviceObj = get(obj, 'Parent');
 
     % Set the trigger channel conditions
-    digTrigStatus.setConditions = calllib('ps5000a', ...
-        'ps5000aTriggerChannelConditionsV2', deviceObj.DriverData.unitHandle,...
-        channelConditionsV2, length(channelConditionsV2),3);
+    digTrigStatus.setConditions = calllib('ps5000a', 'ps5000aSetTriggerChannelConditionsV2', deviceObj.unitHandle, channelConditionsV2, length(channelConditionsV2),3);
 
     % Set digital channel directions
-    digTrigStatus.setDigitalProperties = calllib('ps5000a', ...
-        'ps5000aSetTriggerDigitalPortProperties', deviceObj.DriverData.unitHandle,...
-        digitalDirections, length(digitalDirections));
-
-    % Post trigger delay
-    digTrigStatus.setTriggerDelay = calllib('ps5000a',...
-        'ps5000aSetTriggerDelay', deviceObj.DriverData.unitHandle,...
-        deviceObj.DriverData.delay);</MCode>
+    digTrigStatus.setDigitalProperties = calllib('ps5000a', 'ps5000aSetTriggerDigitalPortProperties', deviceObj.unitHandle, digitalDirections, length(digitalDirections));
+</MCode>
                </Code>
                <Description/>
             </Method>
