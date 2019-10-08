@@ -7045,7 +7045,8 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
     digTrigStatus.setDigitalProperties = calllib('ps5000a', 'ps5000aSetTriggerDigitalPortProperties', deviceObj.unitHandle, digitalDirections, length(digitalDirections));
 </MCode>
                </Code>
-               <Description/>
+               <Description>setDigitalTirgger(obj, channelPropertiesV2, digitalDirections) sets the Digital Trigger properties for the oscilloscope
+</Description>
             </Method>
             <Method>
                <Name>setPulseWidthQualifier</Name>

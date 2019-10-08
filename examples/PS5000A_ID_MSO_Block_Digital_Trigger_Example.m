@@ -179,25 +179,28 @@ fprintf('Timebase index: %d, sampling interval: %d ns\n', timebaseIndex, timeInt
 set(ps5000aDeviceObj, 'timebase', timebaseIndex);
 
 %% Set digital trigger
-% Set a trigger on digital channel 0, - the default value for
-% delay is used.
-
+% Set a trigger on digital channel 0
 % Trigger properties and functions are located in the Instrument
 % Driver's Trigger group.
 
 triggerGroupObj = get(ps5000aDeviceObj, 'Trigger');
 triggerGroupObj = triggerGroupObj(1);
 
+% Trigger channel conditions
+
 channelConditionsV2 = libstruct('tPS5000ACondition');
 channelConditionsV2.source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_DIGITAL_PORT0;
 channelConditionsV2.condition = ps5000aEnuminfo.enPS5000ATriggerState.PS5000A_CONDITION_TRUE;
 channelConditionsV2 = libpointer('tPS5000ACondition', channelConditionsV2);
 
+% Digital channel conditions
+
 digitalDirections = libstruct('tPS5000ADigitalChannelDirections');
 digitalDirections.channel = ps5000aEnuminfo.enPS5000ADigitalChannel.PS5000A_DIGITAL_CHANNEL_0;
 digitalDirections.direction = ps5000aEnuminfo.enPS5000ADigitalDirection.PS5000A_DIGITAL_DIRECTION_RISING;
 digitalDirections = libpointer('tPS5000ADigitalChannelDirections', digitalDirections);
-%%
+
+% Set digital trigger
 status.digTrigStatus = invoke(triggerGroupObj, 'setDigitalTrigger', channelConditionsV2, digitalDirections);
 
 %% Set block parameters and capture data
