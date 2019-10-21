@@ -28,12 +28,12 @@
 %
 % *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
 %
-% *Copyright:* © 2017-2019 Pico Technology Ltd. See LICENSE file for terms.
+% *Copyright:* Â© 2017-2019 Pico Technology Ltd. See LICENSE file for terms.
 
 %% Suggested input test signals
 % This example used the following test signals:
 %
-% * Channel A: 2 Vpp with ±500 mV offset, 2 kHz sine wave
+% * Channel A: 2 Vpp with ï¿½500 mV offset, 2 kHz sine wave
 % * Channel B: 4 Vpp, 1 kHz square wave
 
 %% Clear command window and close any figures
