@@ -1,4 +1,4 @@
-%% PicoScope 5000 Series (A API) Instrument Driver Mixed Signal Oscilloscope Block Data Capture Example 
+%% PicoScope 5000 Series (A API) Instrument Driver Mixed Signal Oscilloscope Block Data Capture with Digital Trigger Example 
 % This is an example of an instrument control session using a device 
 % object. The instrument control session comprises all the steps you 
 % are likely to take when communicating with your instrument. 
@@ -12,14 +12,14 @@
 % # Disconnect from the instrument 
 %  
 % To run the instrument control session, type the name of the file,
-% PS5000A_ID_MSO_Block_Example, at the MATLAB command prompt.
+% PS5000A_ID_MSO_Block_Digital_Trigger_Example, at the MATLAB command prompt.
 % 
-% The file, PS5000A_ID_MSO_BLOCK_EXAMPLE.M must be on your MATLAB PATH. For
+% The file, PS5000A_ID_MSO_BLOCK_Digital_Trigger_EXAMPLE.M must be on your MATLAB PATH. For
 % additional information on setting your MATLAB PATH, type 'help addpath'
 % at the MATLAB command prompt.
 %
 % *Example:*
-%     PS5000A_ID_MSO_Block_Example;
+%     PS5000A_ID_MSO_Block_Digital_Trigger_Example;
 %
 % *Description:*
 %     Demonstrates how to call functions in order to capture a block of
@@ -28,7 +28,7 @@
 %
 % *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
 %
-% *Copyright:* © 2018 Pico Technology Ltd. See LICENSE file for terms.
+% *Copyright:* © 2019 Pico Technology Ltd. See LICENSE file for terms.
 
 %% Suggested input test signals
 % This example was published using the following test signals:
@@ -188,20 +188,18 @@ triggerGroupObj = triggerGroupObj(1);
 
 % Trigger channel conditions
 
-channelConditionsV2 = libstruct('tPS5000ACondition');
+channelConditionsV2 = ps5000aStructs.tPS5000ACondition.members;
 channelConditionsV2.source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_DIGITAL_PORT0;
 channelConditionsV2.condition = ps5000aEnuminfo.enPS5000ATriggerState.PS5000A_CONDITION_TRUE;
-channelConditionsV2 = libpointer('tPS5000ACondition', channelConditionsV2);
 
-% Digital channel conditions
-
-digitalDirections = libstruct('tPS5000ADigitalChannelDirections');
+digitalDirections = ps5000aStructs.tPS5000ADigitalChannelDirections.members;
 digitalDirections.channel = ps5000aEnuminfo.enPS5000ADigitalChannel.PS5000A_DIGITAL_CHANNEL_0;
 digitalDirections.direction = ps5000aEnuminfo.enPS5000ADigitalDirection.PS5000A_DIGITAL_DIRECTION_RISING;
-digitalDirections = libpointer('tPS5000ADigitalChannelDirections', digitalDirections);
+
+info = ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_ADD + ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_CLEAR;
 
 % Set digital trigger
-status.digTrigStatus = invoke(triggerGroupObj, 'setDigitalTrigger', channelConditionsV2, digitalDirections);
+status.digTrigStatus = invoke(triggerGroupObj, 'setDigitalTrigger', channelConditionsV2, digitalDirections, info);
 
 %% Set block parameters and capture data
 % Capture a block of data and retrieve data values for channels A and B.
@@ -261,7 +259,7 @@ timeMs = timeNs / 1e6;
 
 scrsz = get(groot,'ScreenSize');
 
-analogFigure = figure('Name','PicoScope 5000 Series (A API) - MSO Block Mode Capture', ...
+analogFigure = figure('Name','PicoScope 5000 Series (A API) - MSO Block Mode Capture With Digital Trigger', ...
     'NumberTitle', 'off', 'Position', [1 scrsz(4)/4 scrsz(3)/2 scrsz(4)/2]);
 
 movegui(analogFigure, 'west');
@@ -283,7 +281,7 @@ hold(analogAxes, 'off');
 %% 
 % *Digital data*
 
-digitalFigure = figure('Name','PicoScope 5000 Series (A API) Example - MSO Block Mode Capture', ...
+digitalFigure = figure('Name','PicoScope 5000 Series (A API) Example - MSO Block Mode Capture With Digital Trigger', ...
     'NumberTitle', 'off', 'Position', [scrsz(3)/2 + 1 scrsz(4)/4 scrsz(3)/2 scrsz(4)/2]);
 
 movegui(digitalFigure, 'east');
@@ -331,6 +329,5 @@ hold off;
 
 %% Disconnect device
 % Disconnect device object from hardware.
-clear channelConditionsV2 digitalDirections
 disconnect(ps5000aDeviceObj);
 delete(ps5000aDeviceObj);
