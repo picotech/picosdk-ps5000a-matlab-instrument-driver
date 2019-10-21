@@ -225,7 +225,7 @@ downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_
 figure1 = figure('Name','PicoScope 5000 Series (A API) Example - Block Mode Capture', ...
     'NumberTitle','off');
 
-% Calculate time (nanoseconds) and convert to milliseconds
+% Calculate time (nanoseconds) and convert to milliseconds.
 % Use |timeIntervalNanoseconds| output from the |ps5000aGetTimebase2()|
 % function or calculate it using the main Programmer's Guide.
 % Take into account the downsampling ratio used.
