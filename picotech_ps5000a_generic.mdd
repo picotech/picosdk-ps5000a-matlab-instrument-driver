@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.17.57</InstrumentVersion>
+   <InstrumentVersion>2.2.17.58</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -6885,6 +6885,45 @@ Output parameters:
 status - status code returned by the device.
 triggerEnabled - indicates if trigger is set.
 pwqEnabled - indicates if pulse width qualifier is set.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aSetAutoTriggerMicroSeconds</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSetAutoTriggerMicroSeconds(obj, autoTriggerMicroseconds)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    validateattributes(autoTriggerMicroseconds, {'numeric'}, {'scalar', 'integer', 'nonnegative'});
+    
+    status = calllib('ps5000a', 'ps5000aSetAutoTriggerMicroSeconds', ...
+        deviceObj.DriverData.unitHandle, uint64(autoTriggerMicroseconds));
+    
+    if (status ~= PicoStatus.PICO_OK)
+        
+        error('Picotech:PS5000AInstrumentDriver:ps5000aSetAutoTriggerMicroSeconds', ...
+                    ['ps5000aSetAutoTriggerMicroSeconds has returned status code ', ...
+                    num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
+                
+    end</MCode>
+               </Code>
+               <Description>ps5000aSetAutoTriggerMicroSeconds(obj, autoTriggerMicroseconds) sets up the auto-trigger function which starts a capture if no trigger event occurs within
+a specified time after a ps5000aRunBlock, runBlock or ps5000aRunStreaming command has been issued.
+
+Input parameters:
+
+obj - the object representing the Trigger group.
+autoTriggerMicroseconds - the number of microseconds for which the scope device will wait for a trigger before timing out. If this argument is zero, the scope device will wait indefinitely for a trigger.
+
+Output parameters:
+
+status - status code returned by the device.
+
+For further information on the ps5000aSetAutoTriggerMicroSeconds function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
                <Name>ps5000aSetPulseWidthQualifier</Name>
