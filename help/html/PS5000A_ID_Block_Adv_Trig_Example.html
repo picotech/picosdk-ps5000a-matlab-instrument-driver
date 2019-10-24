@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>PicoScope 5000 Series (A API) Instrument Driver Oscilloscope Block Data with Advanced Trigger Capture Example</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-21"><meta name="DC.source" content="PS5000A_ID_Block_Adv_Trig_Example.m"><style type="text/css">
+      --><title>PicoScope 5000 Series (A API) Instrument Driver Oscilloscope Block Data with Advanced Trigger Capture Example</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-24"><meta name="DC.source" content="PS5000A_ID_Block_Adv_Trig_Example.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,9 +66,9 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>PicoScope 5000 Series (A API) Instrument Driver Oscilloscope Block Data with Advanced Trigger Capture Example</h1><!--introduction--><p>This is an example of an instrument control session using a device object. The instrument control session comprises all the steps you are likely to take when communicating with your instrument.</p><p>These steps are:</p><div><ol><li>Create a device object</li><li>Connect to the instrument</li><li>Configure properties</li><li>Invoke functions</li><li>Disconnect from the instrument</li></ol></div><p>To run the instrument control session, type the name of the file, PS5000A_ID_Block_Adv_Trig_Example, at the MATLAB command prompt.</p><p>The file, PS5000A_ID_BLOCK_ADV_TRIG_EXAMPLE.M must be on your MATLAB PATH. For additional information on setting your MATLAB PATH, type 'help addpath' at the MATLAB command prompt.</p><p><b>Example:</b>     PS5000A_ID_Block_Adv_Trig_Example;</p><p><b>Description:</b>     Demonstrates how to call functions in order to capture a block of     data from a PicoScope 5000 Series oscilloscope using an advanced trigger.</p><p><b>See also:</b> <a href="matlab:doc('icdevice')"><tt>icdevice</tt></a> | <a href="matlab:doc('instrument/invoke')"><tt>invoke</tt></a></p><p><b>Copyright:</b> &copy; 2017-2019 Pico Technology Ltd. See LICENSE file for terms.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Suggested input test signals</a></li><li><a href="#2">Clear command window and close any figures</a></li><li><a href="#3">Load configuration information</a></li><li><a href="#4">Device connection</a></li><li><a href="#5">Set channels</a></li><li><a href="#6">Set device resolution</a></li><li><a href="#7">Verify timebase index and maximum number of samples</a></li><li><a href="#8">Setup trigger using advanced functions</a></li><li><a href="#13">Set block parameters and capture data</a></li><li><a href="#15">Process data</a></li><li><a href="#16">Stop the device</a></li><li><a href="#17">Disconnect device</a></li></ul></div><h2 id="1">Suggested input test signals</h2><p>This example used the following test signals:</p><div><ul><li>Channel A: 2 Vpp with &plusmn;500 mV offset, 2 kHz sine wave</li><li>Channel B: 4 Vpp, 1 kHz square wave</li></ul></div><h2 id="2">Clear command window and close any figures</h2><pre class="codeinput">clc;
+  </style></head><body><div class="content"><h1>PicoScope 5000 Series (A API) Instrument Driver Oscilloscope Block Data with Advanced Trigger Capture Example</h1><!--introduction--><p>This is an example of an instrument control session using a device object. The instrument control session comprises all the steps you are likely to take when communicating with your instrument.</p><p>These steps are:</p><div><ol><li>Create a device object</li><li>Connect to the instrument</li><li>Configure properties</li><li>Invoke functions</li><li>Disconnect from the instrument</li></ol></div><p>To run the instrument control session, type the name of the file, PS5000A_ID_Block_Adv_Trig_Example, at the MATLAB command prompt.</p><p>The file, PS5000A_ID_BLOCK_ADV_TRIG_EXAMPLE.M must be on your MATLAB PATH. For additional information on setting your MATLAB PATH, type 'help addpath' at the MATLAB command prompt.</p><p><b>Example:</b>     PS5000A_ID_Block_Adv_Trig_Example;</p><p><b>Description:</b>     Demonstrates how to call functions in order to capture a block of     data from a PicoScope 5000 Series oscilloscope using an advanced trigger.</p><p><b>See also:</b> <a href="matlab:doc('icdevice')"><tt>icdevice</tt></a> | <a href="matlab:doc('instrument/invoke')"><tt>invoke</tt></a></p><p><b>Copyright:</b> &copy; 2017-2019 Pico Technology Ltd. See LICENSE file for terms.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Suggested input test signals</a></li><li><a href="#2">Clear command window and close any figures</a></li><li><a href="#3">Load configuration information</a></li><li><a href="#4">Device connection</a></li><li><a href="#5">Set channels</a></li><li><a href="#6">Set device resolution</a></li><li><a href="#7">Verify timebase index and maximum number of samples</a></li><li><a href="#8">Setup trigger using advanced functions</a></li><li><a href="#13">Set block parameters and capture data</a></li><li><a href="#15">Process data</a></li><li><a href="#16">Stop the device</a></li><li><a href="#17">Disconnect device</a></li></ul></div><h2 id="1">Suggested input test signals</h2><p>This example used the following test signals:</p><div><ul><li>Channel A: 2 V p-p with &plusmn;500 mV offset, 2 kHz sine wave</li><li>Channel B: 4 V p-p, 1 kHz square wave</li></ul></div><h2 id="2">Clear command window and close any figures</h2><pre class="codeinput">clc;
 close <span class="string">all</span>;
-</pre><h2 id="3">Load configuration information</h2><p>DO NOT EDIT THIS LINE.</p><pre class="codeinput">[ps5000aStructs, ps5000aEnuminfo] = ps5000aSetConfig();
+</pre><h2 id="3">Load configuration information</h2><p>Setup paths and also load struct and enumeration information. Structs and enumeration values are required for certain function calls.</p><pre class="codeinput">[ps5000aStructs, ps5000aEnuminfo] = ps5000aSetConfig(); <span class="comment">% DO NOT EDIT THIS LINE.</span>
 </pre><h2 id="4">Device connection</h2><pre class="codeinput"><span class="comment">% Check if an Instrument session using the device object |ps5000aDeviceObj|</span>
 <span class="comment">% is still open, and if so, disconnect if the User chooses 'Yes' when prompted.</span>
 <span class="keyword">if</span> (exist(<span class="string">'ps5000aDeviceObj'</span>, <span class="string">'var'</span>) &amp;&amp; ps5000aDeviceObj.isvalid &amp;&amp; strcmp(ps5000aDeviceObj.status, <span class="string">'open'</span>))
@@ -117,7 +117,7 @@ Opening PicoScope 5000 Series (A API) device...
    Driver Information
       DriverType:         MATLAB generic
       DriverName:         picotech_ps5000a_generic.mdd
-      DriverVersion:      2.2.17.58
+      DriverVersion:      2.2.17.59
  
    Communication State
       Status:             open
@@ -165,7 +165,7 @@ Connected to PicoScope 5000 Series (A API) device:-
 
           Instrument Model: 5444D
        Batch/Serial Number: FY985/0001
-               USB Version: 3.0
+               USB Version: 2.0
            Analog Channels: 4
                 Resolution: 8 bits
                  Bandwidth: 200 MHz
@@ -238,12 +238,7 @@ set(ps5000aDeviceObj, <span class="string">'timebase'</span>, timebaseIndex);
 
 triggerGroupObj = get(ps5000aDeviceObj, <span class="string">'Trigger'</span>);
 triggerGroupObj = triggerGroupObj(1);
-</pre><p><b>Trigger conditions</b></p><p>Specify which channels to trigger on.</p><pre class="codeinput"><span class="comment">% Create a MATLAB structure corresponding to the |tPS5000ACondition| struct</span>
-<span class="comment">% defined in the |ps5000aStructs| struct in order to define the trigger</span>
-<span class="comment">% conditions for each channel.</span>
-<span class="comment">% Use an array of structures to specify an AND condition e.g. trigger on</span>
-<span class="comment">% channel A AND channel B.</span>
-ChATriggerConditions.source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
+</pre><p><b>Trigger conditions</b></p><p>Specify which channels to trigger on.</p><p>Create a MATLAB structure corresponding to the <tt>tPS5000ACondition</tt> struct defined in the <tt>ps5000aStructs</tt> struct in order to define the trigger conditions for each channel. Use an array of structures to specify an AND condition e.g. trigger on channel A AND channel B.</p><pre class="codeinput">ChATriggerConditions.source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
 ChATriggerConditions.condition = ps5000aEnuminfo.enPS5000ATriggerState.PS5000A_CONDITION_TRUE;
 
 <span class="comment">% Clear any pre-existing trigger configurations that may have been set.</span>
@@ -261,12 +256,7 @@ ChBTriggerConditions.condition = ps5000aEnuminfo.enPS5000ATriggerState.PS5000A_C
 <span class="comment">% met.</span>
 info = ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_ADD;
 [status.setTriggerChannelConditionsV2ChA] = invoke(triggerGroupObj, <span class="string">'ps5000aSetTriggerChannelConditionsV2'</span>, ChBTriggerConditions, info);
-</pre><p><b>Trigger directions</b></p><p>Set the direction on which to trigger for each channel.</p><pre class="codeinput"><span class="comment">% Create an array of MATLAB structures corresponding to the</span>
-<span class="comment">% |tPS5000ADirection| structure in the |ps5000aStructs| struct. Each</span>
-<span class="comment">% structure in the array defines the direction on which to trigger and also</span>
-<span class="comment">% if it is a level (edge) or window trigger.</span>
-
-TriggerDirections(1).source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
+</pre><p><b>Trigger directions</b></p><p>Set the direction on which to trigger for each channel.</p><p>Create an array of MATLAB structures corresponding to the <tt>tPS5000ADirection</tt> structure in the <tt>ps5000aStructs</tt> struct. Each structure in the array defines the direction on which to trigger and also if it is a level (edge) or window trigger.</p><pre class="codeinput">TriggerDirections(1).source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
 TriggerDirections(1).direction = ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING;
 TriggerDirections(1).mode = ps5000aEnuminfo.enPS5000AThresholdMode.PS5000A_LEVEL;
 
@@ -275,11 +265,7 @@ TriggerDirections(2).direction = ps5000aEnuminfo.enPS5000AThresholdDirection.PS5
 TriggerDirections(2).mode = ps5000aEnuminfo.enPS5000AThresholdMode.PS5000A_LEVEL;
 
 [status.setTriggerChannelDirectionsV2] = invoke(triggerGroupObj, <span class="string">'ps5000aSetTriggerChannelDirectionsV2'</span>, TriggerDirections);
-</pre><p><b>Trigger properties</b></p><p>Set up the trigger thresholds for each channel.</p><pre class="codeinput"><span class="comment">% Specify the threshold values to use in millivolts. As the</span>
-<span class="comment">% |PS5000A_RISING| and |PS5000A_FALLING| enumerations have been specified</span>
-<span class="comment">% for the trigger directions, the upper threshold values will be used.</span>
-
-TriggerChannelChannelProperties(1).thresholdUpper = 1000;
+</pre><p><b>Trigger properties</b></p><p>Set up the trigger thresholds for each channel.</p><p>Specify the threshold values to use in millivolts. As the <tt>PS5000A_RISING</tt> and <tt>PS5000A_FALLING</tt> enumerations have been specified for the trigger directions, the upper threshold values will be used.</p><pre class="codeinput">TriggerChannelChannelProperties(1).thresholdUpper = 1000;
 TriggerChannelChannelProperties(1).thresholdUpperHysteresis = 50;
 TriggerChannelChannelProperties(1).thresholdLower = 1000;
 TriggerChannelChannelProperties(1).thresholdLowerHysteresis = 50;
@@ -415,8 +401,8 @@ Libraries unloaded successfully.
 %% Suggested input test signals
 % This example used the following test signals:
 %
-% * Channel A: 2 Vpp with ±500 mV offset, 2 kHz sine wave
-% * Channel B: 4 Vpp, 1 kHz square wave
+% * Channel A: 2 V p-p with ±500 mV offset, 2 kHz sine wave
+% * Channel B: 4 V p-p, 1 kHz square wave
 
 %% Clear command window and close any figures
 
@@ -424,8 +410,10 @@ clc;
 close all;
 
 %% Load configuration information
-% DO NOT EDIT THIS LINE.
-[ps5000aStructs, ps5000aEnuminfo] = ps5000aSetConfig();
+% Setup paths and also load struct and enumeration information. Structs and
+% enumeration values are required for certain function calls.
+
+[ps5000aStructs, ps5000aEnuminfo] = ps5000aSetConfig(); % DO NOT EDIT THIS LINE.
 
 %% Device connection
 
@@ -552,7 +540,7 @@ triggerGroupObj = triggerGroupObj(1);
 % *Trigger conditions*
 %
 % Specify which channels to trigger on.
-
+%
 % Create a MATLAB structure corresponding to the |tPS5000ACondition| struct
 % defined in the |ps5000aStructs| struct in order to define the trigger
 % conditions for each channel.
@@ -581,7 +569,7 @@ info = ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_ADD;
 % *Trigger directions*
 %
 % Set the direction on which to trigger for each channel.
-
+%
 % Create an array of MATLAB structures corresponding to the
 % |tPS5000ADirection| structure in the |ps5000aStructs| struct. Each
 % structure in the array defines the direction on which to trigger and also
@@ -601,7 +589,7 @@ TriggerDirections(2).mode = ps5000aEnuminfo.enPS5000AThresholdMode.PS5000A_LEVEL
 % *Trigger properties*
 %
 % Set up the trigger thresholds for each channel.
-
+%
 % Specify the threshold values to use in millivolts. As the
 % |PS5000A_RISING| and |PS5000A_FALLING| enumerations have been specified
 % for the trigger directions, the upper threshold values will be used.

@@ -33,8 +33,8 @@
 %% Suggested input test signals
 % This example used the following test signals:
 %
-% * Channel A: 2 Vpp with ±500 mV offset, 2 kHz sine wave
-% * Channel B: 4 Vpp, 1 kHz square wave
+% * Channel A: 2 V p-p with ±500 mV offset, 2 kHz sine wave
+% * Channel B: 4 V p-p, 1 kHz square wave
 
 %% Clear command window and close any figures
 
@@ -42,8 +42,10 @@ clc;
 close all;
 
 %% Load configuration information
-% DO NOT EDIT THIS LINE.
-[ps5000aStructs, ps5000aEnuminfo] = ps5000aSetConfig();
+% Setup paths and also load struct and enumeration information. Structs and
+% enumeration values are required for certain function calls.
+
+[ps5000aStructs, ps5000aEnuminfo] = ps5000aSetConfig(); % DO NOT EDIT THIS LINE.
 
 %% Device connection
 
@@ -170,7 +172,7 @@ triggerGroupObj = triggerGroupObj(1);
 % *Trigger conditions*
 %
 % Specify which channels to trigger on.
-
+%
 % Create a MATLAB structure corresponding to the |tPS5000ACondition| struct
 % defined in the |ps5000aStructs| struct in order to define the trigger
 % conditions for each channel.
@@ -199,7 +201,7 @@ info = ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_ADD;
 % *Trigger directions*
 %
 % Set the direction on which to trigger for each channel.
-
+%
 % Create an array of MATLAB structures corresponding to the
 % |tPS5000ADirection| structure in the |ps5000aStructs| struct. Each
 % structure in the array defines the direction on which to trigger and also
@@ -219,7 +221,7 @@ TriggerDirections(2).mode = ps5000aEnuminfo.enPS5000AThresholdMode.PS5000A_LEVEL
 % *Trigger properties*
 %
 % Set up the trigger thresholds for each channel.
-
+%
 % Specify the threshold values to use in millivolts. As the
 % |PS5000A_RISING| and |PS5000A_FALLING| enumerations have been specified
 % for the trigger directions, the upper threshold values will be used.
