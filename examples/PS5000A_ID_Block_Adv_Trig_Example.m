@@ -82,7 +82,7 @@ connect(ps5000aDeviceObj);
 % Default driver settings applied to channels are listed below - use the
 % Instrument Driver's |ps5000aSetChannel()| function to turn channels on or
 % off and set voltage ranges, coupling, as well as analog offset.
-
+%
 % In this example, data is collected on channels A and B. If it is a
 % 4-channel model, channels C and D will be switched off if the power
 % supply is connected.
