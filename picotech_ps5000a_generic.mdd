@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.17.58</InstrumentVersion>
+   <InstrumentVersion>2.2.17.59</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -479,7 +479,6 @@
 
                 otherwise
 
-                    obj.InstrumentModel = PS5000aConstants.MODEL_NONE;
                     obj.DriverData.channelCount = 0;
                     obj.DriverData.digitalPorts = 0;
                     obj.DriverData.firstRange = range10mV;
@@ -492,7 +491,11 @@
                     obj.DriverData.bandwidth = PicoConstants.BANDWIDTH_ZERO;
                     obj.DriverData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_ZERO;
 
-                    error('PS5000AConnect:UnitNotSupported', 'Unit not supported');
+                    % Close the connection to the device, then report an
+                    % error.
+                    disconnect(obj);
+                    error('Picotech:PS5000AInstrumentDriver:UnitNotSupported', ...
+                    'Connect: This device is not supported by the Instrument Driver.');
 
             end
 
