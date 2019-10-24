@@ -174,10 +174,10 @@ triggerGroupObj = triggerGroupObj(1);
 % Specify which channels to trigger on.
 %
 % Create a MATLAB structure corresponding to the |tPS5000ACondition| struct
-% defined in the |ps5000aStructs| struct in order to define the trigger
-% conditions for each channel.
-% Use an array of structures to specify an AND condition e.g. trigger on
-% channel A AND channel B.
+% defined in |ps5000aStructs| in order to define the trigger conditions for
+% each channel. Use an array of structures to specify an AND condition e.g.
+% trigger on channel A AND channel B. In this example, separate structs are
+% created as an OR trigger condition is to be set.
 ChATriggerConditions.source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
 ChATriggerConditions.condition = ps5000aEnuminfo.enPS5000ATriggerState.PS5000A_CONDITION_TRUE;
 
@@ -195,7 +195,7 @@ ChBTriggerConditions.condition = ps5000aEnuminfo.enPS5000ATriggerState.PS5000A_C
 % trigger when the condition on channel A OR the condition on channel B is
 % met.
 info = ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_ADD;
-[status.setTriggerChannelConditionsV2ChA] = invoke(triggerGroupObj, 'ps5000aSetTriggerChannelConditionsV2', ChBTriggerConditions, info);
+[status.setTriggerChannelConditionsV2ChB] = invoke(triggerGroupObj, 'ps5000aSetTriggerChannelConditionsV2', ChBTriggerConditions, info);
 
 %%
 % *Trigger directions*
@@ -203,9 +203,9 @@ info = ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_ADD;
 % Set the direction on which to trigger for each channel.
 %
 % Create an array of MATLAB structures corresponding to the
-% |tPS5000ADirection| structure in the |ps5000aStructs| struct. Each
-% structure in the array defines the direction on which to trigger and also
-% if it is a level (edge) or window trigger.
+% |tPS5000ADirection| structure in |ps5000aStructs|. Each structure in the
+% array defines the direction on which to trigger and also if it is a level
+% (edge) or window trigger.
 
 TriggerDirections(1).source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
 TriggerDirections(1).direction = ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING;
@@ -244,7 +244,7 @@ TriggerChannelChannelProperties(2).channel = ps5000aEnuminfo.enPS5000AChannel.PS
 % *Set auto trigger*
 %
 % The device will automatically trigger if the trigger condition has not
-% been met within 5 sesconds.
+% been met within 5 seconds.
 
 [status.autoTriggerUs] = invoke(triggerGroupObj, 'ps5000aSetAutoTriggerMicroSeconds', 5e6);
 
@@ -296,7 +296,7 @@ downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_
 % plots in a Figure.
 
 figure1 = figure('Name','PicoScope 5000 Series (A API) Example - Block Mode Capture with Advanced Trigger', ...
-    'NumberTitle', 'off', 'Position', [100, 100, 640, 480]);
+    'NumberTitle', 'off', 'Position', [500, 500, 640, 480]);
 
 movegui(figure1, 'center');
 

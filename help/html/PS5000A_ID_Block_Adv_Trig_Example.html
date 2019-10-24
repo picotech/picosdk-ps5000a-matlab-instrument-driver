@@ -174,11 +174,7 @@ Connected to PicoScope 5000 Series (A API) device:-
      Signal Generator Type: Arbitrary Waveform Generator
 5 V Power Supply connected: False
 
-</pre><h2 id="5">Set channels</h2><p>Default driver settings applied to channels are listed below - use the Instrument Driver's <tt>ps5000aSetChannel()</tt> function to turn channels on or off and set voltage ranges, coupling, as well as analog offset.</p><pre class="codeinput"><span class="comment">% In this example, data is collected on channels A and B. If it is a</span>
-<span class="comment">% 4-channel model, channels C and D will be switched off if the power</span>
-<span class="comment">% supply is connected.</span>
-
-<span class="comment">% Channels       : 0 - 1 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A &amp; PS5000A_CHANNEL_B)</span>
+</pre><h2 id="5">Set channels</h2><p>Default driver settings applied to channels are listed below - use the Instrument Driver's <tt>ps5000aSetChannel()</tt> function to turn channels on or off and set voltage ranges, coupling, as well as analog offset.</p><p>In this example, data is collected on channels A and B. If it is a 4-channel model, channels C and D will be switched off if the power supply is connected.</p><pre class="codeinput"><span class="comment">% Channels       : 0 - 1 (ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A &amp; PS5000A_CHANNEL_B)</span>
 <span class="comment">% Enabled        : 1 (PicoConstants.TRUE)</span>
 <span class="comment">% Type           : 1 (ps5000aEnuminfo.enPS5000ACoupling.PS5000A_DC)</span>
 <span class="comment">% Range          : 8 (ps5000aEnuminfo.enPS5000ARange.PS5000A_5V)</span>
@@ -238,7 +234,7 @@ set(ps5000aDeviceObj, <span class="string">'timebase'</span>, timebaseIndex);
 
 triggerGroupObj = get(ps5000aDeviceObj, <span class="string">'Trigger'</span>);
 triggerGroupObj = triggerGroupObj(1);
-</pre><p><b>Trigger conditions</b></p><p>Specify which channels to trigger on.</p><p>Create a MATLAB structure corresponding to the <tt>tPS5000ACondition</tt> struct defined in the <tt>ps5000aStructs</tt> struct in order to define the trigger conditions for each channel. Use an array of structures to specify an AND condition e.g. trigger on channel A AND channel B.</p><pre class="codeinput">ChATriggerConditions.source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
+</pre><p><b>Trigger conditions</b></p><p>Specify which channels to trigger on.</p><p>Create a MATLAB structure corresponding to the <tt>tPS5000ACondition</tt> struct defined in <tt>ps5000aStructs</tt> in order to define the trigger conditions for each channel. Use an array of structures to specify an AND condition e.g. trigger on channel A AND channel B. In this example, separate structs are created as an OR trigger condition is to be set.</p><pre class="codeinput">ChATriggerConditions.source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
 ChATriggerConditions.condition = ps5000aEnuminfo.enPS5000ATriggerState.PS5000A_CONDITION_TRUE;
 
 <span class="comment">% Clear any pre-existing trigger configurations that may have been set.</span>
@@ -255,8 +251,8 @@ ChBTriggerConditions.condition = ps5000aEnuminfo.enPS5000ATriggerState.PS5000A_C
 <span class="comment">% trigger when the condition on channel A OR the condition on channel B is</span>
 <span class="comment">% met.</span>
 info = ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_ADD;
-[status.setTriggerChannelConditionsV2ChA] = invoke(triggerGroupObj, <span class="string">'ps5000aSetTriggerChannelConditionsV2'</span>, ChBTriggerConditions, info);
-</pre><p><b>Trigger directions</b></p><p>Set the direction on which to trigger for each channel.</p><p>Create an array of MATLAB structures corresponding to the <tt>tPS5000ADirection</tt> structure in the <tt>ps5000aStructs</tt> struct. Each structure in the array defines the direction on which to trigger and also if it is a level (edge) or window trigger.</p><pre class="codeinput">TriggerDirections(1).source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
+[status.setTriggerChannelConditionsV2ChB] = invoke(triggerGroupObj, <span class="string">'ps5000aSetTriggerChannelConditionsV2'</span>, ChBTriggerConditions, info);
+</pre><p><b>Trigger directions</b></p><p>Set the direction on which to trigger for each channel.</p><p>Create an array of MATLAB structures corresponding to the <tt>tPS5000ADirection</tt> structure in <tt>ps5000aStructs</tt>. Each structure in the array defines the direction on which to trigger and also if it is a level (edge) or window trigger.</p><pre class="codeinput">TriggerDirections(1).source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
 TriggerDirections(1).direction = ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING;
 TriggerDirections(1).mode = ps5000aEnuminfo.enPS5000AThresholdMode.PS5000A_LEVEL;
 
@@ -278,7 +274,7 @@ TriggerChannelChannelProperties(2).thresholdLowerHysteresis = 50;
 TriggerChannelChannelProperties(2).channel = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_B;
 
 [status.setTriggerChannelPropertiesV2] = invoke(triggerGroupObj, <span class="string">'ps5000aSetTriggerChannelPropertiesV2'</span>, TriggerChannelChannelProperties);
-</pre><p><b>Set auto trigger</b></p><p>The device will automatically trigger if the trigger condition has not been met within 5 sesconds.</p><pre class="codeinput">[status.autoTriggerUs] = invoke(triggerGroupObj, <span class="string">'ps5000aSetAutoTriggerMicroSeconds'</span>, 5e6);
+</pre><p><b>Set auto trigger</b></p><p>The device will automatically trigger if the trigger condition has not been met within 5 seconds.</p><pre class="codeinput">[status.autoTriggerUs] = invoke(triggerGroupObj, <span class="string">'ps5000aSetAutoTriggerMicroSeconds'</span>, 5e6);
 </pre><h2 id="13">Set block parameters and capture data</h2><p>Capture a block of data and retrieve data values for channels A and B.</p><pre class="codeinput"><span class="comment">% Block data acquisition properties and functions are located in the</span>
 <span class="comment">% Instrument Driver's Block group.</span>
 
@@ -325,7 +321,7 @@ getBlockData: Assigning analog data to array and converting to millivolts.
 getBlockData: Data succesfully retrieved.
 
 </pre><h2 id="15">Process data</h2><p>In this example the data values returned from the device are displayed in plots in a Figure.</p><pre class="codeinput">figure1 = figure(<span class="string">'Name'</span>,<span class="string">'PicoScope 5000 Series (A API) Example - Block Mode Capture with Advanced Trigger'</span>, <span class="keyword">...</span>
-    <span class="string">'NumberTitle'</span>, <span class="string">'off'</span>, <span class="string">'Position'</span>, [100, 100, 640, 480]);
+    <span class="string">'NumberTitle'</span>, <span class="string">'off'</span>, <span class="string">'Position'</span>, [500, 500, 640, 480]);
 
 movegui(figure1, <span class="string">'center'</span>);
 
@@ -450,7 +446,7 @@ connect(ps5000aDeviceObj);
 % Default driver settings applied to channels are listed below - use the
 % Instrument Driver's |ps5000aSetChannel()| function to turn channels on or
 % off and set voltage ranges, coupling, as well as analog offset.
-
+%
 % In this example, data is collected on channels A and B. If it is a
 % 4-channel model, channels C and D will be switched off if the power
 % supply is connected.
@@ -542,10 +538,10 @@ triggerGroupObj = triggerGroupObj(1);
 % Specify which channels to trigger on.
 %
 % Create a MATLAB structure corresponding to the |tPS5000ACondition| struct
-% defined in the |ps5000aStructs| struct in order to define the trigger
-% conditions for each channel.
-% Use an array of structures to specify an AND condition e.g. trigger on
-% channel A AND channel B.
+% defined in |ps5000aStructs| in order to define the trigger conditions for
+% each channel. Use an array of structures to specify an AND condition e.g.
+% trigger on channel A AND channel B. In this example, separate structs are
+% created as an OR trigger condition is to be set.
 ChATriggerConditions.source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
 ChATriggerConditions.condition = ps5000aEnuminfo.enPS5000ATriggerState.PS5000A_CONDITION_TRUE;
 
@@ -563,7 +559,7 @@ ChBTriggerConditions.condition = ps5000aEnuminfo.enPS5000ATriggerState.PS5000A_C
 % trigger when the condition on channel A OR the condition on channel B is
 % met.
 info = ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_ADD;
-[status.setTriggerChannelConditionsV2ChA] = invoke(triggerGroupObj, 'ps5000aSetTriggerChannelConditionsV2', ChBTriggerConditions, info);
+[status.setTriggerChannelConditionsV2ChB] = invoke(triggerGroupObj, 'ps5000aSetTriggerChannelConditionsV2', ChBTriggerConditions, info);
 
 %%
 % *Trigger directions*
@@ -571,9 +567,9 @@ info = ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_ADD;
 % Set the direction on which to trigger for each channel.
 %
 % Create an array of MATLAB structures corresponding to the
-% |tPS5000ADirection| structure in the |ps5000aStructs| struct. Each
-% structure in the array defines the direction on which to trigger and also
-% if it is a level (edge) or window trigger.
+% |tPS5000ADirection| structure in |ps5000aStructs|. Each structure in the
+% array defines the direction on which to trigger and also if it is a level
+% (edge) or window trigger.
 
 TriggerDirections(1).source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
 TriggerDirections(1).direction = ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING;
@@ -612,7 +608,7 @@ TriggerChannelChannelProperties(2).channel = ps5000aEnuminfo.enPS5000AChannel.PS
 % *Set auto trigger*
 %
 % The device will automatically trigger if the trigger condition has not
-% been met within 5 sesconds.
+% been met within 5 seconds.
 
 [status.autoTriggerUs] = invoke(triggerGroupObj, 'ps5000aSetAutoTriggerMicroSeconds', 5e6);
 
@@ -664,7 +660,7 @@ downsamplingRatioMode   = ps5000aEnuminfo.enPS5000ARatioMode.PS5000A_RATIO_MODE_
 % plots in a Figure.
 
 figure1 = figure('Name','PicoScope 5000 Series (A API) Example - Block Mode Capture with Advanced Trigger', ...
-    'NumberTitle', 'off', 'Position', [100, 100, 640, 480]);
+    'NumberTitle', 'off', 'Position', [500, 500, 640, 480]);
 
 movegui(figure1, 'center');
 
