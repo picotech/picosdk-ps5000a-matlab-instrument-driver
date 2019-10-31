@@ -1896,7 +1896,9 @@ maxDownSampleRatio - the maximum possible downsampling ratio output.
            
         error('ps5000aGetMaxSegments: status code %d, please refer to the PicoStatus.m file.\n', status);
         
-    end</MCode>
+    end
+    
+    maxSegments = pMaxSegments.Value;</MCode>
                </Code>
                <Description>ps5000aGetMaxSegments(obj) returns the maximum number of segments allowed for the opened device.
 
