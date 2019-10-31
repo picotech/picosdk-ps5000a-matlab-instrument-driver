@@ -6,7 +6,7 @@
    <InstrumentType>Oscilloscope</InstrumentType>
    <InstrumentManufacturer>Pico Technology Ltd.</InstrumentManufacturer>
    <InstrumentModel>PicoScope 5000A, 5000B and 5000D Series</InstrumentModel>
-   <InstrumentVersion>2.2.16.49</InstrumentVersion>
+   <InstrumentVersion>2.2.17.59</InstrumentVersion>
    <Identify/>
    <Reset/>
    <Selftest/>
@@ -17,13 +17,13 @@
 % OBJ is the device object.
 % End of function definition - DO NOT EDIT
 
-% Copyright © 2013-2018 Pico Technology Ltd. All rights reserved. 
+% Copyright © 2013-2019 Pico Technology Ltd. All rights reserved. 
 % You may copy and distribute this file as long as it remains unmodified. 
 % SB
     
     fprintf('PicoScope 5000 Series (A API) MATLAB Instrument Driver');
     fprintf('\n');
-    fprintf('\nCopyright © 2013-2018 Pico Technology Ltd. All rights reserved.\n');
+    fprintf('\nCopyright © 2013-2019 Pico Technology Ltd. All rights reserved.\n');
     fprintf('\n');
 
     % Load libraries
@@ -292,7 +292,7 @@
 % OBJ is the device object.
 % End of function definition - DO NOT EDIT
 
-% Copyright © 2013-2018 Pico Technology Ltd. All rights reserved.
+% Copyright © 2013-2019 Pico Technology Ltd. All rights reserved.
 % You may copy and distribute this file as long as it remains unmodified.
 % SB
 
@@ -479,7 +479,6 @@
 
                 otherwise
 
-                    obj.InstrumentModel = PS5000aConstants.MODEL_NONE;
                     obj.DriverData.channelCount = 0;
                     obj.DriverData.digitalPorts = 0;
                     obj.DriverData.firstRange = range10mV;
@@ -492,7 +491,11 @@
                     obj.DriverData.bandwidth = PicoConstants.BANDWIDTH_ZERO;
                     obj.DriverData.maxSamplingRate = PicoConstants.MAX_SAMPLING_RATE_ZERO;
 
-                    error('PS5000AConnect:UnitNotSupported', 'Unit not supported');
+                    % Close the connection to the device, then report an
+                    % error.
+                    disconnect(obj);
+                    error('Picotech:PS5000AInstrumentDriver:UnitNotSupported', ...
+                    'Connect: This device is not supported by the Instrument Driver.');
 
             end
 
@@ -6889,6 +6892,45 @@ triggerEnabled - indicates if trigger is set.
 pwqEnabled - indicates if pulse width qualifier is set.</Description>
             </Method>
             <Method>
+               <Name>ps5000aSetAutoTriggerMicroSeconds</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSetAutoTriggerMicroSeconds(obj, autoTriggerMicroseconds)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    validateattributes(autoTriggerMicroseconds, {'numeric'}, {'scalar', 'integer', 'nonnegative'});
+    
+    status = calllib('ps5000a', 'ps5000aSetAutoTriggerMicroSeconds', ...
+        deviceObj.DriverData.unitHandle, uint64(autoTriggerMicroseconds));
+    
+    if (status ~= PicoStatus.PICO_OK)
+        
+        error('Picotech:PS5000AInstrumentDriver:ps5000aSetAutoTriggerMicroSeconds', ...
+                    ['ps5000aSetAutoTriggerMicroSeconds has returned status code ', ...
+                    num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
+                
+    end</MCode>
+               </Code>
+               <Description>ps5000aSetAutoTriggerMicroSeconds(obj, autoTriggerMicroseconds) sets up the auto-trigger function which starts a capture if no trigger event occurs within
+a specified time after a ps5000aRunBlock, runBlock or ps5000aRunStreaming command has been issued.
+
+Input parameters:
+
+obj - the object representing the Trigger group.
+autoTriggerMicroseconds - the number of microseconds for which the scope device will wait for a trigger before timing out. If this argument is zero, the scope device will wait indefinitely for a trigger.
+
+Output parameters:
+
+status - status code returned by the device.
+
+For further information on the ps5000aSetAutoTriggerMicroSeconds function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+            <Method>
                <Name>ps5000aSetPulseWidthQualifier</Name>
                <Location>trigger</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -6942,6 +6984,61 @@ status - status code returned by the device.
 For further information on the ps5000aSetPulseWidthQualifier function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
+               <Name>ps5000aSetTriggerChannelConditionsV2</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSetTriggerChannelConditionsV2(obj, conditions, info)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    if (isstruct(conditions) || isempty(conditions))
+        
+        deviceObj = get(obj, 'Parent');
+
+        % Create a libpointer object for the conditions structure
+        pConditions = libpointer('tPS5000AConditionPtr', conditions);
+
+        status = calllib('ps5000a', 'ps5000aSetTriggerChannelConditionsV2', ...
+                    deviceObj.DriverData.unitHandle, pConditions, ...
+                    length(conditions), int16(info));
+
+        if (status ~= PicoStatus.PICO_OK)
+ 
+            error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelConditionsV2Error', ...
+                ['ps5000aSetTriggerChannelConditionsV2 has returned status code ', ...
+                num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
+            
+        end
+        
+    else
+
+        error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelConditionsV2InvalidConditions', ...
+                ['ps5000aSetTriggerChannelConditionsV2: conditions input ',...
+                'argument should be a tPS5000ACondition structure or empty matrix.']);
+
+    end
+    </MCode>
+               </Code>
+               <Description>ps5000aSetTriggerChannelConditionsV2(obj, conditions, info) specifies which channels to trigger on.
+
+If you only need to trigger on a single analog input with edge or level detection, it's easier to use
+setSimpleTrigger. 
+
+Input parameters:
+
+obj - the object representing the Trigger group object.
+conditions - a structure array consisting of 1 or more MATLAB structures corresponding to the tPS5000ACondition structure (accessible from the ps5000aStructs struct).
+info - refer to the main Programmer's Guide (see below)
+
+Output  parameters:
+
+status - status code returned by the device.
+
+Please refer to the ps5000aSetTriggerChannelConditionsV2 function in the PicoScope 5000 Series (A API) Flexible Resolution Oscilloscopes Programmer's Guide for further information.</Description>
+            </Method>
+            <Method>
                <Name>ps5000aSetTriggerChannelDirections</Name>
                <Location>trigger</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -6950,6 +7047,11 @@ For further information on the ps5000aSetPulseWidthQualifier function please ref
                   <MCode>function status = ps5000aSetTriggerChannelDirections(obj, channelA, channelB, channelC, channelD, ext)
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
+
+    warning('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelDirectionsFunctionDeprecated', ...
+                ['ps5000aSetTriggerChannelDirections is now deprecated - ',...
+                'please use ps5000aSetTriggerChannelDirectionsV2 instead if not using '...
+                'Test and Measurement Tool'.']);
 
     deviceObj = get(obj, 'Parent');
 
@@ -6969,6 +7071,8 @@ For further information on the ps5000aSetPulseWidthQualifier function please ref
 
 This function may be used with the Test and Measurement Tool.
 
+NOTE: This function is now deprecated - please use ps5000aSetTriggerChannelDirectionsV2 instead if not using Test and Measurement Tool.
+
 Input parameters:
 
 obj - the object representing the Trigger group.
@@ -6981,6 +7085,117 @@ status - status code returned by the device.
 For further information on the ps5000aSetTriggerChannelDirections function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
+               <Name>ps5000aSetTriggerChannelDirectionsV2</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSetTriggerChannelDirectionsV2(obj, directions)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    if (isstruct(directions) || isempty(directions))
+        
+        deviceObj = get(obj, 'Parent');
+
+        % Create a libpointer object for the directions structure
+        pDirections = libpointer('tPS5000ADirectionPtr', directions);
+
+        status = calllib('ps5000a', 'ps5000aSetTriggerChannelDirectionsV2', ...
+            deviceObj.DriverData.unitHandle, pDirections, uint16(length(directions)));
+
+        if (status ~= PicoStatus.PICO_OK)
+
+            error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelDirectionsV2Error', ...
+                ['ps5000aSetTriggerChannelDirectionsV2 has returned status code ', ...
+                num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
+
+        end
+        
+    else
+       
+        error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelDirectionsV2InvalidDirections', ...
+                ['ps5000aSetTriggerChannelDirectionsV2: directions input ',...
+                'argument should be a tPS5000ADirection structure or empty matrix.']);
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aSetTriggerChannelDirectionsV2(obj, directions) sets up signal polarities for triggering.
+
+This function applies to analog channels only (use ps5000aSetTriggerDigitalPortProperties for digital channels). 
+
+Input parameters:
+
+obj - the object representing the Trigger group object.
+directions - a structure array consisting of 1 or more MATLAB structures corresponding to the tPS5000ADirection structure (accessible from the ps5000aStructs struct).
+
+Output  parameters:
+
+status - status code returned by the device.
+
+Please refer to the ps5000aSetTriggerChannelDirectionsV2 function in the PicoScope 5000 Series (A API) Flexible Resolution Oscilloscopes Programmer's Guide for further information.</Description>
+            </Method>
+            <Method>
+               <Name>ps5000aSetTriggerChannelPropertiesV2</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSetTriggerChannelPropertiesV2(obj, channelProperties)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    if (isstruct(channelProperties) || isempty(channelProperties))
+        
+        deviceObj = get(obj, 'Parent');
+        
+        channelPropertiesLength = length(channelProperties);
+        
+        if (channelPropertiesLength &gt; 0)
+            
+            channelProperties = invoke(obj, 'triggerChannelPropertiesConversion', channelProperties);
+            
+        end
+        
+        % Create a libpointer object for the channelProperties structure
+        pChannelProperties = libpointer('tPS5000ATriggerChannelPropertiesV2Ptr', channelProperties);
+        auxOutputEnable = 0;
+        
+        status = calllib('ps5000a', 'ps5000aSetTriggerChannelPropertiesV2', ...
+            deviceObj.DriverData.unitHandle, pChannelProperties, int16(channelPropertiesLength), auxOutputEnable);
+        
+        if (status ~= PicoStatus.PICO_OK)
+            
+            error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelPropertiesV2', ...
+                    ['ps5000aSetTriggerChannelPropertiesV2 has returned status code ', ...
+                    num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
+        
+        end
+        
+    else
+        
+        error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerChannelPropertiesV2InvalidProperties', ...
+                ['ps5000aSetTriggerChannelPropertiesV2: channelProperties input ',...
+                'argument should be a tPS5000ATriggerChannelPropertiesV2 structure or empty matrix.']);
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aSetTriggerChannelPropertiesV2(obj, channelProperties) n is used to enable or disable triggering on the analog channels and set its parameters.
+
+This function applies to analog channels only (use ps5000aSetTriggerDigitalPortProperties for digital channels). 
+
+Input parameters:
+
+obj - the object representing the Trigger group object.
+channelProperties - a structure array consisting of 1 or more MATLAB structures corresponding to the tPS5000ATriggerChannelPropertiesV2 structure (accessible from the ps5000aStructs struct) with the threshold and hysteresis levels specified in millivolts.
+
+Output  parameters:
+
+status - status code returned by the device.
+
+Please refer to the ps5000aSetTriggerChannelPropertiesV2 function in the PicoScope 5000 Series (A API) Flexible Resolution Oscilloscopes Programmer's Guide for further information.</Description>
+            </Method>
+            <Method>
                <Name>setAdvancedTrigger</Name>
                <Location>trigger</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -6989,6 +7204,10 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
                   <MCode>function advTrigStatus = setAdvancedTrigger(obj, channelProperties, triggerConditions, directions)
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
+
+    warning('Picotech:PS5000AInstrumentDriver:setAdvancedTriggerFunctionDeprecated', ...
+                ['setAdvancedTrigger is now deprecated - ',...
+                'please use the appropriate functions from the Trigger group instead.']);
 
     deviceObj = get(obj, 'Parent');
     
@@ -7026,6 +7245,14 @@ For further information on the ps5000aSetTriggerChannelDirections function pleas
                </Code>
                <Description>setAdvancedTrigger(obj, channelProperties, triggerConditions, directions, delay, autoTriggerMs) sets the Advanced Trigger properties for the oscilloscope.
 
+NOTE: This function is now deprecated - use the following functions as required:
+
+* ps5000aSetTriggerChannelPropertiesV2
+* ps5000aSetTriggerChannelConditionsV2
+* ps5000aSetTriggerChannelDirectionsV2
+* ps5000aSetPulseWidthQualifierProperties
+* ps5000aSetPulseWidthQualifierConditions
+* ps5000aSetPulseWidthQualifierDirections
 </Description>
             </Method>
             <Method>
@@ -7204,6 +7431,11 @@ For further information on the setSimpleTrigger function please refer to the ps5
 % If this is a group function, OBJ is the group object. If
 % it a base device function, OBJ is the device object.
 
+    warning('Picotech:PS5000AInstrumentDriver:setTriggerConditionsFunctionDeprecated', ...
+                ['setTriggerConditions is now deprecated - ',...
+                'please use ps5000aSetTriggerChannelConditionsV2 instead if not using '...
+                'Test and Measurement Tool'.']);
+
     deviceObj = get(obj, 'Parent');
 
     % Determine if the number of sub-elements in the array is correct.
@@ -7237,6 +7469,8 @@ For further information on the setSimpleTrigger function please refer to the ps5
                <Description>SetTriggerConditions(obj, conditions) sets up trigger conditions on the scope's inputs.
 
 This function may be used with the Test and Measurement Tool.
+
+NOTE: This function is now deprecated - please use ps5000aSetTriggerChannelConditionsV2 instead if not using Test and Measurement Tool.
 
 Input parameters:
 
@@ -7298,6 +7532,11 @@ status - status code returned by the device.</Description>
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
 
+    warning('Picotech:PS5000AInstrumentDriver:setTriggerPropertiesFunctionDeprecated', ...
+                ['setTriggerProperties is now deprecated - ',...
+                'please use ps5000aSetTriggerChannelPropertiesV2 instead if not using '...
+                'Test and Measurement Tool'.']);
+
     deviceObj = get(obj, 'Parent');
 
     % Determine if the number of sub-elements in the array is correct.
@@ -7331,6 +7570,8 @@ status - status code returned by the device.</Description>
 
 This function may be used with the Test and Measurement Tool in place of the ps5000aSetTriggerChannelProperties function called in the SetAdvancedTrigger function.
 
+NOTE: This function is now deprecated - please use ps5000aSetTriggerChannelDirectionsV2 instead if not using Test and Measurement Tool.
+
 Input parameters:
 
 obj - the object representing the Trigger group.
@@ -7341,6 +7582,81 @@ Output parameters:
 status - status code returned by the device.
 
 For further information on the ps5000aSetTriggerChannelProperties function and the TRIGGER_CHANNEL_PROPERTIES structure please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+            <Method>
+               <Name>triggerChannelPropertiesConversion</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function channelProperties = triggerChannelPropertiesConversion(obj, channelProperties)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+
+    if (isstruct(channelProperties))
+        
+        numChannelProperties = length(channelProperties);
+
+        % Convert the threshold and hysteresis values to ADC counts for
+        % each property
+
+        for n = 1:numChannelProperties
+
+            vRange = 0; % millivolts
+            maxADCValue = 0;
+
+            if (channelProperties(n).channel &gt;= deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_CHANNEL_A &amp;&amp; ...
+                        channelProperties(n).channel &lt; deviceObj.DriverData.channelCount)
+
+                channelIndex = channelProperties(n).channel + 1; % Offset by 1 for the voltage range array
+                vRange = PicoConstants.SCOPE_INPUT_RANGES(deviceObj.DriverData.channelSettings(channelIndex, 3) + 1);
+                maxADCValue = deviceObj.DriverData.maxADCValue;
+
+            elseif (channelProperties(n).channel == deviceObj.DriverData.enums.enPS5000AChannel.PS5000A_EXTERNAL)
+
+                vRange = deviceObj.DriverData.constants.PS5000A_EXT_MAX_VOLTAGE * 1000; % convert to millivolts
+                maxADCValue = deviceObj.DriverData.constants.PS5000A_EXT_MAX_VALUE;
+
+            else
+
+                error('Picotech:PS5000AInstrumentDriver:triggerChannelPropertiesConversion', ...
+                ['triggerChannelPropertiesConversion: Invalid channel found in element ', num2str(n), ...
+                ' of the channelProperties structure.']);
+
+            end
+
+            % Convert the data 
+            channelProperties(n).thresholdUpper = mv2adc(channelProperties(n).thresholdUpper, vRange, maxADCValue);
+            channelProperties(n).thresholdUpperHysteresis = mv2adc(channelProperties(n).thresholdUpperHysteresis, vRange, maxADCValue);
+            channelProperties(n).thresholdLower = mv2adc(channelProperties(n).thresholdLower, vRange, maxADCValue);
+            channelProperties(n).thresholdLowerHysteresis = mv2adc(channelProperties(n).thresholdLowerHysteresis, vRange, maxADCValue);
+
+        end
+        
+    else
+       
+        error('Picotech:PS5000AInstrumentDriver:triggerChannelPropertiesConversion', ...
+                ['triggerChannelPropertiesConversion: channelProperties input ',...
+                'argument should be a tPS5000ATriggerChannelPropertiesV2 structure.']);
+        
+    end</MCode>
+               </Code>
+               <Description>triggerChannelPropertiesConversion(obj, channelProperties) converts the threshold and hysteresis values specified for a channel to ADC counts.
+
+This function applies to analog channels only and is a helper function for the ps5000aSetTriggerChannelPropertiesV2 function. 
+
+Input parameters:
+
+obj - the object representing the Trigger group object.
+channelProperties - a structure array consisting of 1 or more MATLAB structures corresponding to the tPS5000ATriggerChannelPropertiesV2 structure (accessible from the ps5000aStructs struct) with the threshold and hysteresis levels set to millivolts.
+
+Output  parameters:
+
+channelProperties - the structure passed as the input argument but with the threshold and hysteresis levels converted to ADC counts.
+
+Please refer to the ps5000aSetTriggerChannelPropertiesV2 function for additional information.</Description>
             </Method>
          </MethodInfo>
       </Group>
