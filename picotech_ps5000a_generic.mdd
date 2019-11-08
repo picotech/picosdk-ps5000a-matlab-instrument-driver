@@ -7085,42 +7085,6 @@ status - status code returned by the device.
 For further information on the ps5000aSetTriggerChannelDirections function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
-               <Name>ps5000aSetTriggerDigitalPortProperties</Name>
-               <Location>trigger</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function status = ps5000aSetTriggerDigitalPortProperties(obj, digitalDirections)
-% For group functions, OBJ is the group object. For
-% base device functions, OBJ is the device object.
-
-    deviceObj = get(obj, 'Parent');
-
-    status = calllib('ps5000a', 'ps5000aSetTriggerDigitalPortProperties', ...
-     deviceObj.unitHandle, digitalDirections, length(digitalDirections));
- 
-    if (status ~= PicoStatus.PICO_OK)
-           
-        error('ps5000aSetTriggerChannelDirections:- status code: %d. Please refer to the PicoStatus.m file.', status); 
-        
-    end </MCode>
-               </Code>
-               <Description>ps5000aSetTriggerDigitalPortProperties(obj, digitalDirections) sets the direction of the trigger for digital channels.
-
-This function may be used with the Test and Measurement Tool.
-
-Input parameters:
-
-obj - the object representing the Trigger group.
-digitalDirections - a structure containing directions for digital channels
-
-Output parameters:
-
-status - status code returned by the device.
-
-For further information on the ps5000aSetTriggerDigitalPortPropertiess function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
-            </Method>
-            <Method>
                <Name>ps5000aSetTriggerChannelDirectionsV2</Name>
                <Location>trigger</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -7232,6 +7196,59 @@ status - status code returned by the device.
 Please refer to the ps5000aSetTriggerChannelPropertiesV2 function in the PicoScope 5000 Series (A API) Flexible Resolution Oscilloscopes Programmer's Guide for further information.</Description>
             </Method>
             <Method>
+               <Name>ps5000aSetTriggerDigitalPortProperties</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSetTriggerDigitalPortProperties(obj, digitalDirections)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+
+    if (isstruct(digitalDirections) || isempty(digitalDirections))
+        
+        deviceObj = get(obj, 'Parent');
+        
+        digitalDirectionsLength = length(digitalDirections);
+        
+        deviceObj = get(obj, 'Parent');
+
+        status = calllib('ps5000a', 'ps5000aSetTriggerDigitalPortProperties', ...
+            deviceObj.unitHandle, digitalDirections, digitalDirectionsLength);
+ 
+        if (status ~= PicoStatus.PICO_OK)
+           
+            error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerDigitalPortProperties', ...
+                    ['ps5000aSetTriggerDigitalPortProperties has returned status code ', ...
+                    num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
+                
+        end 
+        
+    else
+        
+        error('Picotech:PS5000AInstrumentDriver:ps5000aSetTriggerDigitalPortPropertiesInvalidProperties', ...
+                ['ps5000aSetTriggerDigitalPortProperties: channelProperties input ',...
+                'argument should be a tPS5000ATriggerDigitalPortProperties structure or empty matrix.']);
+        
+    end</MCode>
+               </Code>
+               <Description>ps5000aSetTriggerDigitalPortProperties(obj, digitalDirections) sets the direction of the trigger for digital channels.
+
+This function may be used with the Test and Measurement Tool.
+
+Input parameters:
+
+obj - the object representing the Trigger group.
+digitalDirections - a structure containing directions for digital channels
+
+Output parameters:
+
+status - status code returned by the device.
+
+For further information on the ps5000aSetTriggerDigitalPortPropertiess function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
+            </Method>
+            <Method>
                <Name>setAdvancedTrigger</Name>
                <Location>trigger</Location>
                <CapabilityGroup>Base</CapabilityGroup>
@@ -7289,28 +7306,6 @@ NOTE: This function is now deprecated - use the following functions as required:
 * ps5000aSetPulseWidthQualifierProperties
 * ps5000aSetPulseWidthQualifierConditions
 * ps5000aSetPulseWidthQualifierDirections
-</Description>
-            </Method>
-            <Method>
-               <Name>setDigitalTrigger</Name>
-               <Location>trigger</Location>
-               <CapabilityGroup>Base</CapabilityGroup>
-               <Type>MCode</Type>
-               <Code>
-                  <MCode>function digTrigStatus = setDigitalTrigger(obj, channelConditionsV2, digitalDirections, info)
-% For group functions, OBJ is the group object. For
-% base device functions, OBJ is the device object.
-
-    deviceObj = get(obj, 'Parent');
-
-    % Set the trigger channel conditions
-    digTrigStatus.setConditions = calllib('ps5000a', 'ps5000aSetTriggerChannelConditionsV2', deviceObj.unitHandle, channelConditionsV2, length(channelConditionsV2),info);
-
-    % Set digital channel directions
-    digTrigStatus.setDigitalProperties = calllib('ps5000a', 'ps5000aSetTriggerDigitalPortProperties', deviceObj.unitHandle, digitalDirections, length(digitalDirections));
-</MCode>
-               </Code>
-               <Description>setDigitalTirgger(obj, channelPropertiesV2, digitalDirections) sets the Digital Trigger properties for the oscilloscope
 </Description>
             </Method>
             <Method>

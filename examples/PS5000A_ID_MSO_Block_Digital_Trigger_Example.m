@@ -14,7 +14,7 @@
 % To run the instrument control session, type the name of the file,
 % PS5000A_ID_MSO_Block_Digital_Trigger_Example, at the MATLAB command prompt.
 % 
-% The file, PS5000A_ID_MSO_BLOCK_Digital_Trigger_EXAMPLE.M must be on your MATLAB PATH. For
+% The file, PS5000A_ID_MSO_BLOCK_DIGITAL_TRIGGER_EXAMPLE.M must be on your MATLAB PATH. For
 % additional information on setting your MATLAB PATH, type 'help addpath'
 % at the MATLAB command prompt.
 %
@@ -199,7 +199,8 @@ digitalDirections.direction = ps5000aEnuminfo.enPS5000ADigitalDirection.PS5000A_
 info = ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_ADD + ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_CLEAR;
 
 % Set digital trigger
-status.digTrigStatus = invoke(triggerGroupObj, 'setDigitalTrigger', channelConditionsV2, digitalDirections, info);
+status.TriggerChannelConditions = invoke(triggerGroupObj, 'ps5000aSetTriggerChannelConditionsV2', channelConditionsV2, info);
+status.SetTriggerDigitalPortProperties = invoke(triggerGroupObj, 'ps5000aSetTriggerDigitalPortProperties', digitalDirections);
 
 %% Set block parameters and capture data
 % Capture a block of data and retrieve data values for channels A and B.
