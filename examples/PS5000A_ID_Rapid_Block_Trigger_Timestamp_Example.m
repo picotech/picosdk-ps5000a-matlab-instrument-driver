@@ -259,7 +259,7 @@ for k = toSegmentIndex+1:-1:1
     triggerInfo(k).timeStampCounter=0;
 end
 
-[status.getTriggerInfoBulk, triggerInfo] = invoke(rapidBlockGroupObj, 'getTriggerInfoBulk', fromSegmentIndex, toSegmentIndex);
+[status.getTriggerInfoBulk, triggerInfo] = invoke(rapidBlockGroupObj, 'getTriggerInfoBulk', triggerInfo, fromSegmentIndex, toSegmentIndex);
 
 %% Process data
 % Plot data values.
