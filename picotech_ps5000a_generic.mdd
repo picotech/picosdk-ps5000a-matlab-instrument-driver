@@ -4545,6 +4545,49 @@ Channel data will be returned as a matrix in the form numSamples x numCaptures. 
 Please also refer to the  ps5000aSetDataBuffer and ps5000aGetValues functions.</Description>
             </Method>
             <Method>
+               <Name>getTriggerInfoBulk</Name>
+               <Location>rapidblock</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function [status, triggerInfo] = getTriggerInfoBulk(obj, triggerInfo, fromSegmentIndex, toSegmentIndex)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+deviceObj = get(obj, 'Parent');
+
+pTriggerInfo = libpointer('tPS5000ATriggerInfoPtr',triggerInfo);
+%%
+status = calllib('ps5000a', 'ps5000aGetTriggerInfoBulk', deviceObj.DriverData.unitHandle, pTriggerInfo, fromSegmentIndex, toSegmentIndex);
+
+if (status ~= PicoStatus.PICO_OK)
+    error('Picotech:PS5000AInstrumentDriver:ps5000aGetTriggerInfoBulk', ...
+                    ['ps5000aGetTriggerInfoBulk has returned status code ', ...
+                     num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
+
+%%
+triggerInfo(1)=pTriggerInfo.Value;
+
+for i = 1:(toSegmentIndex-fromSegmentIndex)
+    TriggerInfoPtrInc = pTriggerInfo+i;
+    triggerInfo(i+1) = TriggerInfoPtrInc.Value;
+end</MCode>
+               </Code>
+               <Description>getTriggerInfoBulk(obj, triggerInfo, fromSegmentIndex, toSegmentIndex) retrieves the trigger infromation from waveforms captured during a rapid block capture
+
+Input Parameters
+
+obj - the device group object
+triggerInfo - structure array of 1 or more MATLAB structures corresponding to the tPS5000ATriggerInfo structure (accessable from the PS5000AStructs struct)
+fromSegmentIndex - integer relating to the first segement to retrieve trigger data from
+toSegmentIndex - integer relating to the last segment to retrieve tirgger data from
+
+Function Outputs
+
+status - status code returned by the device.
+triggerInfo -  structure array of 1 or more MATLAB structures corresponding to the tPS5000ATriggerInfo structure (accessable from the PS5000AStructs struct) that has been populated with the trigger info data</Description>
+            </Method>
+            <Method>
                <Name>ps5000aGetNoOfCaptures</Name>
                <Location>rapidblock</Location>
                <CapabilityGroup>Base</CapabilityGroup>
