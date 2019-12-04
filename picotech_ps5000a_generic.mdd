@@ -4564,6 +4564,7 @@ if (status ~= PicoStatus.PICO_OK)
     error('Picotech:PS5000AInstrumentDriver:ps5000aGetTriggerInfoBulk', ...
                     ['ps5000aGetTriggerInfoBulk has returned status code ', ...
                      num2str(status), ' (0x' dec2hex(status), '). Please refer to PicoStatus.m for further information.' ]);
+end
 
 %%
 triggerInfo(1)=pTriggerInfo.Value;
