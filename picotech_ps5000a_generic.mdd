@@ -7028,6 +7028,81 @@ status - status code returned by the device.
 For further information on the ps5000aSetPulseWidthQualifier function please refer to the PicoScope 5000 Series (A API) PC Oscilloscopes Programmer's Guide.</Description>
             </Method>
             <Method>
+               <Name>ps5000aSetPulseWidthQualifierConditions</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function ps5000aSetPulseWidthQualifierConditions(obj, conditions, nConditions, info)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+    
+    % Create a libpointer object for the conditions structure
+    pConditions = libpointer('tPS5000AConditionsPtr', conditions);
+    
+    status = calllib('ps5000a', 'ps5000aSetPulseWidthQualifierConditions',deviceObj.DriverData.unitHandle, ...
+                    pConditions, nConditions, info);
+                
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aSetPulseWidthQualifierConditions:- status code: %d. Please refer to the PicoStatus.m file.', status); 
+        
+    end </MCode>
+               </Code>
+               <Description/>
+            </Method>
+            <Method>
+               <Name>ps5000aSetPulseWidthQualifierDirections</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSetPulseWidthQualifierDirections(obj, directions, nDirections)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+    deviceObj = get(obj, 'Parent');
+
+    % Create a libpointer object for the directions structure
+    pDirections = libpointer('tPS5000ADirectionPtr', directions);
+    
+    status = calllib('ps5000a','ps5000aSetPulseWidthQualifierDirections',deviceObj.DriverData.unitHandle,...
+                        pDirections,nDirections);
+                    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aSetPulseWidthQualifierDirections:- status code: %d. Please refer to the PicoStatus.m file.', status); 
+        
+    end </MCode>
+               </Code>
+               <Description/>
+            </Method>
+            <Method>
+               <Name>ps5000aSetPulseWidthQualifierProperties</Name>
+               <Location>trigger</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function status = ps5000aSetPulseWidthQualifierProperties(obj, lower, upper, type)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+        
+    deviceObj = get(obj, 'Parent');
+        
+    status = calllib('ps5000a', 'ps5000aSetPulseWidthQualifierProperties', deviceObj.DriverData.unitHandle, ... 
+                            lower, upper, type);
+    
+    if (status ~= PicoStatus.PICO_OK)
+           
+        error('ps5000aSetPulseWidthQualifierProperties:- status code: %d. Please refer to the PicoStatus.m file.', status); 
+        
+    end </MCode>
+               </Code>
+               <Description/>
+            </Method>
+            <Method>
                <Name>ps5000aSetTriggerChannelConditionsV2</Name>
                <Location>trigger</Location>
                <CapabilityGroup>Base</CapabilityGroup>
