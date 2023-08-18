@@ -24,7 +24,7 @@
 %
 % *Description:*
 %     Demonstrates how to call functions in order to capture a block of
-%     data from a PicoScope 5000 Series oscilloscope using an advanced trigger.
+%     data from a PicoScope 5000 Series oscilloscope using an advanced pulse width trigger.
 %
 % *See also:* <matlab:doc('icdevice') |icdevice|> | <matlab:doc('instrument/invoke') |invoke|>
 %
@@ -227,14 +227,23 @@ TriggerChannelChannelProperties(1).channel = ps5000aEnuminfo.enPS5000AChannel.PS
 pwqConditions(1).source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
 pwqConditions(1).condition = ps5000aEnuminfo.enPS5000ATriggerState.PS5000A_CONDITION_TRUE;
 nConditions = length(pwqConditions);
-pwqDirection.source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
-pwqDirection.direction = ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_OUTSIDE;
-pwqDirection.mode = ps5000aEnuminfo.enPS5000AThresholdMode.PS5000A_WINDOW;
+pwqInfo = ps5000aEnuminfo.enPS5000AConditionsInfo.PS5000A_ADD;
+
+pwqDirection(1).source = ps5000aEnuminfo.enPS5000AChannel.PS5000A_CHANNEL_A;
+pwqDirection(1).direction = ps5000aEnuminfo.enPS5000AThresholdDirection.PS5000A_RISING;
+pwqDirection(1).mode = ps5000aEnuminfo.enPS5000AThresholdMode.PS5000A_WINDOW;
 nDirections = length(pwqDirection);
+
 pwqTime = ceil(1e6 / timeIntervalNanoseconds); %1 ms
 pwqLower = pwqTime; 
 pwqUpper = 10 * pwqTime; 
-pwqType = ps5000aEnuminfo.enPS5000APulseWidthType.PS5000A_PW_TYPE_GREATER_THAN;
+pwqType = ps5000aEnuminfo.enPS5000APulseWidthType.PS5000A_PW_TYPE_IN_RANGE;
+
+[status.setPWQConditions] = invoke(triggerGroupObj, 'ps5000aSetPulseWidthQualifierConditions', pwqConditions, nConditions, pwqInfo);
+
+[status.setPWQDirections] = invoke(triggerGroupObj, 'ps5000aSetPulseWidthQualifierDirections', pwqDirection, nDirections);
+
+[status.setPWQProperties] = invoke(triggerGroupObj, 'ps5000aSetPulseWidthQualifierProperties',pwqLower,pwqUpper,pwqType);
 
 %%
 % *Set auto trigger*

@@ -7033,14 +7033,14 @@ For further information on the ps5000aSetPulseWidthQualifier function please ref
                <CapabilityGroup>Base</CapabilityGroup>
                <Type>MCode</Type>
                <Code>
-                  <MCode>function ps5000aSetPulseWidthQualifierConditions(obj, conditions, nConditions, info)
+                  <MCode>function status = ps5000aSetPulseWidthQualifierConditions(obj, conditions, nConditions, info)
 % For group functions, OBJ is the group object. For
 % base device functions, OBJ is the device object.
 
     deviceObj = get(obj, 'Parent');
     
     % Create a libpointer object for the conditions structure
-    pConditions = libpointer('tPS5000AConditionsPtr', conditions);
+    pConditions = libpointer('tPS5000AConditionPtr', conditions);
     
     status = calllib('ps5000a', 'ps5000aSetPulseWidthQualifierConditions',deviceObj.DriverData.unitHandle, ...
                     pConditions, nConditions, info);
